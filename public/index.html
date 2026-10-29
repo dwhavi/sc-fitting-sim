@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SC Fitting Sim — Star Citizen 함선 피팅 시뮬레이터</title>
+<style>
+:root{--bg:#0b0f14;--panel:#131a23;--line:#233041;--txt:#d7e1ec;--dim:#8aa0b4;--acc:#4cc2ff;--warn:#ffb454;--bad:#ff6b6b;--ok:#51d88a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:-apple-system,system-ui,"Noto Sans KR",sans-serif;font-size:14px}
+header{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+header h1{font-size:17px;margin:0}header small{color:var(--dim)}
+main{display:grid;grid-template-columns:340px 1fr;gap:12px;padding:12px;max-width:1280px;margin:0 auto}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px}
+.panel h2{font-size:13px;margin:0 0 8px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
+select,input{width:100%;background:#0e141c;color:var(--txt);border:1px solid var(--line);border-radius:6px;padding:6px 7px;font-size:12px}
+select.slot-sel{padding:4px 6px;font-size:12px}
+.slot{display:flex;gap:8px;align-items:center;border:1px solid var(--line);border-radius:6px;padding:4px 8px;margin-bottom:5px}
+.slot .meta{flex:0 0 190px;min-width:0;font-size:11px;color:var(--dim);line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.slot .meta b{color:var(--txt);font-weight:600}
+.slot .meta .sz{display:inline-block;background:#0e141c;border:1px solid var(--line);border-radius:4px;padding:0 4px;font-size:10px;color:var(--acc);margin-right:4px}
+.slot select{flex:1;min-width:0}
+.slots-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+.slots-grid .slot .meta{flex-basis:150px}
+.sec-h{font-size:11px;color:var(--dim);margin:8px 0 5px;text-transform:uppercase;letter-spacing:.05em}
+@media(max-width:1100px){.slots-grid{grid-template-columns:1fr}.slot .meta{flex-basis:160px}}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.stat{background:#0e141c;border:1px solid var(--line);border-radius:8px;padding:10px}
+.stat .v{font-size:20px;font-weight:700}.stat .k{font-size:11px;color:var(--dim)}
+.ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--bad)}
+.bar{height:6px;background:#0e141c;border-radius:3px;margin-top:6px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ok)}
+table{width:100%;border-collapse:collapse;font-size:12px}td,th{padding:5px 6px;border-bottom:1px solid var(--line);text-align:left}th{color:var(--dim);font-weight:400}
+.row{display:flex;gap:8px}.row>*{flex:1}
+button{background:#12314a;color:var(--acc);border:1px solid #1e4a6e;border-radius:6px;padding:7px 10px;cursor:pointer;font-size:13px}
+button:hover{background:#17405f}
+button.on{background:#0e3d24;color:var(--ok);border-color:#1e6e42}
+button.on:hover{background:#134d2e}
+/* 핍 컬럼 수는 가변(7계통 + 쿨러 슬롯 수)이라 고정 그리드로 두면 넘치는 열이
+   다음 줄로 떨어진다. nowrap flex 로 항상 한 줄에 유지하고 폭만 나눠 갖는다. */
+#pwrBlocks{display:flex;flex-wrap:nowrap;gap:6px;margin-bottom:4px;overflow-x:auto}
+.pwr-col{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 2px;border:1px solid var(--line);border-radius:8px;cursor:pointer;min-width:0}
+.pwr-col.off{opacity:.55}
+.pwr-col.nodata{opacity:.35;cursor:not-allowed}
+.pips{display:flex;flex-direction:column;align-items:center;gap:3px;min-height:64px;justify-content:flex-end}
+.pip{width:26px;max-width:100%;height:9px;border-radius:2px;border:1px solid #3a4a5c;background:#1a222d}
+.pip.on{background:linear-gradient(180deg,#ffb454,#f08018);border-color:#ffb454}
+.pip.on.grp-off{background:#556;border-color:#556}
+.pip-num{font-size:13px;font-weight:700;color:#fff;line-height:1.2}
+.pwr-ico{font-size:16px;cursor:pointer;padding:1px 6px;border-radius:6px;line-height:1.2}
+.pwr-ico:hover{background:#1e2c3c}
+.pwr-col.off .pwr-ico{filter:grayscale(1)}
+.pwr-w{font-size:10px;color:var(--dim);white-space:nowrap}
+#status{font-size:12px;color:var(--dim);margin-top:6px}
+@media(max-width:860px){main{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+<h1>🚀 SC Fitting Sim</h1><small>Star Citizen 함선 피팅 시뮬레이터 (MVP · 데이터: scunpacked + FleetYards)</small>
+</header>
+<main>
+<div>
+  <div class="panel">
+    <h2>함선 선택</h2>
+    <input id="shipSearch" placeholder="함선 검색 (예: avenger, cutlass…)" style="margin-bottom:6px">
+    <select id="shipSel" size="12"></select>
+    <div id="status">DB 로딩 중…</div>
+  </div>
+  <div class="panel" style="margin-top:12px">
+    <h2>빌드 관리</h2>
+    <div class="row">
+      <button id="saveBtn">💾 저장</button>
+      <button id="loadBtn">📂 불러오기</button>
+      <button id="resetBtn">↺ 초기화</button>
+    </div>
+    <div id="saveStatus" style="font-size:12px;color:var(--dim);margin-top:6px"></div>
+  </div>
+</div>
+<div>
+  <div class="panel">
+    <h2>요약</h2>
+    <div class="stats" id="stats"></div>
+    <div class="sec-h">🛡️ 실드 실효 탱킹 (지연 기반)</div>
+    <div class="stats" id="shieldTank"></div>
+    <div id="powerBar" style="margin-top:8px"></div>
+  </div>
+  <div class="panel" style="margin-top:12px">
+    <h2>⚡ PWR 패널 — 전력 관리</h2>
+    <div style="font-size:11px;color:var(--dim);margin-bottom:6px">계통 핍 블럭 — 칸 클릭=<b>그 칸까지 배분</b>(아래부터), 같은 칸 재클릭=1핍 감소, 아이콘=계통 전체 ON·OFF<br><span style="color:var(--acc)">핍 = 게임 실제값</span> — scunpacked SPowerSegmentResourceUnit.units · 쿨러는 슬롯마다 개별 컬럼 · 미사일은 전력 계통 없음 · 값 없는 부품만 추정치</div>
+    <div id="pwrBlocks"></div>
+  </div>
+  <div class="panel" style="margin-top:12px">
+    <h2>무장 슬롯</h2>
+    <div id="weaponSlots"><p style="color:var(--dim)">함선을 선택하세요.</p></div>
+  </div>
+  <div class="panel" style="margin-top:12px">
+    <h2>시스템 컴포넌트</h2>
+    <div id="sysSlots"></div>
+  </div>
+</div>
+</main>
+<script src="app.js"></script>
+</body>
+</html>

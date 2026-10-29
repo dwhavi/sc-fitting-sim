@@ -1,0 +1,23 @@
+# ── 재생성 가능한 대용량 원본 (sync_data.py 로 복구) ──────────────
+# GitHub 에 올리지 않는다. 로컬 파이프라인 입력으로만 쓴다.
+data/raw/
+data/items.json
+data/labels.json
+data/ships.json
+data/manufacturers.json
+data/power_units.json
+
+# ── 중간 산출물 / 백업 ─────────────────────────────────────────
+public/db.json.bak
+public/db.json.prefresh
+public/db.json.pre*
+
+# ── 개발 잔여물 ────────────────────────────────────────────────
+public/test_*.html
+/tmp/
+
+# ── 도구 ───────────────────────────────────────────────────────
+.vercel/
+__pycache__/
+*.pyc
+.DS_Store
