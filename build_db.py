@@ -77,6 +77,11 @@ def fam_of(si):
     return m.group(1).strip() if m else ''
 
 
+def cls_of(si):
+    m = re.search(r'^Class:\s*([^\n]+)', si.get('Description') or '', re.M)
+    return m.group(1).strip() if m else ''
+
+
 def base(x):
     si = x.get('stdItem', {}) or {}
     return {
@@ -85,6 +90,7 @@ def base(x):
         'size': x.get('size'),
         'grade': GRADE.get(x.get('grade'), str(x.get('grade'))),
         'mfr': mfr(si),
+        'cls': cls_of(si),
     }
 
 
@@ -183,8 +189,7 @@ def main():
                 best = md
         am = si.get('Ammunition') or {}
         e = base(x)
-        e.update({
-            'family': fam_of(si),
+        e.update({'family': fam_of(si),
             'modes': modes,
             'dps': best['dps'] if best else 0,
             'alpha': best['alpha'] if best else 0,

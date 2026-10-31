@@ -1,5 +1,6 @@
 // SC Fitting Sim MVP — db.json + FleetYards live hardpoints
 let DB = null, FY = [];
+let curShip = '';
 let build = {}; // slotId -> component class
 // PWR state: Erkul-style — per-group pip blocks + weapon pool + ON/OFF
 // Erkul model (chunk-IMLNKAMY Te + C3CGNGPP ue/ce, icons _N in main):
@@ -15,7 +16,7 @@ let build = {}; // slotId -> component class
 // 그 역할을 대신하므로 스로틀·삼각형 UI 는 두지 않는다.
 let pwr = { segOff: {}, grpOff: {}, coolerSegs: {}, coolerOff: {} };
 const PWR_GROUPS = [
-  { id: 'weapon', icon: '🔫', label: '무기', kinds: ['weapon', 'turret', 'turretbase'] },
+  { id: 'weapon', icon: '🔫', label: '무기', kinds: ['weapon', 'turret', 'turretbase', 'mount'] },
   { id: 'engine', icon: '🚀', label: '추진', kinds: ['engine'] },
   { id: 'shield', icon: '🛡️', label: '실드', kinds: ['shield'] },
   { id: 'qdrive', icon: '🌀', label: '퀀텀', kinds: ['qd'] },
@@ -46,27 +47,155 @@ async function init() {
   const ships = DB.ships;
   renderShipList(ships);
   $('status').textContent = `DB 로드 완료 — 함선 ${DB.meta.ships} · 무기 ${DB.meta.weapons} · 실드 ${DB.meta.shields} · 파워 ${DB.meta.powerplants}`;
-  $('shipSearch').addEventListener('input', e => {
-    const q = e.target.value.toLowerCase();
-    const filtered = DB.ships.filter(s => (s.name + ' ' + s.class).toLowerCase().includes(q));
-    renderShipList(filtered);
-    // auto-select first match for quick keyboard flow
-    if (filtered.length > 0) {
-      $('shipSel').selectedIndex = 0;
-      selectShip(filtered[0].slug);
-    }
-  });
-  $('shipSel').addEventListener('change', e => selectShip(e.target.value));
+  $('shipBtn').addEventListener('click', openShipModal);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
   $('saveBtn').onclick = saveBuild; $('loadBtn').onclick = loadBuild; $('resetBtn').onclick = resetBuild;
 }
 
+const CAREER_ICON = {'Combat':'⚔️','Ground':'🛞','Industrial':'⛏️','Competition':'🏁','Transporter':'🚚','Exploration':'🔭','Support':'🛟','Multi-Role':'🔀','Personal Transport':'🚐','Starter':'🌱'};
+function shipSuper(career){ if(career==='Combat'||career==='Ground') return {t:'군사',i:'⚔️'}; if(career==='Industrial') return {t:'산업',i:'⛏️'}; if(career==='Competition') return {t:'경기',i:'🏁'}; return {t:'민간',i:'🛸'}; }
+function shipBadge(s){ const sp=shipSuper(s.career||''); const ic=CAREER_ICON[s.career]||sp.i; return `<span class="badge">${sp.i} ${sp.t}</span><span class="badge">${ic} ${s.career||'?'}</span><span class="badge">S${s.size}</span>`; }
+function closeModal(){ $('modalRoot').innerHTML=''; }
+function shipCurHTML(s){ const sp=shipSuper(s.career||''); const ic=CAREER_ICON[s.career]||sp.i; return `${ic} <b>${s.name}</b><br><span style="color:var(--dim)">${sp.t} · ${s.career||''}${s.role?' · '+s.role:''} · S${s.size} · 👥 ${s.crew??'—'} · 📦 ${s.cargo??'—'}</span>`; }
+let shipFGroup='ALL', shipFQ='';
+function openShipModal(){
+  shipFGroup='ALL'; shipFQ='';
+  $('modalRoot').innerHTML=`<div class="modal-ov" id="mov"><div class="modal">
+    <div class="modal-h"><b>🚀 함선 선택</b><span class="sub">${DB.ships.length}종 · 분류 뱃지</span><button class="modal-x" id="mx">✕</button></div>
+    <div class="modal-search"><input id="mShipQ" placeholder="함선 검색 (예: avenger, cutlass…)"></div>
+    <div class="chips" id="mShipChips"></div>
+    <div class="modal-list" id="mShipList"></div></div></div>`;
+  $('mx').onclick=closeModal;
+  $('mov').addEventListener('click',e=>{ if(e.target.id==='mov') closeModal(); });
+  $('mShipQ').addEventListener('input',e=>{ shipFQ=e.target.value.toLowerCase().trim(); renderShipModalList(); });
+  $('mShipQ').focus();
+  renderShipModalList();
+}
+function renderShipModalList(){
+  const groups=[['ALL','전체'],['military','⚔️ 군사'],['industrial','⛏️ 산업'],['racing','🏁 경기'],['civilian','🛸 민간']];
+  const gmap={military:'군사',industrial:'산업',racing:'경기',civilian:'민간'};
+  const cnt=g=>g==='ALL'?DB.ships.length:DB.ships.filter(s=>shipSuper(s.career||'').t===gmap[g]).length;
+  $('mShipChips').innerHTML=groups.map(([k,t])=>`<button class="chip${shipFGroup===k?' on':''}" data-g="${k}">${t} ${cnt(k)}</button>`).join('');
+  document.querySelectorAll('#mShipChips .chip').forEach(c=>c.onclick=()=>{ shipFGroup=c.dataset.g; renderShipModalList(); });
+  const list=DB.ships.filter(s=>{
+    if(shipFGroup!=='ALL'&&shipSuper(s.career||'').t!==gmap[shipFGroup]) return false;
+    if(shipFQ&&!(s.name+' '+s.class+' '+(s.role||'')).toLowerCase().includes(shipFQ)) return false;
+    return true;
+  });
+  $('mShipList').innerHTML=(list.length?list.map(s=>{ const sp=shipSuper(s.career||''); const ic=CAREER_ICON[s.career]||sp.i;
+    return `<button class="ship-card${s.slug===curShip?' sel':''}" data-slug="${s.slug}"><span class="ic">${ic}</span><span><span class="nm">${s.name}</span><div class="mt">${sp.t} · ${s.career||''}${s.role?' · '+s.role:''} · S${s.size} · 👥 ${s.crew??'—'} · 📦 ${s.cargo??'—'}</div></span></button>`; }).join(''):'<p style="color:var(--dim)">검색 결과 없음</p>');
+  document.querySelectorAll('#mShipList .ship-card').forEach(b=>b.onclick=()=>{ closeModal(); selectShip(b.dataset.slug); });
+}
+function emFmt(c){ return c.em!=null?` · EM ${fmt(c.em)}`:''; }
+function pipFmt(c){ if(c.pw!=null) return `${fmt(Math.ceil(c.pw))}핍`; if(c.power!=null) return `~${fmt(Math.ceil(c.power))}핍?`; return ''; }
+function compShort(kind,c){
+  if(!c) return '';
+  const cb=clsBadge(c.cls);
+  if(kind==='weapon'){ const fam=c.family?` · ${c.family}`:''; return `${cb}${c.name}${fam} · ${fmt(c.dps)} DPS · ${pipFmt(c)}${emFmt(c)}`; }
+  if(kind==='shield') return `${cb}${c.name} · HP ${fmt(c.hp)} · ${pipFmt(c)}${emFmt(c)}`;
+  if(kind==='power') return `${cb}${c.name} · ${fmt(c.pwGen!=null?c.pwGen:c.output)}p${emFmt(c)}`;
+  if(kind==='cooler') return `${cb}${c.name} · ${fmt(c.rate)} · ${pipFmt(c)}${emFmt(c)}`;
+  if(kind==='qd') return `${cb}${c.name} · ${(c.speed/1e6).toFixed(0)}M m/s · ${pipFmt(c)}${emFmt(c)}`;
+  if(kind==='missile') return `${cb}${c.name} · ${c.missiles}xS${c.msize}`;
+  if(kind==='radar') return `${cb}${c.name} · ${pipFmt(c)}${emFmt(c)}`;
+  if(kind==='mount'||kind==='turret'||kind==='turretbase'){ const lay=isGimbalCard(c)?('S'+c.size+' 짐벌'):((c.guns?' · '+c.guns:'')); return `${c.name}${lay}`; }
+  return (c.cls?clsBadge(c.cls):'')+c.name;
+}
+const CLS_META={'Military':['⚔️','군사'],'Civilian':['🛸','민간'],'Industrial':['⛏️','산업'],'Competition':['🏁','경기'],'Stealth':['👤','스텔스']};
+function clsBadge(cls){ const m=CLS_META[cls||'']; return m?`<span class="badge">${m[0]} ${m[1]}</span>`:'<span class="badge">— 미분류</span>'; }
+function openCompModal(slotId, kind, opts){
+  opts=opts||{};
+  const h=(FY||[]).find(x=>x.id===slotId);
+  const maxSize=opts.gunSize||(h?h.maxSize:0);
+  let list, cur;
+  if(opts.card){ const narrowed=h?compatCards(h,kind):null; list=narrowed||optionsFor(kind,maxSize); cur=(slotId in build)?build[slotId]:matchDefault(kind,h?h.component:null); }
+  else if(opts.gunSize){ list=optionsFor('weapon',opts.gunSize); cur=build[slotId]||stockGunFor(slotId)||''; }
+  else { list=optionsFor(kind,maxSize); cur=(slotId in build)?build[slotId]:(h&&h.component?matchDefault(kind,h.component):''); }
+  const title=opts.title||(h?shortName(h.name):slotId);
+  const defName=h&&h.component?h.component.name:'';
+  $('modalRoot').innerHTML=`<div class="modal-ov" id="mov"><div class="modal">
+    <div class="modal-h"><b>${title}</b><span class="sub">S${maxSize}${defName?' · 기본: '+defName:''} · ${list.length}종</span><button class="modal-x" id="mx">✕</button></div>
+    <div class="modal-search"><input id="mCompQ" placeholder="부품 검색 (이름·제조사·계열…)"><select id="mCompSort" class="modal-sort"></select></div>
+    <div class="chips" id="mCompChips"></div>
+    <div class="modal-count" id="mCompCount"></div>
+    <div class="modal-list" id="mCompList"></div></div></div>`;
+  $('mx').onclick=closeModal;
+  $('mov').addEventListener('click',e=>{ if(e.target.id==='mov') closeModal(); });
+  let compFCls='ALL', compFSz='ALL', compFGr='ALL', compSort='';
+  const SORTS={
+    '':['기본 순서',()=>0],
+    perf:['성능 높은 순',(a,b)=>{
+      const pv={weapon:c=>c.dps||0,shield:c=>c.hp||0,power:c=>(c.pwGen!=null?c.pwGen:c.output)||0,cooler:c=>c.rate||0,qd:c=>c.speed||0,missile:c=>(c.missiles||0)*10+(c.msize||0),radar:()=>0}[opts.gunSize?'weapon':kind]||(()=>0);
+      return (pv(b)-pv(a))||((a.name||'').localeCompare(b.name||''));
+    }],
+    pipAsc:['핍 적은 순',(a,b)=>(((a.pw==null?1e9:a.pw))-((b.pw==null?1e9:b.pw)))],
+    emAsc:['EM 낮은 순',(a,b)=>(((a.em==null?1e9:a.em))-((b.em==null?1e9:b.em)))],
+    name:['이름 순',(a,b)=>(a.name||'').localeCompare(b.name||'')]
+  };
+  $('mCompSort').innerHTML=Object.entries(SORTS).map(([k,[t]])=>`<option value="${k}">${t}</option>`).join('');
+  $('mCompSort').addEventListener('change',e=>{ compSort=e.target.value; redraw(); });
+  const hasCls=list.some(c=>c.cls);
+  const sizes=[...new Set(list.map(c=>c.size).filter(v=>v!=null))].sort((a,b)=>a-b);
+  const grades=[...new Set(list.map(c=>String(c.grade??'')).filter(v=>v))].sort();
+  const drawChips=()=>{
+    let html='';
+    if(hasCls){
+      const keys=['ALL','Military','Civilian','Industrial','Competition','Stealth'];
+      const lbl={ALL:'전체',Military:'⚔️ 군사',Civilian:'🛸 민간',Industrial:'⛏️ 산업',Competition:'🏁 경기',Stealth:'👤 스텔스'};
+      html+=`<span class="grp-lbl">분류</span>`+keys.map(k=>{
+        const n=k==='ALL'?list.length:list.filter(c=>(c.cls||'')===k).length;
+        return n?`<button class="chip${compFCls===k?' on':''}" data-g="cls" data-c="${k}">${lbl[k]} ${n}</button>`:'';
+      }).join('');
+    }
+    if(sizes.length>1){
+      html+=`<span class="grp-lbl">사이즈</span><button class="chip sz${compFSz==='ALL'?' on':''}" data-g="sz" data-c="ALL">전체</button>`+sizes.map(s=>`<button class="chip sz${String(compFSz)===String(s)?' on':''}" data-g="sz" data-c="${s}">S${s}</button>`).join('');
+    }
+    if(grades.length>1){
+      html+=`<span class="grp-lbl">등급</span><button class="chip gr${compFGr==='ALL'?' on':''}" data-g="gr" data-c="ALL">전체</button>`+grades.map(g=>`<button class="chip gr${compFGr===g?' on':''}" data-g="gr" data-c="${g}">${g}</button>`).join('');
+    }
+    $('mCompChips').innerHTML=html;
+    document.querySelectorAll('#mCompChips .chip').forEach(b=>b.onclick=()=>{ const g=b.dataset.g; if(g==='cls')compFCls=b.dataset.c; else if(g==='sz')compFSz=b.dataset.c; else compFGr=b.dataset.c; drawChips(); redraw(); });
+  };
+  drawChips();
+  const redraw=()=>draw(($('mCompQ').value||'').toLowerCase().trim());
+  const specMini=(kk,c)=>{
+    if(kk==='weapon') return `<span class="spec-mini">${fmt(c.dps)} DPS</span><span class="spec-mini">${pipFmt(c)||'—'}</span>${c.em!=null?`<span class="spec-mini">EM ${fmt(c.em)}</span>`:''}`;
+    if(kk==='shield') return `<span class="spec-mini">HP ${fmt(c.hp)}</span><span class="spec-mini">${pipFmt(c)||'—'}</span>${c.em!=null?`<span class="spec-mini">EM ${fmt(c.em)}</span>`:''}`;
+    if(kk==='power') return `<span class="spec-mini">${fmt(c.pwGen!=null?c.pwGen:c.output)}p</span>${c.em!=null?`<span class="spec-mini">EM ${fmt(c.em)}</span>`:''}`;
+    if(kk==='cooler') return `<span class="spec-mini">${fmt(c.rate)}</span><span class="spec-mini">${pipFmt(c)||'—'}</span>${c.em!=null?`<span class="spec-mini">EM ${fmt(c.em)}</span>`:''}`;
+    if(kk==='qd') return `<span class="spec-mini">${(c.speed/1e6).toFixed(0)}M m/s</span><span class="spec-mini">${pipFmt(c)||'—'}</span>${c.em!=null?`<span class="spec-mini">EM ${fmt(c.em)}</span>`:''}`;
+    if(kk==='missile') return `<span class="spec-mini">${c.missiles}xS${c.msize}</span>`;
+    return '';
+  };
+  const draw=q=>{
+    let flt=list.filter(c=>(compFCls==='ALL'||(c.cls||'')===compFCls)&&(compFSz==='ALL'||String(c.size)===String(compFSz))&&(compFGr==='ALL'||String(c.grade??'')===String(compFGr))&&((labelFor(opts.gunSize?'weapon':kind,c)+' '+(c.mfr||'')).toLowerCase().includes(q)));
+    if(compSort&&SORTS[compSort]) flt=[...flt].sort(SORTS[compSort][1]);
+    const rows=[{empty:true}].concat(flt);
+    $('mCompCount').textContent=`${flt.length} / ${list.length}종 표시중`;
+    $('mCompList').innerHTML=rows.map(r=>{
+      if(r.empty) return `<button class="comp-row${!cur?' sel':''}" data-cls=""><span><span class="nm">— 미장착</span><div class="mt">슬롯 비우기</div></span></button>`;
+      const c=r, cc=c.class, kk=opts.gunSize?'weapon':kind;
+      return `<button class="comp-row${cc===cur?' sel':''}" data-cls="${cc}"><span><span class="nm">${compShort(kk,c)}</span><div class="mt">${specMini(kk,c)}${labelFor(kk,c)}${c.mfr?' · '+c.mfr:''}</div></span></button>`;
+    }).join('');
+    document.querySelectorAll('#mCompList .comp-row').forEach(b=>b.onclick=()=>{
+      const v=b.dataset.cls||null;
+      build[slotId]=v;
+      if(opts.card) Object.keys(build).filter(k=>k.startsWith(slotId+':')).forEach(k=>delete build[k]);
+      closeModal(); renderSlots(); updateStats();
+    });
+  };
+  $('mCompQ').addEventListener('input',e=>draw(e.target.value.toLowerCase().trim()));
+  $('mCompQ').focus();
+  draw('');
+}
 function renderShipList(ships) {
-  $('shipSel').innerHTML = ships.map(s => {
+  $('shipSel').innerHTML = `<option value="">함선을 선택해주세요</option>` + ships.map(s => {
     return `<option value="${s.slug}">${s.name}</option>`;
   }).join('');
 }
 
 async function selectShip(slug) {
+  curShip = slug;
   build = {};
   pwr.segOff = {}; pwr.grpOff = {}; pwr.coolerSegs = {}; pwr.coolerOff = {}; // 함선 변경 시 핍 배분 리셋
   
@@ -87,6 +216,9 @@ async function selectShip(slug) {
   FY = shipSlots.map(s => s.port);
   
   $('status').textContent = `${slug} — 슬롯 ${FY.length}개 (로컬 스냅샷)`;
+  try { $('shipSel').value = slug; } catch(_){}
+  const _s = DB.ships.find(x => x.slug === slug);
+  if (_s) $('shipCur').innerHTML = shipCurHTML(_s);
   renderSlots();
   updateStats();
 }
@@ -99,7 +231,7 @@ function slotKind(h) {
   // 터렛 마운트 베이스는 별도 섹션
   if (cat === 'turret' && grp === 'auxiliary') return 'turretbase';
   if (cat === 'turret' && (grp === 'weapon')) return 'turret';
-  if (cat.includes('weapon_mount')) return 'weapon';   // hardpoint_gun_* (S(n)→S(n) 무기 직접, 3.23+ 짐벌 페널티 없음)
+  if (cat.includes('weapon_mount')) return 'mount';    // 마운트·터렛 카드 (교체 가능, 무기는 하위 선택)
   if (cat === 'weapons') return 'weapon';                    // VariPuck 등 실제 장착 무기
   if (cat.includes('missile') && nm.startsWith('hardpoint_')) return 'missile'; // 하드포인트만 (장착된 랙 중복 제외)
   if (cat.includes('shieldgenerator')) return 'shield';
@@ -117,6 +249,7 @@ function optionsFor(kind, size) {
   const perf = {
     weapon: w => w.dps || 0,
     turret: w => 0, turretbase: w => 0,
+    mount: w => (w.guns ? w.guns.split('+').length : 0),
     shield: w => w.hp || 0,
     power: w => w.output || 0,
     cooler: w => w.rate || 0,
@@ -130,6 +263,7 @@ function optionsFor(kind, size) {
              ...DB.weapons.filter(w => (w.size || 0) < size).sort((a, b) => (b.size - a.size) || byPerf(a, b))],
     turret: (DB.turrets || []).filter(w => w.size === size),
     turretbase: (DB.turrets || []).filter(w => w.size === size),
+    mount: [...(DB.turrets || []).filter(w => w.size === size)].sort(byPerf),
     shield: DB.shields.filter(w => w.size === size).sort(byPerf),
     power: DB.powerplants.filter(w => w.size === size).sort(byPerf),
     cooler: DB.coolers.filter(w => w.size === size).sort(byPerf),
@@ -147,8 +281,10 @@ function labelFor(kind, c) {
     const dt = (c.dmgtype && c.dmgtype.length) ? ` [${c.dmgtype.join('+')}]` : '';
     return `${c.name} [S${c.size}·${c.grade}]${fam} — α ${fmt(c.alpha)} / ${fmt(c.dps)} DPS${dt}`;
   }
-  if (kind === 'turret' || kind === 'turretbase')
-    return `${c.name} [S${c.size}] ${c.mfr || ''} — ${c.guns || ''}`;
+  if (kind === 'mount' || kind === 'turret' || kind === 'turretbase') {
+    const layout = isGimbalCard(c) ? ('S' + c.size + ' 짐벌 (3.23+ 동일 사이즈 · 하위 호환)') : (c.guns ? '무기 ' + c.guns : '무기 없음');
+    return `${c.name} [S${c.size}] ${c.mfr || ''} — ${layout}`;
+  }
   if (kind === 'shield') return `${c.name} [S${c.size}·${c.grade}] ${c.mfr} — HP ${fmt(c.hp)} / ${fmt(c.regen)}/s`;
   if (kind === 'power') return `${c.name} [S${c.size}·${c.grade}] ${c.mfr} — ${fmt(c.output)} 출력`;
   if (kind === 'cooler') return `${c.name} [S${c.size}·${c.grade}] ${c.mfr} — ${fmt(c.rate)} 냉각`;
@@ -173,22 +309,84 @@ function engSummary(slots) {
   return Object.entries(by).map(([k, v]) => `${k} ×${v}`).join(' · ');
 }
 
+function subWeaponHTML(subId, gunSize, idx) {
+  // turret/mount guns[i] -> same-size weapon button + modal
+  const opts = optionsFor('weapon', gunSize);
+  const cur = build[subId] || stockGunFor(subId) || '';
+  const c = cur ? findComp('weapon', cur) : null;
+  const disp = c ? compShort('weapon', c) : `<span class="ph">— 미장착 (${opts.length}) — 선택</span>`;
+  if (!opts.length)
+    return `<div class="slot" style="margin-left:14px" title="${subId} (S${gunSize} 무기 DB 없음)"><div class="meta"><span class="sz">S${gunSize}</span><b>↳ 무기 ${idx + 1}</b></div>`
+      + `<div style="flex:1;font-size:11px;color:var(--dim)">DB 미지원</div></div>`;
+  return `<div class="slot" style="margin-left:14px" title="${subId} · S${gunSize} 무기 선택"><div class="meta"><span class="sz">S${gunSize}</span><b>↳ 무기 ${idx + 1}</b></div>`
+    + `<button class="comp-btn" data-cslot="${subId}" data-gsize="${gunSize}">${disp}</button></div>`;
+}
+function stockGunFor(subId) {
+  // 고정 껍데기 하위 무기 순정값: 'portId:w{i}' -> childGuns[i].class
+  const m = String(subId).match(/^(.*):w(\d+)$/);
+  if (!m) return '';
+  const port = (FY || []).find(x => x.id === m[1]);
+  const g = port && port.childGuns && port.childGuns[parseInt(m[2], 10)];
+  return (g && g.class) || '';
+}
+function cardSlotHTML(h, cardKind) {
+  // layer 1: mount/turret card (replaceable). layer 2: guns[i] weapon dropdowns.
+  // 호환 카드가 식별되면 선택지를 그 범위로 좁힌다 (순정 먼저).
+  const narrowed = compatCards(h, cardKind);
+  const cards = narrowed || optionsFor(cardKind, h.maxSize);
+  const narrowedNote = narrowed ? ` · 호환 ${narrowed.length}종` : '';
+  const comp = h.component || {};
+  const defName = comp.name || '';
+  const title = `${h.name}${defName ? ' · 기본: ' + defName : ''}`;
+  const raw = (h.id in build) ? build[h.id] : matchDefault(cardKind, comp);
+  const cur = raw || '';
+  let selObj = (cards.find(c => c.class === cur)) || ((DB.turrets || []).find(c => c.class === cur)) || null;
+  if (!selObj) selObj = findTurret(comp.scKey, comp.name);
+  if ((h.id in build) && !build[h.id]) selObj = null; // user explicitly cleared
+  let subs = '';
+  if (selObj && (selObj.guns || isGimbalCard(selObj))) {
+    subs = cardGuns(selObj).map((gs, i) => subWeaponHTML(h.id + ':w' + i, gs, i)).join('');
+  } else if (!selObj && h.childGuns && h.childGuns.length) {
+    // 고정 껍데기(FY 카드 미매칭): 체인의 순정 무기 행을 직접 표시.
+    subs = h.childGuns.filter(g => g.max > 0).map((g, i) =>
+      subWeaponHTML(h.id + ':w' + i, g.max, i)).join('');
+  }
+  const selCard = cur ? ((cards.find(c => c.class === cur)) || ((DB.turrets || []).find(c => c.class === cur)) || null) : null;
+  const cardSel = cards.length
+    ? `<button class="comp-btn" data-cslot="${h.id}" data-card="${cardKind}">${selCard ? compShort(cardKind, selCard) : `— 미장착 (${cards.length}) — 선택`}</button>`
+    : `<div style="flex:1;font-size:11px;color:var(--dim)">고정${narrowedNote} · DB 미지원</div>`;
+  const compatTag = narrowedNote ? `<div style="font-size:10px;color:var(--acc)">호환 ${cards.length}종 표시 중</div>` : '';
+  return `<div style="margin-bottom:8px"><div class="slot" title="${title}${narrowedNote}"><div class="meta"><span class="sz">S${h.maxSize}</span><b>${shortName(h.name)}</b>${defName ? '<br>기본: ' + defName : ''}</div>`
+    + cardSel + `</div>${compatTag}${subs}</div>`;
+}
 function renderSlots() {
   const wslots = FY.filter(h => slotKind(h) === 'weapon');
+  const mounts = FY.filter(h => slotKind(h) === 'mount');
+  const tslots = FY.filter(h => slotKind(h) === 'turret');
+  const tbase = FY.filter(h => slotKind(h) === 'turretbase');
   const mslots = FY.filter(h => slotKind(h) === 'missile');
-  const tslots = FY.filter(h => slotKind(h) === 'turret' || slotKind(h) === 'turretbase');
   const sys = FY.filter(h => ['shield', 'power', 'cooler', 'qd', 'radar', 'life'].includes(slotKind(h)));
   $('weaponSlots').innerHTML =
-    (wslots.length ? '<div class="sec-h">주포 (고정·짐벌 동일 사이즈, 3.23+)</div><div class="slots-grid">' + wslots.map(h => slotHTML(h, 'weapon')).join('') + '</div>' : '')
-    + (tslots.length ? '<div class="sec-h">터렛</div><div class="slots-grid">' + tslots.map(h => slotHTML(h, slotKind(h))).join('') + '</div>' : '')
+    (mounts.length ? '<div class="sec-h">마운트·짐벌 (카드 교체 → 무기 하위 선택)</div>' + mounts.map(h => cardSlotHTML(h, 'mount')).join('') : '')
+    + (wslots.length ? '<div class="sec-h">주포 직결 (3.23+ 동일 사이즈)</div><div class="slots-grid">' + wslots.map(h => slotHTML(h, 'weapon')).join('') + '</div>' : '')
+    + (tslots.length ? '<div class="sec-h">터렛 (카드 교체 → 무기 하위 선택)</div>' + tslots.map(h => cardSlotHTML(h, 'turret')).join('') : '')
+    + (tbase.length ? '<div class="sec-h">터렛 베이스·특수</div><div class="slots-grid">' + tbase.map(h => slotHTML(h, 'turretbase')).join('') + '</div>' : '')
     + (mslots.length ? '<div class="sec-h">미사일 랙</div><div class="slots-grid">' + mslots.map(h => slotHTML(h, 'missile')).join('') + '</div>' : '')
     || '<p>무장 슬롯 없음</p>';
   const engSlots = FY.filter(h => slotKind(h) === 'engine');
   $('sysSlots').innerHTML = `<div class="slots-grid">${sys.map(h => slotHTML(h, slotKind(h))).join('')}</div>`
     + (engSlots.length ? `<div class="sec-h">추진부 (고정 슬롯 · 게임 덤프에 전력치 없음)</div><div style="font-size:11px;color:var(--dim)">${engSummary(engSlots)}</div>` : '')
     || '<p>시스템 슬롯 없음</p>';
-  document.querySelectorAll('select.slot-sel').forEach(sel => {
-    sel.addEventListener('change', e => { build[e.target.dataset.slot] = e.target.value || null; updateStats(); });
+  document.querySelectorAll('button.comp-btn[data-cslot]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const slot = btn.dataset.cslot;
+      if (btn.dataset.card) openCompModal(slot, btn.dataset.card, { card: true, title: shortName((FY.find(x => x.id === slot) || {}).name || slot) });
+      else if (btn.dataset.gsize) openCompModal(slot, 'weapon', { gunSize: parseInt(btn.dataset.gsize, 10), title: '↳ 무기' });
+      else {
+        const h = (FY || []).find(x => x.id === slot);
+        openCompModal(slot, slotKind(h), { title: shortName(h.name) });
+      }
+    });
   });
 }
 
@@ -201,23 +399,88 @@ function slotHTML(h, kind) {
     return `<div class="slot" title="${title} (고정 슬롯 — 교체 불가)"><div class="meta"><span class="sz">S${h.maxSize}</span><b>${shortName(h.name)}</b>${defName ? '<br>기본: ' + defName : ''}</div>`
       + `<div style="flex:1;font-size:11px;color:var(--dim)">고정 · DB 미지원</div></div>`;
   }
-  const cur = build[h.id] || (h.component ? matchDefault(kind, h.component) : '');
+  const rawCur = (h.id in build) ? build[h.id] : (h.component ? matchDefault(kind, h.component) : '');
+  const selObj = rawCur ? (opts.find(c => c.class === rawCur) || null) : null;
   return `<div class="slot" title="${title}"><div class="meta"><span class="sz">S${h.maxSize}</span><b>${shortName(h.name)}</b>${defName ? '<br>기본: ' + defName : ''}</div>
-  <select class="slot-sel" data-slot="${h.id}" data-kind="${kind}">
-  <option value="">— 미장착 (${opts.length}) —</option>
-  ${opts.map(c => `<option value="${c.class}" ${c.class === cur ? 'selected' : ''}>${labelFor(kind, c)}</option>`).join('')}
-  </select></div>`;
+  <button class="comp-btn" data-cslot="${h.id}">${selObj ? compShort(kind, selObj) : `— 미장착 (${opts.length}) — 선택`}</button></div>`;
 }
 
+function normCls(s) {
+  // ship slots carry lowercase scKeys with occasional _gs_ infix
+  // (aegs_hammerhead_gs_scitem_...) vs DB class (AEGS_Hammerhead_SCItem_...)
+  return (s || '').toLowerCase().replace(/_gs_/g, '_');
+}
+function findTurret(scKey, name) {
+  const pool = DB.turrets || [];
+  if (scKey) {
+    let hit = pool.find(c => (c.class || '').toLowerCase() === String(scKey).toLowerCase());
+    if (hit) return hit;
+    const n = normCls(scKey);
+    hit = pool.find(c => normCls(c.class) === n);
+    if (hit) return hit;
+  }
+  if (name) {
+    const hit = pool.find(c => (c.name || '') === name);
+    if (hit) return hit;
+  }
+  return null;
+}
+function turretCompat(h) {
+  // 이 포트에 달리는 카드만: 순정 turretClass + 호환 childGuns[].class.
+  // 게임 파일 체인에서 추출 (enrich_turret_slots.py). 정보 없으면 null = 구동작.
+  const tc = h.turretClass || null;
+  const kids = h.childGuns || [];
+  if (!tc && !kids.length) return null;
+  const set = new Set();
+  if (tc) set.add(String(tc).toLowerCase());
+  for (const k of kids) if (k.class) set.add(String(k.class).toLowerCase());
+  return set;
+}
+function compatCards(h, cardKind) {
+  // 포트 호환 카드만 좁힌다. 없으면 null (호출자가 구동작 유지).
+  const set = turretCompat(h);
+  if (!set) return null;
+  const pool = DB.turrets || [];
+  const sameSize = pool.filter(c => c.size === h.maxSize);
+  const hit = sameSize.filter(c => set.has(String(c.class).toLowerCase()));
+  if (!hit.length) return null;
+  return hit.sort((a, b) => {
+    const aStock = a.class && h.turretClass &&
+      String(a.class).toLowerCase() === String(h.turretClass).toLowerCase() ? 0 : 1;
+    const bStock = b.class && h.turretClass &&
+      String(b.class).toLowerCase() === String(h.turretClass).toLowerCase() ? 0 : 1;
+    return (aStock - bStock) || ((a.name || '').localeCompare(b.name || ''));
+  });
+}
+function parseGuns(g) {
+  // 'S4 + S4 + S4 + S4' -> [4,4,4,4]
+  return (String(g || '').match(/S(\d+)/g) || []).map(x => parseInt(x.slice(1), 10));
+}
+function isGimbalCard(c) {
+  // VariPuck 계열 + Gilroy 짐벌: 3.23+ 동일 사이즈 규칙 적용 대상
+  const cls = c.class || '', nm = c.name || '';
+  return cls.startsWith('Mount_Gimbal_') || /varipuck|gimbal/i.test(nm);
+}
+function cardGuns(card) {
+  // 짐벌: S(n) 카드 → S(n) 무기, 하위 호환 (optionsFor가 동일 사이즈 우선·하위 사이즈 뒤로 정렬)
+  // 고정 마운트·터렛: DB guns 그대로 (멀티건 레이아웃 유지)
+  if (isGimbalCard(card)) return [card.size];
+  return parseGuns(card.guns);
+}
 function matchDefault(kind, comp) {
   // try to preselect stock component if in DB
+  comp = comp || {};
+  if (kind === 'mount' || kind === 'turret' || kind === 'turretbase') {
+    const hit = findTurret(comp.scKey, comp.name);
+    return hit ? hit.class : '';
+  }
   const pool = { weapon: DB.weapons, shield: DB.shields, power: DB.powerplants, cooler: DB.coolers, qd: DB.qds, radar: DB.radars || [] }[kind] || [];
   const hit = pool.find(c => c.class === comp.scKey || c.name === comp.name);
   return hit ? hit.class : '';
 }
 
 function findComp(kind, cls) {
-  const pool = { weapon: DB.weapons, turret: DB.turrets, turretbase: DB.turrets, shield: DB.shields, power: DB.powerplants, cooler: DB.coolers, qd: DB.qds, missile: DB.racks, radar: DB.radars || [] }[kind] || [];
+  const pool = { weapon: DB.weapons, turret: DB.turrets, turretbase: DB.turrets, mount: DB.turrets, shield: DB.shields, power: DB.powerplants, cooler: DB.coolers, qd: DB.qds, missile: DB.racks, radar: DB.radars || [] }[kind] || [];
   return pool.find(c => c.class === cls);
 }
 
@@ -234,27 +497,54 @@ function fitStats() {
   for (const g of PWR_GROUPS) perGroup[g.id] = { power: 0, heat: 0, units: 0, maxUnits: 0 };
   const items = [];
   const coolerList = [];
-  document.querySelectorAll('select.slot-sel').forEach(sel => {
-    if (!sel.value) return;
-    const c = findComp(sel.dataset.kind, sel.value);
+  const effVal = (h, kind) => ((h.id in build) ? build[h.id] : (h.component ? matchDefault(kind, h.component) : ''));
+  const pushWeaponSub = (slotId, cls) => {
+    if (!cls) return;
+    const c = findComp('weapon', cls);
     if (!c) return;
-    const kind = sel.dataset.kind;
+    const grp = kindToGroup('weapon');
+    if (pwr.grpOff[grp]) return;
+    const real = c.pw != null;
+    const pwRaw = real ? c.pw : (c.power || 0);
+    const maxU = Math.max(1, Math.ceil(pwRaw));
+    items.push({ slotId, c, kind: 'weapon', grp, maxU, real, pwRaw });
+  };
+  for (const h of (FY || [])) {
+    const kind = slotKind(h);
+    if (!kind || kind === 'engine') continue; // 추진부 고정 슬롯은 전력 집계 제외
+    if (kind === 'mount' || kind === 'turret') {
+      // 카드 구조물 자체는 전력 없음 — 하위 무기만 집계
+      const cardCls = effVal(h, kind);
+      let selObj = cardCls ? (((DB.turrets || []).find(c => c.class === cardCls)) || null) : findTurret((h.component || {}).scKey, (h.component || {}).name);
+      if (cardCls && !selObj) selObj = null;
+      if ((h.id in build) && !build[h.id]) selObj = null;
+      if (selObj && (selObj.guns || isGimbalCard(selObj))) {
+        cardGuns(selObj).forEach((gs, i) => pushWeaponSub(h.id + ':w' + i, (h.id + ':w' + i in build) ? build[h.id + ':w' + i] : stockGunFor(h.id + ':w' + i)));
+      } else if (!selObj && h.childGuns && h.childGuns.length) {
+        h.childGuns.filter(g => g.max > 0).forEach((g, i) => pushWeaponSub(h.id + ':w' + i, (h.id + ':w' + i in build) ? build[h.id + ':w' + i] : stockGunFor(h.id + ':w' + i)));
+      }
+      continue;
+    }
+    const val = effVal(h, kind);
+    if (!val) continue;
+    const c = findComp(kind, val);
+    if (!c) continue;
     if (kind === 'power') {
       // 실제 발전핍(pwGen=SPowerSegmentResourceUnit.units). 없으면 구형 추정치.
       s.output += (c.pwGen != null ? c.pwGen : (c.output || 0));
       s.ppPips = (s.ppPips || 0) + (c.pwGen != null ? c.pwGen : (c.output || 0));
-      return;
+      continue;
     }
-    if (NO_POWER_KINDS.has(kind)) return; // 미사일 등: 전력 배분 대상 아님 (핍·열·추정 모두 제외)
+    if (NO_POWER_KINDS.has(kind)) continue; // 미사일 등: 전력 배분 대상 아님 (핍·열·추정 모두 제외)
     const grp = kindToGroup(kind);
-    if (pwr.grpOff[grp]) return; // 그룹 전체 OFF (Erkul powerToggle)
+    if (pwr.grpOff[grp]) continue; // 그룹 전체 OFF (Erkul powerToggle)
     // 핍 = 실제 게임값 pw(SPowerSegmentResourceUnit.units).
     // 없을 때만 PowerDraw 기반 추정치로 폴백하고 real=false 로 표시한다.
     const real = c.pw != null;
     const pwRaw = real ? c.pw : (c.power || 0);
     const maxU = Math.max(1, Math.ceil(pwRaw));
-    items.push({ sel, c, kind, grp, maxU, real, pwRaw });
-  });
+    items.push({ slotId: h.id, c, kind, grp, maxU, real, pwRaw });
+  }
   // 그룹별 총 핍 → 목표 배분량.
   //  segOff = 그룹에서 꺼진 핍 수 이므로 목표 = 총량 - off.
   //  아이템별 비례 반올림으로 나누면 총량이 목표와 어긋난다
@@ -268,7 +558,7 @@ function fitStats() {
   }
   for (const it of items) {
     let units = it.maxU;
-    const slotId = it.sel.dataset.slot;
+    const slotId = it.slotId;
     if (it.kind === 'cooler') {
       // 쿨러는 그룹이 아니라 슬롯 단위로 관리 (Erkul: 쿨러마다 독립 컬럼)
       if (pwr.coolerOff[slotId]) units = 0;
@@ -316,7 +606,7 @@ function fitStats() {
       if (it.c.damagedDelay != null) s.damagedDelay = Math.max(s.damagedDelay, it.c.damagedDelay);
     }
     if (it.kind === 'qd') s.qdspeed = Math.max(s.qdspeed, it.c.speed || 0);
-  }
+  } // end for (FY slots)
   s.avail = s.output;   // 스로틀 없음: 발전핍을 100% 사용
   s.short = Math.max(0, s.power - s.avail);
   s.typeDps = typeDps; s.guns = guns; s.perGroup = perGroup; s.perCooler = coolerList;
@@ -341,7 +631,8 @@ function renderPwrBlocks() {
   const f = fitStats();
   // Erkul 컬럼 순서: weapon → engine → shield → qdrive → radar → lifeSupport,
   // 그리고 쿨러는 집계하지 않고 **슬롯마다 개별 컬럼**으로 마지막에 붙인다.
-  const famCols = PWR_GROUPS.filter(g => g.id !== 'coolers').map(g => {
+  // 빈 계통(maxU=0)은 컬럼 자체를 숨긴다 — 아이콘 자리 차지 방지.
+  const famCols = PWR_GROUPS.filter(g => g.id !== 'coolers').filter(g => (f.perGroup[g.id].maxUnits || 0) > 0).map(g => {
     const pg = f.perGroup[g.id];
     const maxU = pg.maxUnits, units = pg.units;
     const off = !!pwr.grpOff[g.id];
@@ -482,17 +773,18 @@ function updateStats() {
 }
 
 function saveBuild() {
-  const ship = $('shipSel').value;
+  const ship = curShip || $('shipSel').value;
   const data = { ship, build, pwr: { segOff: pwr.segOff, grpOff: pwr.grpOff, coolerSegs: pwr.coolerSegs, coolerOff: pwr.coolerOff }, savedAt: new Date().toISOString() };
   localStorage.setItem('scfit:' + ship, JSON.stringify(data));
   $('saveStatus').textContent = `저장됨 — ${ship} (${Object.keys(build).filter(k => build[k]).length}개 슬롯)`;
 }
 function loadBuild() {
-  const ship = $('shipSel').value;
+  const ship = curShip || $('shipSel').value;
   const raw = localStorage.getItem('scfit:' + ship);
   if (!raw) { $('saveStatus').textContent = '저장된 빌드 없음'; return; }
   const saved = JSON.parse(raw);
   build = saved.build || {};
+  renderSlots(); // 카드 확정 후 하위 무기 슬롯 재생성 (reapply에서 값 일괄 반영)
   if (saved.pwr) {
     // 구버전 저장본의 throttle/triW/S/E 키는 무시된다 (해당 UI 제거됨).
     Object.assign(pwr, saved.pwr);
@@ -500,10 +792,6 @@ function loadBuild() {
     pwr.coolerSegs = pwr.coolerSegs || {}; pwr.coolerOff = pwr.coolerOff || {};
   }
   renderSlots();
-  // reapply
-  document.querySelectorAll('select.slot-sel').forEach(sel => {
-    if (build[sel.dataset.slot]) sel.value = build[sel.dataset.slot];
-  });
   updateStats();
   $('saveStatus').textContent = '불러옴 — ' + ship;
 }

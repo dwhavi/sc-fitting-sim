@@ -51,6 +51,37 @@ button.on:hover{background:#134d2e}
 .pwr-w{font-size:10px;color:var(--dim);white-space:nowrap}
 #status{font-size:12px;color:var(--dim);margin-top:6px}
 @media(max-width:860px){main{grid-template-columns:1fr}}
+.ship-btn{width:100%;font-size:14px;padding:9px}
+.ship-cur{margin-top:8px;font-size:12px;color:var(--txt);background:#0e141c;border:1px solid var(--line);border-radius:8px;padding:8px 10px;line-height:1.5}
+.modal-ov{position:fixed;inset:0;background:rgba(4,8,13,.72);backdrop-filter:blur(3px);z-index:50;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{width:720px;max-width:96vw;max-height:84vh;display:flex;flex-direction:column;background:var(--panel);border:1px solid #2e4258;border-radius:14px;box-shadow:0 18px 60px rgba(0,0,0,.6)}
+.modal-h{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.modal-h b{font-size:14px}.modal-h .sub{font-size:11px;color:var(--dim)}
+.modal-x{margin-left:auto;background:#0e141c;border:1px solid var(--line);color:var(--dim);border-radius:6px;padding:4px 9px;font-size:13px}
+.modal-x:hover{color:var(--txt);background:#1a2534}
+.modal-search{padding:10px 14px 0;display:flex;gap:6px}.modal-search input{flex:1;min-width:0}
+.modal-sort{background:#0e141c;color:var(--txt);border:1px solid var(--line);border-radius:6px;padding:6px 7px;font-size:12px;flex:0 0 auto;max-width:150px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;padding:10px 14px 0;align-items:center}
+.chips .grp-lbl{font-size:11px;color:var(--dim);margin-right:2px}
+.chip{background:#0e141c;border:1px solid var(--line);color:var(--dim);border-radius:20px;padding:5px 11px;font-size:12px;cursor:pointer}
+.chip.on{background:#12314a;color:var(--acc);border-color:#1e4a6e}
+.chip.sz.on{background:#3a2b12;color:var(--warn);border-color:#6e5a1e}
+.chip.gr.on{background:#0e3d24;color:var(--ok);border-color:#1e6e42}
+.modal-list{overflow-y:auto;padding:10px 14px 14px;display:flex;flex-direction:column;gap:6px}
+.modal-count{padding:6px 14px 0;font-size:11px;color:var(--dim)}
+.spec-mini{display:inline-block;background:#1a2534;border:1px solid var(--line);border-radius:4px;padding:0 5px;font-size:10px;color:var(--txt);margin-right:4px}
+.ship-card{display:flex;gap:10px;align-items:center;text-align:left;width:100%;background:#0e141c;border:1px solid var(--line);border-radius:10px;padding:9px 11px;cursor:pointer;color:var(--txt)}
+.ship-card:hover{border-color:var(--acc)}.ship-card.sel{border-color:var(--acc);background:#12314a}
+.ship-card .ic{font-size:22px;flex:0 0 auto}
+.ship-card .nm{font-size:13px;font-weight:700}
+.ship-card .mt{font-size:11px;color:var(--dim);margin-top:2px}
+.badge{display:inline-block;background:#1a2534;border:1px solid var(--line);border-radius:4px;padding:0 5px;font-size:10px;color:var(--acc);margin-right:4px}
+.comp-row{display:flex;gap:10px;align-items:center;text-align:left;width:100%;background:#0e141c;border:1px solid var(--line);border-radius:10px;padding:8px 11px;cursor:pointer;color:var(--txt)}
+.comp-row:hover{border-color:var(--acc)}.comp-row.sel{border-color:var(--acc);background:#12314a}
+.comp-row .nm{font-size:12px;font-weight:600;line-height:1.4}.comp-row .mt{font-size:11px;color:var(--dim);margin-top:2px}
+.comp-btn{flex:1;min-width:0;text-align:left;background:#0e141c;border:1px solid var(--line);color:var(--txt);border-radius:6px;padding:6px 8px;font-size:12px;cursor:pointer;line-height:1.4}
+.comp-btn:hover{border-color:var(--acc)}.comp-btn .ph{color:var(--dim)}
+@media(max-width:860px){.modal{max-height:90vh}}
 </style>
 </head>
 <body>
@@ -61,8 +92,9 @@ button.on:hover{background:#134d2e}
 <div>
   <div class="panel">
     <h2>함선 선택</h2>
-    <input id="shipSearch" placeholder="함선 검색 (예: avenger, cutlass…)" style="margin-bottom:6px">
-    <select id="shipSel" size="12"></select>
+    <button id="shipBtn" class="ship-btn">🚀 함선 선택</button>
+    <div id="shipCur" class="ship-cur">함선을 선택하세요.</div>
+    <select id="shipSel" style="display:none"></select>
     <div id="status">DB 로딩 중…</div>
   </div>
   <div class="panel" style="margin-top:12px">
@@ -98,6 +130,7 @@ button.on:hover{background:#134d2e}
   </div>
 </div>
 </main>
+<div id="modalRoot"></div>
 <script src="app.js"></script>
 </body>
 </html>
