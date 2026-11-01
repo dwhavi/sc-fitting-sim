@@ -322,11 +322,15 @@ def main():
             ship_missing.append(klass)
             continue
         s = json.load(io.open(p, encoding='utf-8'))
+        # Erkul Ln() weapon pool (2026-11-01): PowerPools.WeaponGun.Size.
+        # Size>0 = 핍 상한, -1 = unlimited, None = 함선 파일에 없음.
+        pp = s.get('PowerPools') or {}
         ships.append({'class': klass, 'name': s.get('Name'),
                       'slug': klass.lower().replace('_', '-'),
                       'career': s.get('Career'), 'role': s.get('Role'),
                       'size': s.get('Size'), 'crew': s.get('Crew'),
-                      'cargo': s.get('Cargo')})
+                      'cargo': s.get('Cargo'),
+                      'wpool': (pp.get('WeaponGun') or {}).get('Size')})
     ships.sort(key=lambda s: s['name'] or '')
 
     db = {

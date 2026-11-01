@@ -3,9 +3,10 @@ let DB = null, FY = [];
 let curShip = '';
 let build = {}; // slotId -> component class
 // PWR state: Erkul-style — per-group pip blocks + weapon pool + ON/OFF
-// Erkul model (chunk-IMLNKAMY Te + C3CGNGPP ue/ce, icons _N in main):
-//  families: weapon(pool) engine shield qdrive miningLaser tractorBeam towingbeam
-//            salvage emp qed radar lifeSupport + coolers(each own column)
+// Erkul model (NQEKEKTP Ln/U + Qr, main IF pips):
+//  계통핍(segOff/grpOff) = 전력 on/off. 무기 풀(poolSel) = 무기 출력, 별도 분리.
+//  Ln(): poolRatio=min(1,selected/consumption) — 에너지 무기에만 적용.
+//  탄도는 풀 영향 없음. poolSize = 함선 PowerPools.WeaponGun.Size (-1=무제한).
 //  blocks from item resource flows Power units; weapon = poolSize cap;
 //  coolers individually selectable; click = block on/off, icon = whole group power.
 //  PowerDraw(⚡) is display-only; pips are the allocation unit.
@@ -14,7 +15,8 @@ let build = {}; // slotId -> component class
 // 칸 클릭 = 그 칸까지 직접 배분 / 아이콘 클릭 = 계통 전체 ON·OFF. 미사일은 전력 계통 없음.
 // 인게임 캐패시터 삼각형은 '전력이 부족할 때만' 작동하는데, 여기서는 핍을 직접 빼는 방식이
 // 그 역할을 대신하므로 스로틀·삼각형 UI 는 두지 않는다.
-let pwr = { segOff: {}, grpOff: {}, coolerSegs: {}, coolerOff: {} };
+// 무기 풀: Erkul U()/Ln() — selected=min(poolSize, poolSel), poolRatio=min(1,selected/소모).
+let pwr = { segOff: {}, grpOff: {}, coolerSegs: {}, coolerOff: {}, poolSel: null };
 const PWR_GROUPS = [
   { id: 'weapon', icon: '🔫', label: '무기', kinds: ['weapon', 'turret', 'turretbase', 'mount'] },
   { id: 'engine', icon: '🚀', label: '추진', kinds: ['engine'] },
@@ -493,6 +495,7 @@ function fitStats() {
   const s = { dps: 0, alpha: 0, power: 0, output: 0, powerBase: 0, heat: 0, cooling: 0, hp: 0, regen: 0, guns: 0, qdspeed: 0, wregen: 0, avail: 0, short: 0, ppPips: 0, estCount: 0, shieldAbs: {}, downedDelay: 0, damagedDelay: 0 };
   const typeDps = {};
   const guns = [];
+  const poolItems = []; // 에너지 무기 풀 스케일 대상 {c, sus, ratio}
   const perGroup = {};
   for (const g of PWR_GROUPS) perGroup[g.id] = { power: 0, heat: 0, units: 0, maxUnits: 0 };
   const items = [];
@@ -582,30 +585,31 @@ function fitStats() {
       coolerList.push({ slotId, name: it.c.name || '', units, maxUnits: it.maxU, pwRaw: it.pwRaw, off: !!pwr.coolerOff[slotId] });
     }
     if (it.kind === 'weapon') {
-      const ratio = it.maxU > 0 ? units / it.maxU : 1;
-      // Erkul En() 캐패시터 sustain (2026-11-01): energy 무기는 burst가 아닌
-      // sustain 게임값으로 표시. poolRatio(=핍 배분율)로 En() 재계산:
-      //   ammo=round(capAmmo*ratio), sustain=ammo*alpha/(cooldown+ammo/regen)
-      // sustain 필드가 있으면 게임값 직접 사용 (Dominance-1: En()==Sustained 실측).
+      // Erkul 풀 분리 (2026-11-01): 계통핍 ratio = 전력 on/off, poolRatio = 무기 출력.
+      //   탄도: 풀 영향 없음 (burst 그대로). 에너지: sustain × poolRatio.
+      //   En() 재계산: ammo=round(capAmmo*poolRatio), regen=capRegen*poolRatio.
+      //   Ln(): poolSize=함선 풀 상한(-1=무제한), selected=poolSel(기본 풀사이즈),
+      //         consumption=Σ무기소모(pw), poolRatio=min(1,selected/consumption).
       const c = it.c;
-      let sus = null;
-      if (c.sustain != null) sus = c.sustain;
-      else if ((c.capAmmo || 0) > 0 && (c.capRegen || 0) > 0 && (c.rpm || 0) > 0) {
-        const ammo = Math.round((c.capAmmo || 0) * ratio);
-        const regen = (c.capRegen || 0) * ratio;
-        const cd = c.capCooldown || 0;
-        const rateHz = (c.rpm || 0) / 60;
-        if (ammo > 0 && regen > 0 && rateHz > 0) {
-          sus = ammo * (c.alpha || 0) / ((cd + ammo / regen) + ammo / rateHz);
-        }
-      }
+      const ratio = it.maxU > 0 ? units / it.maxU : 1;
+      const isEnergy = (c.dmgtype || []).includes('Energy');
       s.dpsBurst = (s.dpsBurst || 0) + (c.dps || 0) * ratio;
-      s.dps += (sus != null ? sus : (c.dps || 0)) * ratio;
       s.alpha += (c.alpha || 0) * ratio; s.guns++;
       s.wregen += (c.regen || 0) * ratio;
-      if (sus != null) s.hasSustain = true;
       guns.push(c);
-      for (const [k, v] of Object.entries(c.dpsRaw || {})) typeDps[k] = (typeDps[k] || 0) + v * ratio;
+      // 에너지 무기의 타입별 DPS는 2차 패스에서 sustain 비례로 넣는다 (1차 skip).
+      if (!isEnergy) {
+        for (const [k, v] of Object.entries(c.dpsRaw || {})) typeDps[k] = (typeDps[k] || 0) + v * ratio;
+      }
+      // 에너지 무기는 풀 스케일 대상 → 2차 패스에서 poolRatio 확정 후 적용.
+      if (isEnergy) {
+        let sus = null;
+        if (c.sustain != null) sus = c.sustain;
+        poolItems.push({ c, sus, ratio });
+        if (sus != null || (c.capAmmo || 0) > 0) s.hasSustain = true;
+      } else {
+        s.dps += (c.dps || 0) * ratio;
+      }
     }
     if (it.kind === 'shield') {
       s.hp += it.c.hp || 0; s.regen += it.c.regen || 0;
@@ -626,6 +630,56 @@ function fitStats() {
     }
     if (it.kind === 'qd') s.qdspeed = Math.max(s.qdspeed, it.c.speed || 0);
   } // end for (FY slots)
+  // ---- 2차 패스: Erkul Ln() 무기 풀 (2026-11-01) ----
+  // poolSize = 함선 PowerPools.WeaponGun.Size (-1=무제한, null=정보없음→풀없음).
+  // consumption = Σ장착 에너지무기 pw(계통핍 배분 후 실소모).
+  // selected = poolSel(사용자 선택, 기본 poolSize) → poolRatio=min(1,selected/consumption).
+  // 에너지 sustain에만 × poolRatio. 탄도는 이미 1차에서 burst 그대로 합산됨.
+  {
+    const ship = (DB.ships || []).find(x => (x.slug === curShip || x.class === curShip)) || {};
+    const poolSize = ship.wpool;
+    let consumption = 0;
+    for (const p of poolItems) consumption += (p.c.pw != null ? p.c.pw : (p.c.power || 0)) * p.ratio;
+    const unlimited = poolSize === -1;
+    const hasPool = poolSize != null && (unlimited || poolSize > 0);
+    const selected = hasPool
+      ? (unlimited ? consumption : Math.min(poolSize, pwr.poolSel != null ? pwr.poolSel : poolSize))
+      : consumption;
+    const poolRatio = !hasPool ? 1 : (consumption > 0 ? Math.min(1, selected / consumption) : 1);
+    s.pool = hasPool
+      ? { size: unlimited ? -1 : poolSize, selected, consumption, ratio: poolRatio }
+      : null;
+    for (const p of poolItems) {
+      const c = p.c;
+      let sus = p.sus;
+      // sustain 게임값이 없으면 En() 재계산 (capAmmo 경로).
+      if (sus == null && (c.capAmmo || 0) > 0 && (c.capRegen || 0) > 0 && (c.rpm || 0) > 0) {
+        const pr = hasPool ? poolRatio : 1;
+        const ammo = Math.round((c.capAmmo || 0) * pr);
+        const regen = (c.capRegen || 0) * pr;
+        const cd = c.capCooldown || 0;
+        const rateHz = (c.rpm || 0) / 60;
+        if (ammo > 0 && regen > 0 && rateHz > 0) {
+          sus = ammo * (c.alpha || 0) / ((cd + ammo / regen) + ammo / rateHz);
+        }
+      }
+      const base = sus != null ? sus : (c.dps || 0);
+      // 1차에서 계통핍 ratio 이미 반영 → 풀은 poolRatio만 곱한다.
+      // sustain 게임값은 풀 100% 기준이므로 En()처럼 poolRatio 스케일 적용.
+      const scaled = hasPool ? base * (sus != null ? poolRatio : 1) : base;
+      s.dps += scaled * p.ratio;
+      // 타입별 DPS: 1차에서 skip했으므로 sustain 비례로 전량 반영.
+      {
+        const val = scaled * p.ratio;
+        const tot = Object.values(c.dpsRaw || {}).reduce((a, b) => a + b, 0);
+        if (tot > 0) {
+          for (const [k, v] of Object.entries(c.dpsRaw || {})) typeDps[k] = (typeDps[k] || 0) + val * v / tot;
+        } else if (val > 0) {
+          typeDps['Energy'] = (typeDps['Energy'] || 0) + val;
+        }
+      }
+    }
+  }
   s.avail = s.output;   // 스로틀 없음: 발전핍을 100% 사용
   s.short = Math.max(0, s.power - s.avail);
   s.typeDps = typeDps; s.guns = guns; s.perGroup = perGroup; s.perCooler = coolerList;
@@ -684,7 +738,25 @@ function renderPwrBlocks() {
       + sub + `</div>`;
   }).join('');
 
-  $('pwrBlocks').innerHTML = famCols + coolerCols;
+  // 무기 풀 컬럼 (Erkul Ln/U): 에너지 무기가 있을 때만 표시.
+  // 칸 클릭 = 풀에 k핍 배분 (poolSel), 풀 상한 = 함선 PowerPools.WeaponGun.Size.
+  const poolCol = (() => {
+    const pool = f.pool;
+    if (!pool || pool.size == null) return '';
+    if (pool.size === -1) return ''; // 무제한 풀은 컬럼 불필요
+    const maxU = pool.size;
+    const units = Math.round(pool.selected);
+    const blocks = pipCells(maxU, units, '');
+    const num = `<div class="pip-num">${units}</div>`;
+    const pct = pool.consumption > 0 ? Math.round(pool.ratio * 100) : 100;
+    const tip = `무기 풀: 에너지 무기 출력 비율 ${pct}% (선택 ${units}/${maxU}핍). 칸 클릭=그 칸까지 배분, 아이콘=풀 최대치로 복원`;
+    return `<div class="pwr-col" data-grp="__pool" title="${tip}">`
+      + `<div class="pips">${num}${blocks}</div>`
+      + `<div class="pwr-ico" data-ico="__pool">🔋</div>`
+      + `<div class="pwr-w">${pct}%</div></div>`;
+  })();
+
+  $('pwrBlocks').innerHTML = famCols + poolCol + coolerCols;
   document.querySelectorAll('.pwr-col').forEach(el => {
     el.addEventListener('click', e => {
       const grp = el.dataset.grp;
@@ -695,6 +767,17 @@ function renderPwrBlocks() {
         if (e.target.closest('.pwr-ico')) pwr.coolerOff[slotId] = !pwr.coolerOff[slotId];
         else if (!isNaN(k)) setCoolerUnits(slotId, k);
         else return; // 핍·아이콘 밖 클릭은 무시
+        updateStats();
+        return;
+      }
+      if (grp === '__pool') { // 무기 풀 컬럼: Erkul U()/Ln()
+        const pool = fitStats().pool;
+        if (!pool || pool.size == null || pool.size === -1) return;
+        if (e.target.closest('.pwr-ico')) pwr.poolSel = null; // 아이콘 = 풀 최대치로 복원
+        else if (!isNaN(k)) {
+          const cur = Math.round(pool.selected);
+          pwr.poolSel = (cur === k) ? Math.max(0, k - 1) : Math.max(0, Math.min(pool.size, k));
+        } else return;
         updateStats();
         return;
       }
@@ -793,7 +876,7 @@ function updateStats() {
 
 function saveBuild() {
   const ship = curShip || $('shipSel').value;
-  const data = { ship, build, pwr: { segOff: pwr.segOff, grpOff: pwr.grpOff, coolerSegs: pwr.coolerSegs, coolerOff: pwr.coolerOff }, savedAt: new Date().toISOString() };
+  const data = { ship, build, pwr: { segOff: pwr.segOff, grpOff: pwr.grpOff, coolerSegs: pwr.coolerSegs, coolerOff: pwr.coolerOff, poolSel: pwr.poolSel }, savedAt: new Date().toISOString() };
   localStorage.setItem('scfit:' + ship, JSON.stringify(data));
   $('saveStatus').textContent = `저장됨 — ${ship} (${Object.keys(build).filter(k => build[k]).length}개 슬롯)`;
 }
@@ -816,7 +899,7 @@ function loadBuild() {
 }
 function resetBuild() {
   build = {};
-  pwr.segOff = {}; pwr.grpOff = {}; pwr.coolerSegs = {}; pwr.coolerOff = {};
+  pwr = { segOff: {}, grpOff: {}, coolerSegs: {}, coolerOff: {}, poolSel: null };
   renderSlots(); updateStats();
 }
 
