@@ -500,6 +500,12 @@ function findComp(kind, cls) {
   const pool = { weapon: DB.weapons, turret: DB.turrets, turretbase: DB.turrets, mount: DB.turrets, shield: DB.shields, power: DB.powerplants, cooler: DB.coolers, qd: DB.qds, missile: DB.racks, radar: DB.radars || [] }[kind] || [];
   return pool.find(c => c.class === cls);
 }
+// 동사이즈 대표 미사일 (2026-11-01): 최고 damage 1종. 랙 합산 추정치용.
+function bestMissile(size) {
+  const list = (DB.missiles || []).filter(m => m.size === size);
+  if (!list.length) return null;
+  return list.reduce((a, b) => ((b.damage || 0) > (a.damage || 0) ? b : a));
+}
 
 function fitStats() {
   // Erkul-style: 2-pass. 1차: 그룹별 장착품 수집 → 2차: segOff(끈 핍 수) 분배.
@@ -551,6 +557,22 @@ function fitStats() {
       // 실제 발전핍(pwGen=SPowerSegmentResourceUnit.units). 없으면 구형 추정치.
       s.output += (c.pwGen != null ? c.pwGen : (c.output || 0));
       s.ppPips = (s.ppPips || 0) + (c.pwGen != null ? c.pwGen : (c.output || 0));
+      continue;
+    }
+    // 미사일 랙 합산 (Erkul fn() 대응 2026-11-01): capacity × 동사이즈 대표 미사일.
+    // 랙에 개별 미사일 장착 UI가 없으므로 동일 S 최고 damage 미사일로 추정치 계산.
+    if (kind === 'missile') {
+      const cap = c.capacity || c.missiles || 0;
+      const rep = bestMissile(c.msize);
+      const dmg = rep ? (rep.damage || 0) : 0;
+      s.mslCount = (s.mslCount || 0) + cap;
+      s.mslDmg = (s.mslDmg || 0) + dmg * cap;
+      if (rep) {
+        const key = rep.seeker || '미사일';
+        s.mslBy = s.mslBy || {};
+        s.mslBy[key] = (s.mslBy[key] || 0) + dmg * cap;
+        if (!s.mslRep || dmg > (s.mslRep.damage || 0)) s.mslRep = rep;
+      }
       continue;
     }
     if (NO_POWER_KINDS.has(kind)) continue; // 미사일 등: 전력 배분 대상 아님 (핍·열·추정 모두 제외)
@@ -643,7 +665,7 @@ function fitStats() {
       if (it.c.downedDelay != null) s.downedDelay = Math.max(s.downedDelay, it.c.downedDelay);
       if (it.c.damagedDelay != null) s.damagedDelay = Math.max(s.damagedDelay, it.c.damagedDelay);
     }
-    if (it.kind === 'qd') s.qdspeed = Math.max(s.qdspeed, it.c.speed || 0);
+    if (it.kind === 'qd') { s.qdspeed = Math.max(s.qdspeed, it.c.speed || 0); if (!s.qd || (it.c.speed || 0) > (s.qd.speed || 0)) s.qd = it.c; }
   } // end for (FY slots)
   // ---- 2차 패스: Erkul Ln() 무기 풀 (2026-11-01) ----
   // poolSize = 함선 PowerPools.WeaponGun.Size (-1=무제한, null=정보없음→풀없음).
@@ -863,10 +885,48 @@ function renderShieldTank(f) {
     + `실효HP = Σ실드HP ÷ 흡수율 (그 피해로 실드가 깨질 때까지의 <i>원시</i> 피해량). 관통분은 선체로 직행.</div>`;
 }
 
+function qdLine(f) {
+  // 양자 항행 (Erkul kn/cr 대응 2026-11-01): 장착 QD 스펙 + 함선 QuantumTravel.
+  // 10Gm 이동시간(t10gm 우선, 없으면 driveSpeed 추정) + PO→ArcCorp 왕복 기준.
+  const qd = f.qd || null;
+  const ship = (DB.ships || []).find(x => (x.slug === curShip || x.class === curShip)) || {};
+  const qt = ship.qt || null;
+  if (!qd && !qt) return { v: '—', k: '양자항행 (QD 미장착)' };
+  const spd = qd ? (qd.driveSpeed || qd.speed || 0) : 0;
+  // 10Gm(=1e10m) 이동시간: 게임값 우선
+  let t10 = qd && qd.t10gm != null ? qd.t10gm : (spd > 0 ? 1e10 / spd : null);
+  const fuelReq = qd && qd.fuelReq != null ? qd.fuelReq : null; // SCU/Gm
+  const spool = qd && qd.spool != null ? qd.spool : (qd && qd.cdSpool != null ? qd.cdSpool : null);
+  const v = t10 != null ? `${Math.round(t10)}s/10Gm` : '—';
+  const parts = [];
+  if (spool != null) parts.push(`스풀 ${spool}s`);
+  if (fuelReq != null) parts.push(`${fuelReq} SCU/Gm`);
+  if (qt && qt.PortOlisarToArcCorpTime) parts.push(`PO→Arc ${qt.PortOlisarToArcCorpTime}s`);
+  return { v, k: parts.length ? '양자항행 · ' + parts.join(' · ') : '양자항행' };
+}
+
+function renderMissiles(f) {
+  // 미사일 합산 (Erkul fn() 대응 2026-11-01): 랙 capacity × 동사이즈 대표 미사일 추정치.
+  // seeker/lockTime/speed/rangeMax는 대표 미사일(최고 damage) 기준.
+  const el = $('mslPanel');
+  if (!el) return;
+  if (!f.mslCount) { el.innerHTML = '<div style="font-size:12px;color:var(--dim)">미사일 랙 없음</div>'; return; }
+  const r = f.mslRep || {};
+  const by = Object.entries(f.mslBy || {}).map(([k, v]) => `${k} ${fmt(v)}`).join(' · ');
+  el.innerHTML = `<div class="stat"><div class="v">${fmt(f.mslDmg)}</div>`
+    + `<div class="k">미사일 총 피해 (추정 · ${f.mslCount}발)</div>`
+    + `<div class="k" style="margin-top:2px">${by || '—'}</div></div>`
+    + (r && r.name ? `<div style="font-size:11px;color:var(--dim);margin-top:6px;grid-column:1/-1">`
+      + `대표: ${r.name} · 락 ${r.lockTime != null ? r.lockTime + 's' : '—'}`
+      + ` · 속도 ${r.speed ? fmt(r.speed) + 'm/s' : '—'}`
+      + ` · 사거리 ${r.rangeMax ? fmt(r.rangeMax) + 'm' : '—'}</div>` : '');
+}
+
 function updateStats() {
   const f = fitStats();
   renderPwrBlocks();
   renderShieldTank(f);
+  renderMissiles(f);
   const typeLine = ['Energy', 'Physical', 'Distortion'].filter(t => f.typeDps[t] > 0)
     .map(t => `${t.slice(0, 4)} ${fmt(f.typeDps[t])}`).join(' · ') || '—';
   // 가용 = 발전핍(스로틀 없음). 부족분 있으면 경고.
@@ -880,7 +940,8 @@ function updateStats() {
     <div class="stat"><div class="v">${fmt(f.heat)} / ${fmt(f.cooling)}</div><div class="k">열 부하 / 냉각</div></div>
     <div class="stat"><div class="v">${fmt(f.hp)}</div><div class="k">실드 HP 합계</div></div>
     <div class="stat"><div class="v">${fmt(f.regen)}/s</div><div class="k">실드 재생/s</div></div>
-    <div class="stat"><div class="v">${f.qdspeed ? (f.qdspeed / 299792458 * 100).toFixed(1) + '% c' : '—'}</div><div class="k">양자항행 속도</div></div>`;
+    <div class="stat"><div class="v">${f.qdspeed ? (f.qdspeed / 299792458 * 100).toFixed(1) + '% c' : '—'}</div><div class="k">양자항행 속도</div></div>
+    <div class="stat"><div class="v">${qdLine(f).v}</div><div class="k">${qdLine(f).k}</div></div>`;
   $('powerBar').innerHTML = (f.avail > 0
     ? `<div style="font-size:12px" class="${pcls}">전력 사용률 ${pct.toFixed(0)}% ${f.short > 0 ? `⚠️ ${fmt(f.short)}핍 부족 — 핍 블럭을 끄세요` : ''}</div><div class="bar"><i style="width:${Math.min(100, pct)}%;background:${f.short > 0 ? 'var(--bad)' : pct > 85 ? 'var(--warn)' : 'var(--ok)'}"></i></div>`
     : '<div style="font-size:12px;color:var(--dim)">파워플랜트를 장착하세요</div>')
