@@ -93,7 +93,7 @@ function pipFmt(c){ if(c.pw!=null) return `${fmt(Math.ceil(c.pw))}핍`; if(c.pow
 function compShort(kind,c){
   if(!c) return '';
   const cb=clsBadge(c.cls);
-  if(kind==='weapon'){ const fam=c.family?` · ${c.family}`:''; return `${cb}${c.name}${fam} · ${fmt(c.dps)} DPS · ${pipFmt(c)}${emFmt(c)}`; }
+  if(kind==='weapon'){ const fam=c.family?` · ${c.family}`:''; const ft=fireBadge(c); return `${cb}${c.name}${fam} · ${fmt(c.dps)} DPS${susFmt(c)}${ft} · ${pipFmt(c)}${emFmt(c)}`; }
   if(kind==='shield') return `${cb}${c.name} · HP ${fmt(c.hp)} · ${pipFmt(c)}${emFmt(c)}`;
   if(kind==='power') return `${cb}${c.name} · ${fmt(c.pwGen!=null?c.pwGen:c.output)}p${emFmt(c)}`;
   if(kind==='cooler') return `${cb}${c.name} · ${fmt(c.rate)} · ${pipFmt(c)}${emFmt(c)}`;
@@ -105,6 +105,21 @@ function compShort(kind,c){
 }
 const CLS_META={'Military':['⚔️','군사'],'Civilian':['🛸','민간'],'Industrial':['⛏️','산업'],'Competition':['🏁','경기'],'Stealth':['👤','스텔스']};
 function clsBadge(cls){ const m=CLS_META[cls||'']; return m?`<span class="badge">${m[0]} ${m[1]}</span>`:'<span class="badge">— 미분류</span>'; }
+// 발사방식 뱃지 (2026-11-01): Erkul fireKind. charged 풀차지/beam 지속 구분.
+function fireBadge(c){
+  if(!c || !c.fireType) return '';
+  const ft = c.fireType;
+  if (ft === 'charged') return ' · ⚡풀차지';
+  if (ft === 'beam') return ' · 🔆지속빔';
+  if (ft === 'burst') return ' · 💥점사';
+  if (ft === 'rapid') return ' · 🔥연사';
+  return '';
+}
+// sustain 표시: 게임 Damage.Sustained (Erkul En()/ye() 대응).
+function susFmt(c){
+  if (c.sustain == null) return '';
+  return ` (지속 ${fmt(c.sustain)})`;
+}
 function openCompModal(slotId, kind, opts){
   opts=opts||{};
   const h=(FY||[]).find(x=>x.id===slotId);
@@ -161,7 +176,7 @@ function openCompModal(slotId, kind, opts){
   drawChips();
   const redraw=()=>draw(($('mCompQ').value||'').toLowerCase().trim());
   const specMini=(kk,c)=>{
-    if(kk==='weapon') return `<span class="spec-mini">${fmt(c.dps)} DPS</span><span class="spec-mini">${pipFmt(c)||'—'}</span>${c.em!=null?`<span class="spec-mini">EM ${fmt(c.em)}</span>`:''}`;
+    if(kk==='weapon') return `<span class="spec-mini">${fmt(c.dps)} DPS${c.sustain!=null?` (지속 ${fmt(c.sustain)})`:''}</span><span class="spec-mini">${pipFmt(c)||'—'}</span>${c.em!=null?`<span class="spec-mini">EM ${fmt(c.em)}</span>`:''}`;
     if(kk==='shield') return `<span class="spec-mini">HP ${fmt(c.hp)}</span><span class="spec-mini">${pipFmt(c)||'—'}</span>${c.em!=null?`<span class="spec-mini">EM ${fmt(c.em)}</span>`:''}`;
     if(kk==='power') return `<span class="spec-mini">${fmt(c.pwGen!=null?c.pwGen:c.output)}p</span>${c.em!=null?`<span class="spec-mini">EM ${fmt(c.em)}</span>`:''}`;
     if(kk==='cooler') return `<span class="spec-mini">${fmt(c.rate)}</span><span class="spec-mini">${pipFmt(c)||'—'}</span>${c.em!=null?`<span class="spec-mini">EM ${fmt(c.em)}</span>`:''}`;
