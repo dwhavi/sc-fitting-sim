@@ -188,6 +188,8 @@ def main():
             if best is None or md['dps'] > best['dps']:
                 best = md
         am = si.get('Ammunition') or {}
+        dmg = w.get('Damage') or {}
+        cap = w.get('Capacitor') or {}
         e = base(x)
         e.update({'family': fam_of(si),
             'modes': modes,
@@ -201,6 +203,14 @@ def main():
                        if m.get('Dps' + t)} if False else {},
             'alphaRaw': {},
             'rpm': best['rpm'] if best else None,
+            # Erkul En()/Te() sustain inputs (2026-11-01): game Damage + Capacitor.
+            #   sustain (dpsSustain): Damage.Sustained when present (182/191).
+            #   capAmmo/capRegen/capCooldown: Capacitor.{MaxAmmoLoad,MaxRegenPerSec,
+            #     Cooldown} for En() recompute under poolRatio (117/191).
+            'sustain': dmg.get('Sustained'),
+            'capAmmo': cap.get('MaxAmmoLoad'),
+            'capRegen': cap.get('MaxRegenPerSec'),
+            'capCooldown': cap.get('Cooldown'),
         })
         # 최적 모드의 원시 dict 재수집 (0 제거)
         for m in (w.get('Modes') or []):

@@ -583,10 +583,29 @@ function fitStats() {
     }
     if (it.kind === 'weapon') {
       const ratio = it.maxU > 0 ? units / it.maxU : 1;
-      s.dps += (it.c.dps || 0) * ratio; s.alpha += (it.c.alpha || 0) * ratio; s.guns++;
-      s.wregen += (it.c.regen || 0) * ratio;
-      guns.push(it.c);
-      for (const [k, v] of Object.entries(it.c.dpsRaw || {})) typeDps[k] = (typeDps[k] || 0) + v * ratio;
+      // Erkul En() 캐패시터 sustain (2026-11-01): energy 무기는 burst가 아닌
+      // sustain 게임값으로 표시. poolRatio(=핍 배분율)로 En() 재계산:
+      //   ammo=round(capAmmo*ratio), sustain=ammo*alpha/(cooldown+ammo/regen)
+      // sustain 필드가 있으면 게임값 직접 사용 (Dominance-1: En()==Sustained 실측).
+      const c = it.c;
+      let sus = null;
+      if (c.sustain != null) sus = c.sustain;
+      else if ((c.capAmmo || 0) > 0 && (c.capRegen || 0) > 0 && (c.rpm || 0) > 0) {
+        const ammo = Math.round((c.capAmmo || 0) * ratio);
+        const regen = (c.capRegen || 0) * ratio;
+        const cd = c.capCooldown || 0;
+        const rateHz = (c.rpm || 0) / 60;
+        if (ammo > 0 && regen > 0 && rateHz > 0) {
+          sus = ammo * (c.alpha || 0) / ((cd + ammo / regen) + ammo / rateHz);
+        }
+      }
+      s.dpsBurst = (s.dpsBurst || 0) + (c.dps || 0) * ratio;
+      s.dps += (sus != null ? sus : (c.dps || 0)) * ratio;
+      s.alpha += (c.alpha || 0) * ratio; s.guns++;
+      s.wregen += (c.regen || 0) * ratio;
+      if (sus != null) s.hasSustain = true;
+      guns.push(c);
+      for (const [k, v] of Object.entries(c.dpsRaw || {})) typeDps[k] = (typeDps[k] || 0) + v * ratio;
     }
     if (it.kind === 'shield') {
       s.hp += it.c.hp || 0; s.regen += it.c.regen || 0;
@@ -758,7 +777,7 @@ function updateStats() {
   const hpct = f.cooling > 0 ? Math.min(100, f.heat / f.cooling * 100) : 0;
   const hcls = f.cooling === 0 ? '' : hpct > 100 ? 'bad' : hpct > 85 ? 'warn' : 'ok';
   $('stats').innerHTML = `
-    <div class="stat"><div class="v">${fmt(f.dps)}</div><div class="k">총 DPS · α ${fmt(f.alpha)} (${f.guns.length}문)</div><div class="k" style="margin-top:2px">${typeLine}</div></div>
+    <div class="stat"><div class="v">${fmt(f.dps)}</div><div class="k">${f.hasSustain ? '지속 DPS · 버스트 ' + fmt(f.dpsBurst || 0) : '총 DPS'} · α ${fmt(f.alpha)} (${f.guns.length}문)</div><div class="k" style="margin-top:2px">${typeLine}</div></div>
     <div class="stat"><div class="v">${fmt(f.power)} / ${fmt(f.avail)}</div><div class="k">전력 소모 / 가용 핍 (발전 ${fmt(f.output)}핍)</div></div>
     <div class="stat"><div class="v">${fmt(f.heat)} / ${fmt(f.cooling)}</div><div class="k">열 부하 / 냉각</div></div>
     <div class="stat"><div class="v">${fmt(f.hp)}</div><div class="k">실드 HP 합계</div></div>
