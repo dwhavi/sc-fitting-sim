@@ -382,7 +382,9 @@ function renderSlots() {
   const tslots = FY.filter(h => slotKind(h) === 'turret');
   const tbase = FY.filter(h => slotKind(h) === 'turretbase');
   const mslots = FY.filter(h => slotKind(h) === 'missile');
-  const sys = FY.filter(h => ['shield', 'power', 'cooler', 'qd', 'radar', 'life'].includes(slotKind(h)));
+  const sysOrder = ['power', 'cooler', 'shield', 'qd', 'radar', 'life'];
+  const sys = FY.filter(h => sysOrder.includes(slotKind(h)))
+    .sort((a, b) => sysOrder.indexOf(slotKind(a)) - sysOrder.indexOf(slotKind(b)));
   $('weaponSlots').innerHTML =
     (mounts.length ? '<div class="sec-h">마운트·짐벌 (카드 교체 → 무기 하위 선택)</div>' + mounts.map(h => cardSlotHTML(h, 'mount')).join('') : '')
     + (wslots.length ? '<div class="sec-h">주포 직결 (3.23+ 동일 사이즈)</div><div class="slots-grid">' + wslots.map(h => slotHTML(h, 'weapon')).join('') + '</div>' : '')
