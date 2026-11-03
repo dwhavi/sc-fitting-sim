@@ -202,7 +202,6 @@ function openCompModal(slotId, kind, opts){
     });
   };
   $('mCompQ').addEventListener('input',e=>draw(e.target.value.toLowerCase().trim()));
-  $('mCompQ').focus();
   draw('');
 }
 function renderShipList(ships) {
@@ -826,14 +825,16 @@ function renderPwrBlocks() {
       const pct = pool.consumption > 0 ? Math.round(pool.ratio * 100) : 100;
       capTxt = `<div class="pwr-w capline" data-cap="1" style="color:var(--acc);cursor:pointer" title="무기 캐패시터: 에너지 무기 출력 비율 ${pct}% (선택 ${pu}/${pool.size}핍). 줄 클릭=그 위치까지 풀 배분">🔋 ${pu}/${pool.size} · ${pct}%</div>`;
     }
-    const sub = noData ? '<div class="pwr-w">—</div>'
-      : `<div class="pwr-w">${off ? 'OFF' : fmt(pg.power) + 'p'}</div>` + spvTxt + stockTxt + capTxt;
+    const useTxt = noData ? '<div class="pwr-w">—</div>'
+      : `<div class="pwr-w use-line">${off ? 'OFF' : units + '/' + maxU + '핍'}</div>`;
+    const sub = `<div class="pwr-w">${off ? '' : fmt(pg.power) + 'p'}</div>` + spvTxt + stockTxt + capTxt;
     const tip = noData
       ? `${g.label}: 이 함선에 해당 슬롯이 없거나 전력 데이터가 게임 덤프에 없음`
       : `${g.label}: 칸 클릭=그 칸까지 배분(아래부터), 같은 칸 재클릭=1핍 감소, 아이콘=계통 전체 ON/OFF`;
     return `<div class="pwr-col${off ? ' off' : ''}${noData ? ' nodata' : ''}" data-grp="${g.id}" title="${tip}">`
       + `<div class="pwr-ico" data-ico="${g.id}">${g.icon}</div>`
-      + `<div class="pips">${num}${blocks}</div>`
+      + useTxt
+      + `<div class="pips bottom">${blocks}</div>`
       + sub + `</div>`;
   }).join('');
 
@@ -842,7 +843,7 @@ function renderPwrBlocks() {
     const units = off ? 0 : cc.units;
     const maxU = cc.maxUnits;
     const blocks = pipCells(maxU, units, off ? ' grp-off' : '');
-    const num = maxU > 0 ? `<div class="pip-num">${off ? 0 : units}</div>` : '';
+    const useTxt = `<div class="pwr-w use-line">${off ? 'OFF' : units + '/' + maxU + '핍'}</div>`;
     const draw = maxU > 0 ? cc.pwRaw * units / maxU : 0;
     const cqn = qnSpv(off ? 0 : units, cc.pranges);
     const cspv = units * cqn;
@@ -852,7 +853,8 @@ function renderPwrBlocks() {
     const key = 'cooler:' + cc.slotId;
     return `<div class="pwr-col${off ? ' off' : ''}" data-grp="${key}" title="쿨러 ${cc.name}: 칸 클릭=그 칸까지 배분(아래부터), 같은 칸 재클릭=1핍 감소, 아이콘=개별 ON/OFF">`
       + `<div class="pwr-ico" data-ico="coolers">❄️</div>`
-      + `<div class="pips">${num}${blocks}</div>`
+      + useTxt
+      + `<div class="pips bottom">${blocks}</div>`
       + sub + `</div>`;
   }).join('');
 
