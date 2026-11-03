@@ -66,6 +66,55 @@ def by_type(d, total_only_nonzero=True):
     return '+'.join(parts)
 
 
+def first_nonnull(*vals):
+    for v in vals:
+        if v is not None:
+            return v
+    return None
+
+
+def cooler_rate(si):
+    # 신스키마: Cooler 블록 삭제 → ResourceNetwork에서 조달.
+    #   Generation.Coolant 우선, 없으면 Conversion GeneratedRate.
+    R = (si or {}).get('ResourceNetwork') or {}
+    g = R.get('Generation') or {}
+    if g.get('Coolant') is not None:
+        return g['Coolant']
+    for st in (R.get('States') or []):
+        for d in (st.get('Deltas') or []):
+            if (d.get('Type') == 'Conversion'
+                    and d.get('GeneratedResource') == 'Coolant'
+                    and d.get('GeneratedRate') is not None):
+                return d['GeneratedRate']
+    return None
+
+
+def turret_guns(si):
+    # 신스키마: Turret.Guns 키 없음 → stdItem.Ports[]에서 건포대 추출.
+    #   건포대 = Types에 WeaponGun(로켓 제외) 또는 Turret.GunTurret 포함.
+    #   미사일랙/트랙터/디스플레이 포트는 제외. 'S4+S4+S4+S4' 형식.
+    out, seen = [], set()
+    for p in ((si or {}).get('Ports') or []):
+        ok = False
+        for t in (p.get('Types') or []):
+            if t == 'Turret.GunTurret':
+                ok = True
+            elif isinstance(t, str) and t.startswith('WeaponGun') \
+                    and 'Rocket' not in t:
+                ok = True
+        if not ok:
+            continue
+        sz = p.get('MaxSize')
+        if not sz:
+            continue
+        pn = p.get('PortName')
+        if pn in seen:
+            continue
+        seen.add(pn)
+        out.append('S%d' % sz)
+    return '+'.join(out)
+
+
 def raw_dict(d):
     if not isinstance(d, dict):
         return {}
@@ -180,9 +229,10 @@ def main():
         return e
 
     # ------------------------------------------------------------ weapons
+    # Gun + Rocket (로켓포드: Jericho 등 Mustang Delta 스톡).
     weapons = []
     for x in items:
-        if x.get('type') != 'WeaponGun' or x.get('subType') != 'Gun':
+        if x.get('type') != 'WeaponGun' or x.get('subType') not in ('Gun', 'Rocket'):
             continue
         if is_test(x.get('className', '')):
             continue
@@ -243,7 +293,8 @@ def main():
         si = x.get('stdItem', {}) or {}
         s = si.get('Shield', {}) or {}
         e = base(x)
-        e.update({'hp': s.get('Health'), 'regen': s.get('Regeneration'),
+        e.update({'hp': first_nonnull(s.get('MaxShieldHealth'), s.get('Health')),
+                  'regen': first_nonnull(s.get('MaxShieldRegen'), s.get('Regeneration')),
                   'downedDelay': s.get('DownedDelay'),
                   'damagedDelay': s.get('DamagedDelay'),
                   'absorption': s.get('Absorption')})
@@ -257,8 +308,13 @@ def main():
         si = x.get('stdItem', {}) or {}
         if not mfr(si):
             continue
+        # PowerPlant 블록 삭제됨 → ResourceNetwork Generation.Power.
         e = base(x)
-        e['output'] = (si.get('PowerPlant') or {}).get('Output')
+        e['output'] = first_nonnull(
+            (si.get('PowerPlant') or {}).get('Output'),
+            ((si.get('ResourceNetwork') or {}).get('Generation') or {}).get('Power'),
+            ((si.get('ResourceNetwork') or {}).get('Usage') or {}).get('Power', {}).get('Maximum')
+            if isinstance(((si.get('ResourceNetwork') or {}).get('Usage') or {}).get('Power'), dict) else None)
         pps.append(finish(e, x))
 
     # ------------------------------------------------------------ coolers
@@ -270,7 +326,8 @@ def main():
         if not mfr(si):
             continue
         e = base(x)
-        e['rate'] = (si.get('Cooler') or {}).get('Rate')
+        e['rate'] = first_nonnull((si.get('Cooler') or {}).get('Rate'),
+                                  cooler_rate(si))
         coolers.append(finish(e, x))
 
     # ------------------------------------------------------------ quantum drives
@@ -282,9 +339,14 @@ def main():
         if not mfr(si):
             continue
         std = ((si.get('QuantumDrive') or {}).get('StandardJump')) or {}
+        qd = si.get('QuantumDrive') or {}
         e = base(x)
-        e.update({'speed': std.get('Speed'), 'cooldown': std.get('Cooldown'),
-                  'spool': std.get('SpoolUpTime')})
+        e.update({'speed': first_nonnull(std.get('DriveSpeed'), std.get('Speed')),
+                  'driveSpeed': first_nonnull(std.get('DriveSpeed'), std.get('Speed')),
+                  'cooldown': first_nonnull(std.get('CooldownTime'), std.get('Cooldown')),
+                  'spool': first_nonnull(std.get('SpoolUpTime'), std.get('Spool')),
+                  't10gm': first_nonnull(qd.get('TravelTime10GMSeconds')),
+                  'fuelReq': first_nonnull(qd.get('FuelConsumptionSCUPerGM'))})
         qds.append(finish(e, x))
 
     # ------------------------------------------------------------ missile racks
@@ -326,7 +388,8 @@ def main():
         si = x.get('stdItem', {}) or {}
         e = base(x)
         e['grade'] = x.get('grade')
-        e['guns'] = ((si.get('Turret') or {}).get('Guns')) or ''
+        e['guns'] = first_nonnull(((si.get('Turret') or {}).get('Guns')) or None,
+                                  turret_guns(si) or None) or ''
         turrets.append(finish(e, x))
 
     # ------------------------------------------------------------ ships

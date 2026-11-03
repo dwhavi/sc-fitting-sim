@@ -89,12 +89,57 @@ def extract(fn):
                 walk(e.get('Loadout') or [])
                 continue
             guns = entry_guns(e)
+            # 짐벌 자식(Turret.GunTurret)은 무기가 아니라 카드 — guns 취급 금지.
+            # 2단계 체인(짐벌→실제 무기)이 있으면 stock까지 전개한다.
+            gimbal_kids = [k for k in (e.get('Loadout') or [])
+                           if (k.get('Type') or '').split('.')[0] == 'Turret'
+                           and (k.get('Loadout') or [])]
+            if gimbal_kids:
+                flat = []
+                for k in gimbal_kids:
+                    deep = [gc for gc in (k.get('Loadout') or [])
+                            if (gc.get('Type') or '').split('.')[0] in GUN_CHILDREN
+                            or (gc.get('Type') or '').split('.')[0] in GUN_TYPES]
+                    if deep:
+                        flat.append({
+                            'hardpoint': k.get('HardpointName'),
+                            'class': k.get('ClassName'),
+                            'name': k.get('Name'),
+                            'type': k.get('Type'),
+                            'min': k.get('MinSize'),
+                            'max': k.get('MaxSize'),
+                            'editable': bool(k.get('Editable')),
+                            'stock': deep[0].get('ClassName'),
+                            'via': k.get('HardpointName'),
+                        })
+                if flat:
+                    guns = flat
             if not guns:
-                # fixed shell: stock gimbal children each carry their own
-                # gun port (Editable=False chains still list stock loadout)
+                # 고정 껍데기: stock 짐벌 자식 각각의 실제 무기까지 2단계 전개.
+                # childGuns[].stock = 실제 무기 ClassName (sim 순정값 해결용).
                 flat = []
                 for k in (e.get('Loadout') or []):
-                    for gc in (k.get('Loadout') or []):
+                    kl = k.get('Loadout') or []
+                    # 짐벌 자식: 그 하위 실제 무기 1건을 stock으로 기록
+                    deep = []
+                    for gc in kl:
+                        gt = (gc.get('Type') or '').split('.')[0]
+                        if gt in GUN_CHILDREN or gt in GUN_TYPES:
+                            deep.append(gc)
+                    if deep:
+                        flat.append({
+                            'hardpoint': k.get('HardpointName'),
+                            'class': k.get('ClassName'),
+                            'name': k.get('Name'),
+                            'type': k.get('Type'),
+                            'min': k.get('MinSize'),
+                            'max': k.get('MaxSize'),
+                            'editable': bool(k.get('Editable')),
+                            'stock': deep[0].get('ClassName'),
+                            'via': k.get('HardpointName'),
+                        })
+                        continue
+                    for gc in kl:
                         gt = (gc.get('Type') or '').split('.')[0]
                         if gt in GUN_CHILDREN or gt in GUN_TYPES:
                             flat.append({

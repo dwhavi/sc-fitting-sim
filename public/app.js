@@ -345,12 +345,15 @@ function subWeaponHTML(subId, gunSize, idx) {
     + `<button class="comp-btn" data-cslot="${subId}" data-gsize="${gunSize}">${disp}</button></div>`;
 }
 function stockGunFor(subId) {
-  // 고정 껍데기 하위 무기 순정값: 'portId:w{i}' -> childGuns[i].class
+  // 순정 하위 무기: 'portId:w{i}' -> childGuns[i].stock || .class.
+  //   2단계 체인(해머헤드: childGuns[].class=Mount 짐벌)일 때는
+  //   stock 필드에 기록된 실제 무기 class를 쓴다.
   const m = String(subId).match(/^(.*):w(\d+)$/);
   if (!m) return '';
   const port = (FY || []).find(x => x.id === m[1]);
   const g = port && port.childGuns && port.childGuns[parseInt(m[2], 10)];
-  return (g && g.class) || '';
+  if (!g) return '';
+  return g.stock || g.class || '';
 }
 function cardSlotHTML(h, cardKind) {
   // layer 1: mount/turret card (replaceable). layer 2: guns[i] weapon dropdowns.
@@ -367,12 +370,12 @@ function cardSlotHTML(h, cardKind) {
   if (!selObj) selObj = findTurret(comp.scKey, comp.name);
   if ((h.id in build) && !build[h.id]) selObj = null; // user explicitly cleared
   let subs = '';
-  if (selObj && (selObj.guns || isGimbalCard(selObj))) {
-    subs = cardGuns(selObj).map((gs, i) => subWeaponHTML(h.id + ':w' + i, gs, i)).join('');
-  } else if (!selObj && h.childGuns && h.childGuns.length) {
-    // 고정 껍데기(FY 카드 미매칭): 체인의 순정 무기 행을 직접 표시.
-    subs = h.childGuns.filter(g => g.max > 0).map((g, i) =>
-      subWeaponHTML(h.id + ':w' + i, g.max, i)).join('');
+  const gunLayout = (selObj && (selObj.guns || isGimbalCard(selObj))) ? cardGuns(selObj)
+    : ((!selObj || !(selObj.guns || isGimbalCard(selObj))) && h.childGuns && h.childGuns.length
+      ? h.childGuns.filter(g => g.max > 0).map(g => g.max) : []);
+  // 카드에 guns 없어도 체인 레이아웃이 있으면 하위 무기 선택 표시 (Manned 터렛 등).
+  if (gunLayout.length) {
+    subs = gunLayout.map((gs, i) => subWeaponHTML(h.id + ':w' + i, gs, i)).join('');
   }
   const selCard = cur ? ((cards.find(c => c.class === cur)) || ((DB.turrets || []).find(c => c.class === cur)) || null) : null;
   const cardSel = cards.length
@@ -542,7 +545,7 @@ function fitStats() {
   const items = [];
   const coolerList = [];
   const effVal = (h, kind) => ((h.id in build) ? build[h.id] : (h.component ? matchDefault(kind, h.component) : ''));
-  const pushWeaponSub = (slotId, cls) => {
+  const pushWeaponSub = (slotId, cls, src) => {
     if (!cls) return;
     const c = findComp('weapon', cls);
     if (!c) return;
@@ -551,7 +554,7 @@ function fitStats() {
     const real = c.pw != null;
     const pwRaw = real ? c.pw : (c.power || 0);
     const maxU = Math.max(1, Math.ceil(pwRaw));
-    items.push({ slotId, c, kind: 'weapon', grp, maxU, real, pwRaw });
+    items.push({ slotId, c, kind: 'weapon', grp, maxU, real, pwRaw, src: src || 'pilot' });
   };
   for (const h of (FY || [])) {
     const kind = slotKind(h);
@@ -563,9 +566,12 @@ function fitStats() {
       if (cardCls && !selObj) selObj = null;
       if ((h.id in build) && !build[h.id]) selObj = null;
       if (selObj && (selObj.guns || isGimbalCard(selObj))) {
-        cardGuns(selObj).forEach((gs, i) => pushWeaponSub(h.id + ':w' + i, (h.id + ':w' + i in build) ? build[h.id + ':w' + i] : stockGunFor(h.id + ':w' + i)));
-      } else if (!selObj && h.childGuns && h.childGuns.length) {
-        h.childGuns.filter(g => g.max > 0).forEach((g, i) => pushWeaponSub(h.id + ':w' + i, (h.id + ':w' + i in build) ? build[h.id + ':w' + i] : stockGunFor(h.id + ':w' + i)));
+        cardGuns(selObj).forEach((gs, i) => pushWeaponSub(h.id + ':w' + i, (h.id + ':w' + i in build) ? build[h.id + ':w' + i] : stockGunFor(h.id + ':w' + i), kind === 'turret' ? 'turret' : 'pilot'));
+      } else if ((!selObj || !(selObj.guns || isGimbalCard(selObj))) && h.childGuns && h.childGuns.length) {
+        // 카드 guns 없어도 체인 레이아웃으로 하위 무기 집계 (Manned 터렛 등).
+        // mount/turret 공용 폴백: selObj 유무와 무관하게 체인이 있으면 집계한다.
+        const subs = h.childGuns.filter(g => g.max > 0);
+        subs.forEach((g, i) => pushWeaponSub(h.id + ':w' + i, (h.id + ':w' + i in build) ? build[h.id + ':w' + i] : stockGunFor(h.id + ':w' + i), kind === 'turret' ? 'turret' : 'pilot'));
       }
       continue;
     }
@@ -661,19 +667,31 @@ function fitStats() {
       const c = it.c;
       const ratio = it.maxU > 0 ? units / it.maxU : 1;
       const isEnergy = (c.dmgtype || []).includes('Energy');
-      s.dpsBurst = (s.dpsBurst || 0) + (c.dps || 0) * ratio;
-      s.alpha += (c.alpha || 0) * ratio; s.guns++;
+      const bval = (c.dps || 0) * ratio, aval = (c.alpha || 0) * ratio;
+      s.dpsBurst = (s.dpsBurst || 0) + bval;
+      s.alpha += aval; s.guns++;
+      // 파일럿/터렛 분리 합산 (정답지 stockDps/turretDps 대조용).
+      if (it.src === 'turret') {
+        s.turretBurst = (s.turretBurst || 0) + bval;
+        s.turretAlpha = (s.turretAlpha || 0) + aval;
+      } else {
+        s.pilotBurst = (s.pilotBurst || 0) + bval;
+        s.pilotAlpha = (s.pilotAlpha || 0) + aval;
+      }
       s.wregen += (c.regen || 0) * ratio;
       guns.push(c);
       // 에너지 무기의 타입별 DPS는 2차 패스에서 sustain 비례로 넣는다 (1차 skip).
       if (!isEnergy) {
         for (const [k, v] of Object.entries(c.dpsRaw || {})) typeDps[k] = (typeDps[k] || 0) + v * ratio;
+        // 탄도 sustain 분리 합산.
+        if (it.src === 'turret') s.turretDps = (s.turretDps || 0) + (c.dps || 0) * ratio;
+        else s.pilotDps = (s.pilotDps || 0) + (c.dps || 0) * ratio;
       }
       // 에너지 무기는 풀 스케일 대상 → 2차 패스에서 poolRatio 확정 후 적용.
       if (isEnergy) {
         let sus = null;
         if (c.sustain != null) sus = c.sustain;
-        poolItems.push({ c, sus, ratio });
+        poolItems.push({ c, sus, ratio, src: it.src || 'pilot' });
         if (sus != null || (c.capAmmo || 0) > 0) s.hasSustain = true;
       } else {
         s.dps += (c.dps || 0) * ratio;
@@ -736,6 +754,9 @@ function fitStats() {
       // sustain 게임값은 풀 100% 기준이므로 En()처럼 poolRatio 스케일 적용.
       const scaled = hasPool ? base * (sus != null ? poolRatio : 1) : base;
       s.dps += scaled * p.ratio;
+      // 에너지 sustain도 파일럿/터렛 분리 합산.
+      if (p.src === 'turret') s.turretDps = (s.turretDps || 0) + scaled * p.ratio;
+      else s.pilotDps = (s.pilotDps || 0) + scaled * p.ratio;
       // 타입별 DPS: 1차에서 skip했으므로 sustain 비례로 전량 반영.
       {
         const val = scaled * p.ratio;
@@ -1081,16 +1102,34 @@ function renderStockCheck(f) {
   if (ship.stockDps == null) { el.innerHTML = '<div style="font-size:12px;color:var(--dim)">스톡 DPS 데이터 없음</div>'; return; }
   if (changed) { el.innerHTML = '<div style="font-size:12px;color:var(--dim)">부품 교체됨 — 순정 복원(초기화) 후 대조 가능</div>'; return; }
   const rows = [];
-  const gd = ship.stockDps > 0 ? Math.abs(f.dpsBurst - ship.stockDps) / ship.stockDps * 100 : 0;
-  const bdCls = gd < 5 ? 'var(--ok)' : 'var(--warn)';
-  rows.push(`<div class="stat"><div class="v">${fmt(f.dpsBurst)} <span style="font-size:11px;color:var(--dim)">/ ${fmt(ship.stockDps)}</span></div><div class="k">버스트 계산/스톡 <span style="color:${bdCls}">gap ${gd.toFixed(1)}%</span></div></div>`);
-  if (ship.stockSus != null) {
-    const sus = f.dps; // 에너지 sustain 풀스케일 적용값
-    const gs = ship.stockSus > 0 ? Math.abs(sus - ship.stockSus) / ship.stockSus * 100 : 0;
-    rows.push(`<div class="stat"><div class="v">${fmt(sus)} <span style="font-size:11px;color:var(--dim)">/ ${fmt(ship.stockSus)}</span></div><div class="k">지속 계산/스톡 <span style="color:var(--warn)">gap ${gs.toFixed(1)}% (풀 스케일)</span></div></div>`);
+  // 파일럿/터렛 분리 합산 (P4): 정답지가 둘로 나뉘어 있으므로 각각 대조.
+  const pb = f.pilotBurst || 0, tb = f.turretBurst || 0;
+  if (ship.stockDps != null) {
+    const gd = ship.stockDps > 0 ? Math.abs(pb - ship.stockDps) / ship.stockDps * 100 : 0;
+    const bdCls = gd < 5 ? 'var(--ok)' : 'var(--warn)';
+    rows.push(`<div class="stat"><div class="v">${fmt(pb)} <span style="font-size:11px;color:var(--dim)">/ ${fmt(ship.stockDps)}</span></div><div class="k">파일럿 버스트/스톡 <span style="color:${bdCls}">gap ${gd.toFixed(1)}%</span></div></div>`);
   }
+  if (ship.turretDps != null) {
+    const gd = ship.turretDps > 0 ? Math.abs(tb - ship.turretDps) / ship.turretDps * 100 : 0;
+    const bdCls = gd < 5 ? 'var(--ok)' : 'var(--warn)';
+    rows.push(`<div class="stat"><div class="v">${fmt(tb)} <span style="font-size:11px;color:var(--dim)">/ ${fmt(ship.turretDps)}</span></div><div class="k">터렛 버스트/스톡 <span style="color:${bdCls}">gap ${gd.toFixed(1)}%</span></div></div>`);
+  }
+  if (!rows.length)
+    rows.push(`<div class="stat"><div class="v">${fmt(f.dpsBurst)}</div><div class="k">총 버스트 (정답지 없음)</div></div>`);
+  const ps = f.pilotDps || 0, ts = f.turretDps || 0;
+  if (ship.stockSus != null) {
+    const gs = ship.stockSus > 0 ? Math.abs(ps - ship.stockSus) / ship.stockSus * 100 : 0;
+    rows.push(`<div class="stat"><div class="v">${fmt(ps)} <span style="font-size:11px;color:var(--dim)">/ ${fmt(ship.stockSus)}</span></div><div class="k">파일럿 지속/스톡 <span style="color:var(--warn)">gap ${gs.toFixed(1)}% (풀 스케일)</span></div></div>`);
+  }
+  if (ship.turretSus != null) {
+    const gs = ship.turretSus > 0 ? Math.abs(ts - ship.turretSus) / ship.turretSus * 100 : 0;
+    rows.push(`<div class="stat"><div class="v">${fmt(ts)} <span style="font-size:11px;color:var(--dim)">/ ${fmt(ship.turretSus)}</span></div><div class="k">터렛 지속/스톡 <span style="color:var(--warn)">gap ${gs.toFixed(1)}% (풀 스케일)</span></div></div>`);
+  }
+  const pa = f.pilotAlpha || 0;
   if (ship.stockAlpha != null)
-    rows.push(`<div class="stat"><div class="v">${fmt(f.alpha)} <span style="font-size:11px;color:var(--dim)">/ ${fmt(ship.stockAlpha)}</span></div><div class="k">알파 계산/스톡</div></div>`);
+    rows.push(`<div class="stat"><div class="v">${fmt(pa)} <span style="font-size:11px;color:var(--dim)">/ ${fmt(ship.stockAlpha)}</span></div><div class="k">파일럿 알파/스톡</div></div>`);
+  if (ship.turretAlpha != null)
+    rows.push(`<div class="stat"><div class="v">${fmt(f.turretAlpha || 0)} <span style="font-size:11px;color:var(--dim)">/ ${fmt(ship.turretAlpha)}</span></div><div class="k">터렛 알파/스톡</div></div>`);
   el.innerHTML = rows.join('');
 }
 
