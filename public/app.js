@@ -630,7 +630,7 @@ function fitStats() {
     perGroup[it.grp].maxUnits += it.maxU;
     if (it.kind === 'cooler') {
       s.cooling += (it.c.rate || 0) * units / it.maxU;
-      coolerList.push({ slotId, name: it.c.name || '', units, maxUnits: it.maxU, pwRaw: it.pwRaw, off: !!pwr.coolerOff[slotId] });
+      coolerList.push({ slotId, name: it.c.name || '', units, maxUnits: it.maxU, pwRaw: it.pwRaw, off: !!pwr.coolerOff[slotId], pranges: it.c.pranges || null });
     }
     if (it.kind === 'weapon') {
       // Erkul 풀 분리 (2026-11-01): 계통핍 ratio = 전력 on/off, poolRatio = 무기 출력.
@@ -744,6 +744,13 @@ function fitStats() {
   return s;
 }
 
+// P1: 함선 스톡 배분 (db.json ships[].stockUsed, sim 그룹 id 기준).
+function stockFor(gid) {
+  const ship = (DB.ships || []).find(x => (x.slug === curShip || x.class === curShip)) || {};
+  const su = ship.stockUsed || {};
+  return su[gid] != null ? su[gid] : null;
+}
+
 // spviewer Qn() 그대로: e(인가 칸수)가 속한 Start 구간의 Modifier 반환.
 // pranges = [{s:Start, m:Modifier}] (db.json 단축형). 없으면 1.
 function qnSpv(units, pranges) {
@@ -785,8 +792,11 @@ function renderPwrBlocks() {
     const qn = qnSpv(off ? 0 : units, pg.pranges);
     const spvTxt = (!off && pg.pranges)
       ? `<div class="pwr-w" style="opacity:.65" title="spviewer Qn: ${units}x${qn}">Qn ${fmt(pg.spv)}</div>` : '';
+    const stock = stockFor(g.id);
+    const stockTxt = (stock != null && !noData)
+      ? `<div class="pwr-w" style="opacity:.55" title="스톡 배분 (게임 덤프 UsedSegmentsGrouped)">S ${fmt(stock)}</div>` : '';
     const sub = noData ? '<div class="pwr-w">—</div>'
-      : `<div class="pwr-w">${off ? 'OFF' : fmt(pg.power) + 'p'}</div>` + spvTxt;
+      : `<div class="pwr-w">${off ? 'OFF' : fmt(pg.power) + 'p'}</div>` + spvTxt + stockTxt;
     const tip = noData
       ? `${g.label}: 이 함선에 해당 슬롯이 없거나 전력 데이터가 게임 덤프에 없음`
       : `${g.label}: 칸 클릭=그 칸까지 배분(아래부터), 같은 칸 재클릭=1핍 감소, 아이콘=계통 전체 ON/OFF`;
@@ -803,7 +813,11 @@ function renderPwrBlocks() {
     const blocks = pipCells(maxU, units, off ? ' grp-off' : '');
     const num = maxU > 0 ? `<div class="pip-num">${off ? 0 : units}</div>` : '';
     const draw = maxU > 0 ? cc.pwRaw * units / maxU : 0;
-    const sub = `<div class="pwr-w">${off ? 'OFF' : fmt(draw) + 'p'}</div>`;
+    const cqn = qnSpv(off ? 0 : units, cc.pranges);
+    const cspv = units * cqn;
+    const cspvTxt = (!off && cc.pranges)
+      ? `<div class="pwr-w" style="opacity:.65" title="spviewer Qn: ${units}x${cqn}">Qn ${fmt(cspv)}</div>` : '';
+    const sub = `<div class="pwr-w">${off ? 'OFF' : fmt(draw) + 'p'}</div>` + cspvTxt;
     const key = 'cooler:' + cc.slotId;
     return `<div class="pwr-col${off ? ' off' : ''}" data-grp="${key}" title="쿨러 ${cc.name}: 칸 클릭=그 칸까지 배분(아래부터), 같은 칸 재클릭=1핍 감소, 아이콘=개별 ON/OFF">`
       + `<div class="pips">${num}${blocks}</div>`

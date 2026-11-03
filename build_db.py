@@ -340,12 +340,30 @@ def main():
         # Erkul Ln() weapon pool (2026-11-01): PowerPools.WeaponGun.Size.
         # Size>0 = 핍 상한, -1 = unlimited, None = 함선 파일에 없음.
         pp = s.get('PowerPools') or {}
+        pw = s.get('Power') or {}
+        # P1: 함선 스톡 전력 배분 (spviewer 성능탭 대응).
+        #   stockGen: GenerationSegments (스톡 발전 총합)
+        #   stockUsed: UsedSegmentsGrouped (계통별 스톡 인가량)
+        #   stockMax: MaxSegments (계통별 상한)
+        #   sim PWR_GROUPS id로 매핑: WeaponGun->weapon, Cooler->coolers,
+        #   Shield->shield, Radar->radar, LifeSupportGenerator->lifeSupport,
+        #   FlightController->engine. 그 외(채굴/구난/QED 등)는 stockExtra로 원본 유지.
+        _used = pw.get('UsedSegmentsGrouped') or {}
+        _max = pw.get('MaxSegments') or {}
+        _map = {'WeaponGun': 'weapon', 'Cooler': 'coolers', 'Shield': 'shield',
+                'Radar': 'radar', 'LifeSupportGenerator': 'lifeSupport',
+                'FlightController': 'engine'}
+        _su = {(_map[k] if k in _map else k): v for k, v in _used.items()}
+        _sm = {(_map[k] if k in _map else k): v for k, v in _max.items()}
         ships.append({'class': klass, 'name': s.get('Name'),
                       'slug': klass.lower().replace('_', '-'),
                       'career': s.get('Career'), 'role': s.get('Role'),
                       'size': s.get('Size'), 'crew': s.get('Crew'),
                       'cargo': s.get('Cargo'),
-                      'wpool': (pp.get('WeaponGun') or {}).get('Size')})
+                      'wpool': (pp.get('WeaponGun') or {}).get('Size'),
+                      'stockGen': pw.get('GenerationSegments'),
+                      'stockUsed': _su or None,
+                      'stockMax': _sm or None})
     ships.sort(key=lambda s: s['name'] or '')
 
     db = {
