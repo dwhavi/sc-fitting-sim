@@ -834,8 +834,8 @@ function renderPwrBlocks() {
     return `<div class="pwr-col${off ? ' off' : ''}${noData ? ' nodata' : ''}" data-grp="${g.id}" title="${tip}">`
       + `<div class="pwr-ico" data-ico="${g.id}">${g.icon}</div>`
       + useTxt
-      + `<div class="pips bottom">${blocks}</div>`
-      + sub + `</div>`;
+      + sub
+      + `<div class="pips bottom">${blocks}</div>` + `</div>`;
   }).join('');
 
   const coolerCols = (f.perCooler || []).map(cc => {
@@ -854,8 +854,8 @@ function renderPwrBlocks() {
     return `<div class="pwr-col${off ? ' off' : ''}" data-grp="${key}" title="쿨러 ${cc.name}: 칸 클릭=그 칸까지 배분(아래부터), 같은 칸 재클릭=1핍 감소, 아이콘=개별 ON/OFF">`
       + `<div class="pwr-ico" data-ico="coolers">❄️</div>`
       + useTxt
-      + `<div class="pips bottom">${blocks}</div>`
-      + sub + `</div>`;
+      + sub
+      + `<div class="pips bottom">${blocks}</div>` + `</div>`;
   }).join('');
 
   $('pwrBlocks').innerHTML = famCols + coolerCols;
