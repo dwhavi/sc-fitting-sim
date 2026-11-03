@@ -977,6 +977,7 @@ function updateStats() {
   renderPwrBlocks();
   renderShieldTank(f);
   renderMissiles(f);
+  renderSig();
   const typeLine = ['Energy', 'Physical', 'Distortion'].filter(t => f.typeDps[t] > 0)
     .map(t => `${t.slice(0, 4)} ${fmt(f.typeDps[t])}`).join(' · ') || '—';
   // 가용 = 발전핍(스로틀 없음). 부족분 있으면 경고.
@@ -998,6 +999,36 @@ function updateStats() {
     + (f.cooling > 0
     ? `<div style="font-size:12px;margin-top:6px" class="${hcls}">열 부하율 ${hpct.toFixed(0)}% ${hpct > 100 ? '⚠️ 과열! 쿨러 부족' : ''}</div><div class="bar"><i style="width:${Math.min(100, hpct)}%;background:${hpct > 100 ? 'var(--bad)' : hpct > 85 ? 'var(--warn)' : 'var(--ok)'}"></i></div>`
     : '<div style="font-size:12px;color:var(--dim);margin-top:6px">쿨러를 장착하세요</div>');
+}
+
+function renderSig() {
+  // P2: 시그니처(EM/IR) + 기동 — 함선 스톡값 표시. 장착 변경과 무관한 hull 고정값.
+  const el = $('sigPanel');
+  if (!el) return;
+  const ship = (DB.ships || []).find(x => (x.slug === curShip || x.class === curShip)) || {};
+  if (!ship.class) { el.innerHTML = '<div style="font-size:12px;color:var(--dim)">함선을 선택하세요</div>'; return; }
+  const rows = [];
+  if (ship.emTotal != null)
+    rows.push(`<div class="stat"><div class="v">${fmt(ship.emTotal)}</div><div class="k">EM 총합 (스톡 · QD시 ${fmt(ship.emQuantum)})</div></div>`);
+  if (ship.irTotal != null)
+    rows.push(`<div class="stat"><div class="v">${fmt(ship.irTotal)}</div><div class="k">IR 총합 (스톡)</div></div>`);
+  if (ship.emGroups) {
+    const top = Object.entries(ship.emGroups).sort((a, b) => b[1] - a[1]).slice(0, 3)
+      .map(([k, v]) => `${k} ${fmt(v)}`).join(' · ');
+    rows.push(`<div class="stat"><div class="v" style="font-size:13px">${top}</div><div class="k">EM 기여 상위 (스톡)</div></div>`);
+  }
+  const spd = [];
+  if (ship.ifcs) {
+    if (ship.ifcs.ScmSpeed != null) spd.push(`SCM ${ship.ifcs.ScmSpeed}`);
+    if (ship.ifcs.MaxSpeed != null) spd.push(`MAX ${ship.ifcs.MaxSpeed}`);
+    if (ship.ifcs.BoostSpeedForward != null) spd.push(`BST ${ship.ifcs.BoostSpeedForward}`);
+  }
+  if (spd.length) rows.push(`<div class="stat"><div class="v" style="font-size:13px">${spd.join(' · ')}</div><div class="k">속도 m/s (스톡)</div></div>`);
+  if (ship.agility)
+    rows.push(`<div class="stat"><div class="v" style="font-size:13px">P ${ship.agility.Pitch}° Y ${ship.agility.Yaw}° R ${ship.agility.Roll}°</div><div class="k">회전 °/s (스톡)</div></div>`);
+  if (ship.accel && ship.accel.Main != null)
+    rows.push(`<div class="stat"><div class="v" style="font-size:13px">${fmt(ship.accel.Main)} / ${fmt(ship.accel.Maneuver)}</div><div class="k">가속 Main/Man m/s² (스톡)</div></div>`);
+  el.innerHTML = rows.join('') || '<div style="font-size:12px;color:var(--dim)">스톡 데이터 없음</div>';
 }
 
 function saveBuild() {

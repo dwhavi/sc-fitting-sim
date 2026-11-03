@@ -352,9 +352,21 @@ def main():
         _max = pw.get('MaxSegments') or {}
         _map = {'WeaponGun': 'weapon', 'Cooler': 'coolers', 'Shield': 'shield',
                 'Radar': 'radar', 'LifeSupportGenerator': 'lifeSupport',
-                'FlightController': 'engine'}
+                'FlightController': 'engine', 'PowerPlant': 'power',
+                'QuantumDrive': 'qd'}
         _su = {(_map[k] if k in _map else k): v for k, v in _used.items()}
         _sm = {(_map[k] if k in _map else k): v for k, v in _max.items()}
+        _em = s.get('Emission') or {}
+        _fc = s.get('FlightCharacteristics') or {}
+        _ifcs = _fc.get('IFCS') or {}
+        _ag = s.get('Agility') or {}
+        _acc = _fc.get('Acceleration') or {}
+        _prop = s.get('Propulsion') or {}
+        # P2: EM + 기동 (spviewer 성능탭 대응).
+        #   emGroups: 계통별 EM 기여도 (스텔스 판단용, sim 그룹 id 매핑)
+        #   emTotal/irTotal: 스톡 총합 (Shields 기준 + Quantum 별도)
+        #   agility: 회전 °/s, accel: 가속도, ifcs: 속도 4종, thrust: 추력
+        _eg = _em.get('EmGroupsShields') or {}
         ships.append({'class': klass, 'name': s.get('Name'),
                       'slug': klass.lower().replace('_', '-'),
                       'career': s.get('Career'), 'role': s.get('Role'),
@@ -363,7 +375,16 @@ def main():
                       'wpool': (pp.get('WeaponGun') or {}).get('Size'),
                       'stockGen': pw.get('GenerationSegments'),
                       'stockUsed': _su or None,
-                      'stockMax': _sm or None})
+                      'stockMax': _sm or None,
+                      'emGroups': {(_map[k] if k in _map else k): v for k, v in _eg.items()} or None,
+                      'emTotal': _em.get('EmShields'),
+                      'emQuantum': _em.get('EmQuantum'),
+                      'irTotal': _em.get('IrShields'),
+                      'emPerSeg': _em.get('EmPerSegment'),
+                      'agility': ({k: _ag[k] for k in ('Pitch', 'Yaw', 'Roll') if _ag.get(k) is not None} or None),
+                      'accel': ((_acc.get('Raw') or None) or None),
+                      'ifcs': ({k: _ifcs[k] for k in ('ScmSpeed', 'MaxSpeed', 'BoostSpeedForward', 'BoostSpeedBackward') if _ifcs.get(k) is not None} or None),
+                      'thrust': ((_prop.get('ThrustCapacity') or None) or None)})
     ships.sort(key=lambda s: s['name'] or '')
 
     db = {
