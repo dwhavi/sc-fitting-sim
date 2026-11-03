@@ -978,6 +978,7 @@ function updateStats() {
   renderShieldTank(f);
   renderMissiles(f);
   renderSig();
+  renderStockCheck(f);
   const typeLine = ['Energy', 'Physical', 'Distortion'].filter(t => f.typeDps[t] > 0)
     .map(t => `${t.slice(0, 4)} ${fmt(f.typeDps[t])}`).join(' · ') || '—';
   // 가용 = 발전핍(스로틀 없음). 부족분 있으면 경고.
@@ -1029,6 +1030,39 @@ function renderSig() {
   if (ship.accel && ship.accel.Main != null)
     rows.push(`<div class="stat"><div class="v" style="font-size:13px">${fmt(ship.accel.Main)} / ${fmt(ship.accel.Maneuver)}</div><div class="k">가속 Main/Man m/s² (스톡)</div></div>`);
   el.innerHTML = rows.join('') || '<div style="font-size:12px;color:var(--dim)">스톡 데이터 없음</div>';
+}
+
+function renderStockCheck(f) {
+  // P3: 스톡 DPS 정답지 대조. 순정 빌드(교체 없음)일 때만 게임 산출값과 비교.
+  //   버스트 gap>5% = 터렛 합산 누락(원천 FixedWeapons에 터렛 없음) 또는 DB 미지원 무기.
+  //   지속 gap = 풀 스케일 적용 여부 차이 (sim은 poolRatio 적용, 정답지는 게임 스케일).
+  let el = $('stockCheck');
+  if (!el) {
+    const host = $('sigPanel');
+    if (!host || !host.parentNode) return;
+    el = document.createElement('div');
+    el.className = 'stats'; el.id = 'stockCheck';
+    const h = document.createElement('div');
+    h.className = 'sec-h'; h.textContent = '🎯 스톡 DPS 대조 (순정 빌드 기준)';
+    host.parentNode.insertBefore(h, host.nextSibling);
+    host.parentNode.insertBefore(el, h.nextSibling);
+  }
+  const ship = (DB.ships || []).find(x => (x.slug === curShip || x.class === curShip)) || {};
+  const changed = Object.keys(build).some(k => build[k]);
+  if (ship.stockDps == null) { el.innerHTML = '<div style="font-size:12px;color:var(--dim)">스톡 DPS 데이터 없음</div>'; return; }
+  if (changed) { el.innerHTML = '<div style="font-size:12px;color:var(--dim)">부품 교체됨 — 순정 복원(초기화) 후 대조 가능</div>'; return; }
+  const rows = [];
+  const gd = ship.stockDps > 0 ? Math.abs(f.dpsBurst - ship.stockDps) / ship.stockDps * 100 : 0;
+  const bdCls = gd < 5 ? 'var(--ok)' : 'var(--warn)';
+  rows.push(`<div class="stat"><div class="v">${fmt(f.dpsBurst)} <span style="font-size:11px;color:var(--dim)">/ ${fmt(ship.stockDps)}</span></div><div class="k">버스트 계산/스톡 <span style="color:${bdCls}">gap ${gd.toFixed(1)}%</span></div></div>`);
+  if (ship.stockSus != null) {
+    const sus = f.dps; // 에너지 sustain 풀스케일 적용값
+    const gs = ship.stockSus > 0 ? Math.abs(sus - ship.stockSus) / ship.stockSus * 100 : 0;
+    rows.push(`<div class="stat"><div class="v">${fmt(sus)} <span style="font-size:11px;color:var(--dim)">/ ${fmt(ship.stockSus)}</span></div><div class="k">지속 계산/스톡 <span style="color:var(--warn)">gap ${gs.toFixed(1)}% (풀 스케일)</span></div></div>`);
+  }
+  if (ship.stockAlpha != null)
+    rows.push(`<div class="stat"><div class="v">${fmt(f.alpha)} <span style="font-size:11px;color:var(--dim)">/ ${fmt(ship.stockAlpha)}</span></div><div class="k">알파 계산/스톡</div></div>`);
+  el.innerHTML = rows.join('');
 }
 
 function saveBuild() {

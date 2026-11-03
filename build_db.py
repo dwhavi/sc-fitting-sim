@@ -367,6 +367,12 @@ def main():
         #   emTotal/irTotal: 스톡 총합 (Shields 기준 + Quantum 별도)
         #   agility: 회전 °/s, accel: 가속도, ifcs: 속도 4종, thrust: 추력
         _eg = _em.get('EmGroupsShields') or {}
+        _wp = s.get('Weaponry') or {}
+        _fw = _wp.get('FixedWeapons') or {}
+        # P3: 스톡 DPS 정답지 (스톡 장착 기준 게임 산출값).
+        #   stockDps/stockSus/stockAlpha = PilotDps/PilotSustainedDps/PilotAlpha
+        #   turretDps/turretSus/turretAlpha = 터렛 합산 (있을 때만)
+        #   mslDmg = TotalMissiles
         ships.append({'class': klass, 'name': s.get('Name'),
                       'slug': klass.lower().replace('_', '-'),
                       'career': s.get('Career'), 'role': s.get('Role'),
@@ -381,6 +387,13 @@ def main():
                       'emQuantum': _em.get('EmQuantum'),
                       'irTotal': _em.get('IrShields'),
                       'emPerSeg': _em.get('EmPerSegment'),
+                      'stockDps': _wp.get('PilotDps'),
+                      'stockSus': _wp.get('PilotSustainedDps'),
+                      'stockAlpha': _wp.get('PilotAlpha'),
+                      'turretDps': _wp.get('TurretDps'),
+                      'turretSus': _wp.get('TurretSustainedDps'),
+                      'turretAlpha': _wp.get('TurretAlpha'),
+                      'stockMsl': _wp.get('TotalMissiles'),
                       'agility': ({k: _ag[k] for k in ('Pitch', 'Yaw', 'Roll') if _ag.get(k) is not None} or None),
                       'accel': ((_acc.get('Raw') or None) or None),
                       'ifcs': ({k: _ifcs[k] for k in ('ScmSpeed', 'MaxSpeed', 'BoostSpeedForward', 'BoostSpeedBackward') if _ifcs.get(k) is not None} or None),
