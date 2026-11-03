@@ -817,8 +817,17 @@ function renderPwrBlocks() {
     const stock = stockFor(g.id);
     const stockTxt = (stock != null && !noData)
       ? `<div class="pwr-w" style="opacity:.55" title="스톡 배분 (게임 덤프 UsedSegmentsGrouped)">S ${fmt(stock)}</div>` : '';
+    // 무기 캐패시터 줄 (Erkul Ln/U, 기존 🔋 풀 컬럼 흡수): 에너지 무기 있을 때만.
+    // 클릭 = 풀 핍 직접 조절 (줄 클릭 위치로 근접 칸 추정).
+    let capTxt = '';
+    if (g.id === 'weapon' && !off && !noData && f.pool && f.pool.size != null && f.pool.size !== -1) {
+      const pool = f.pool;
+      const pu = Math.round(pool.selected);
+      const pct = pool.consumption > 0 ? Math.round(pool.ratio * 100) : 100;
+      capTxt = `<div class="pwr-w capline" data-cap="1" style="color:var(--acc);cursor:pointer" title="무기 캐패시터: 에너지 무기 출력 비율 ${pct}% (선택 ${pu}/${pool.size}핍). 줄 클릭=그 위치까지 풀 배분">🔋 ${pu}/${pool.size} · ${pct}%</div>`;
+    }
     const sub = noData ? '<div class="pwr-w">—</div>'
-      : `<div class="pwr-w">${off ? 'OFF' : fmt(pg.power) + 'p'}</div>` + spvTxt + stockTxt;
+      : `<div class="pwr-w">${off ? 'OFF' : fmt(pg.power) + 'p'}</div>` + spvTxt + stockTxt + capTxt;
     const tip = noData
       ? `${g.label}: 이 함선에 해당 슬롯이 없거나 전력 데이터가 게임 덤프에 없음`
       : `${g.label}: 칸 클릭=그 칸까지 배분(아래부터), 같은 칸 재클릭=1핍 감소, 아이콘=계통 전체 ON/OFF`;
@@ -847,25 +856,7 @@ function renderPwrBlocks() {
       + sub + `</div>`;
   }).join('');
 
-  // 무기 풀 컬럼 (Erkul Ln/U): 에너지 무기가 있을 때만 표시.
-  // 칸 클릭 = 풀에 k핍 배분 (poolSel), 풀 상한 = 함선 PowerPools.WeaponGun.Size.
-  const poolCol = (() => {
-    const pool = f.pool;
-    if (!pool || pool.size == null) return '';
-    if (pool.size === -1) return ''; // 무제한 풀은 컬럼 불필요
-    const maxU = pool.size;
-    const units = Math.round(pool.selected);
-    const blocks = pipCells(maxU, units, '');
-    const num = `<div class="pip-num">${units}</div>`;
-    const pct = pool.consumption > 0 ? Math.round(pool.ratio * 100) : 100;
-    const tip = `무기 풀: 에너지 무기 출력 비율 ${pct}% (선택 ${units}/${maxU}핍). 칸 클릭=그 칸까지 배분, 아이콘=풀 최대치로 복원`;
-    return `<div class="pwr-col" data-grp="__pool" title="${tip}">`
-      + `<div class="pwr-ico" data-ico="__pool">🔋</div>`
-      + `<div class="pips">${num}${blocks}</div>`
-      + `<div class="pwr-w">${pct}%</div></div>`;
-  })();
-
-  $('pwrBlocks').innerHTML = famCols + poolCol + coolerCols;
+  $('pwrBlocks').innerHTML = famCols + coolerCols;
   document.querySelectorAll('.pwr-col').forEach(el => {
     el.addEventListener('click', e => {
       const grp = el.dataset.grp;
@@ -889,14 +880,18 @@ function renderPwrBlocks() {
         updateStats();
         return;
       }
-      if (grp === '__pool') { // 무기 풀 컬럼: Erkul U()/Ln()
+      if (e.target.closest('.capline') && grp === 'weapon') { // 무기 캐패시터 줄: 풀 핍 조절
         const pool = fitStats().pool;
         if (!pool || pool.size == null || pool.size === -1) return;
-        if (e.target.closest('.pwr-ico')) pwr.poolSel = null; // 아이콘 = 풀 최대치로 복원
-        else if (!isNaN(k)) {
+        // 줄 클릭 위치 → 풀 핍 추정 (줄 너비 비례)
+        let pk = NaN;
+        const r = e.target.closest('.capline').getBoundingClientRect();
+        const frac = r.width > 0 ? 1 - (e.clientX - r.left) / r.width : 1;
+        pk = Math.max(1, Math.min(pool.size, Math.round(frac * pool.size)));
+        if (!isNaN(pk)) {
           const cur = Math.round(pool.selected);
-          pwr.poolSel = (cur === k) ? Math.max(0, k - 1) : Math.max(0, Math.min(pool.size, k));
-        } else return;
+          pwr.poolSel = (cur === pk) ? Math.max(0, pk - 1) : pk;
+        }
         updateStats();
         return;
       }
