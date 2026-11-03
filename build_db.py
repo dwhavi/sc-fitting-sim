@@ -95,10 +95,19 @@ def base(x):
 
 
 def rn_power(si):
-    """ResourceNetwork -> {'pw','pwMinFrac','pwGen','em'} (None when absent).
+    """ResourceNetwork -> {'pw','pwMinFrac','pwGen','em','ir','pranges'} (None when absent).
 
     Replaces the removed SPowerSegmentResourceUnit path. Validated 892/892
     against the live db.json — see extract_power_rn.py.
+
+    P0 (spviewer식 병행 표시용):
+      pranges: States[0].PowerRanges [{Start,Modifier,RegisterRange}] 그대로.
+               spviewer Qn(segments, PowerRanges) 구간 스케일의 입력.
+      ir:      States[0].Signature.IR (쿨러 IR 표시용. 없으면 None).
+    NOTE: spviewer 구스키마의 Consumption.UnitPerSec/Segment 분리형과 달리
+    현 덤프(2026-10~)는 Rate 단일값이다. Rate==pw(핍 칸수)에 대응하며,
+    UnitPerSec에 대응하는 별도 필드는 덤프에 없다. spviewer식
+    nt=UnitPerSec+Segment의 완전 재현은 불가 — Qn 스케일(rt)만 이식한다.
     """
     R = (si or {}).get('ResourceNetwork') or {}
     st = (R.get('States') or [{}])[0]
@@ -117,10 +126,16 @@ def rn_power(si):
     sig = st.get('Signature') or {}
     if sig.get('EM') is not None:
         out['em'] = sig.get('EM')
+    if sig.get('IR') is not None:
+        out['ir'] = sig.get('IR')
     if 'em' not in out:
         mx = ((si or {}).get('Emission') or {}).get('Em') or {}
         if mx.get('Maximum') is not None:
             out['em'] = mx['Maximum']
+    pr = st.get('PowerRanges')
+    if pr:
+        out['pranges'] = [{'s': p.get('Start'), 'm': p.get('Modifier'),
+                           'r': p.get('RegisterRange')} for p in pr]
     return out
 
 
@@ -349,6 +364,20 @@ def main():
         'turrets': sorted(turrets, key=lambda w: (w['size'] or 0, w['name'] or '')),
         'radars': sorted(radars, key=lambda w: (w['size'] or 0, w['name'] or '')),
     }
+
+    if not a.no_freeze and os.path.exists(a.freeze_from):
+        _old = json.load(io.open(a.freeze_from, encoding='utf-8'))
+        restored = 0
+        for _key in ('weapons', 'shields', 'powerplants', 'coolers', 'qds',
+                     'racks', 'missiles', 'turrets', 'radars'):
+            _have = {e['class'] for e in db[_key]}
+            for _e in _old.get(_key, []):
+                if _e.get('class') not in _have:
+                    db[_key].append(_e)
+                    restored += 1
+            db[_key] = sorted(db[_key], key=lambda w: (w.get('size') or 0, w.get('name') or ''))
+        if restored:
+            print('restored %d classes missing from new dump (old DB carried)' % restored)
 
     json.dump(db, io.open(a.out, 'w', encoding='utf-8'), ensure_ascii=False)
     print('wrote', a.out)

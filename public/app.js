@@ -590,8 +590,19 @@ function fitStats() {
   //  아이템별 비례 반올림으로 나누면 총량이 목표와 어긋난다
   //  (예: 무기 2문×2핍=4핍 그룹에서 off=3 → round(1.5)=2 씩 깎여 총 0핍).
   //  슬롯 순서대로 목표량까지 채워 총량을 정확히 맞춘다.
-  const grpMax = {}, grpLeft = {};
-  for (const it of items) grpMax[it.grp] = (grpMax[it.grp] || 0) + it.maxU;
+  const grpMax = {}, grpLeft = {}, grpPranges = {};
+  for (const it of items) {
+    grpMax[it.grp] = (grpMax[it.grp] || 0) + it.maxU;
+    // P0: 그룹별 pranges 수집 — 슬롯 중 최대 Start 범위를 가진 대표 pranges 사용.
+    // (동일 계통 내 아이템 pranges가 다르면 Start 최대값이 가장 보수적)
+    const pr = it.c.pranges;
+    if (pr && pr.length) {
+      const cur = grpPranges[it.grp];
+      const span = Math.max(...pr.map(p => p.s != null ? p.s : 0));
+      const curSpan = cur ? Math.max(...cur.map(p => p.s != null ? p.s : 0)) : -1;
+      if (!cur || span > curSpan) grpPranges[it.grp] = pr;
+    }
+  }
   for (const gid of Object.keys(grpMax)) {
     const off = Math.max(0, Math.min(pwr.segOff[gid] || 0, grpMax[gid]));
     grpLeft[gid] = grpMax[gid] - off;
@@ -720,7 +731,29 @@ function fitStats() {
   s.avail = s.output;   // 스로틀 없음: 발전핍을 100% 사용
   s.short = Math.max(0, s.power - s.avail);
   s.typeDps = typeDps; s.guns = guns; s.perGroup = perGroup; s.perCooler = coolerList;
+  // ---- P0: spviewer식 Qn 병행 집계 (Erkul식과 나란히 표시, 검증용) ----
+  //  rt = units × Qn(units, pranges) — Qn은 Start 구간별 Modifier 조회.
+  //  덤프가 UnitPerSec/Segment 분리형이 아니라 Rate 단일값이라
+  //  nt=UnitPerSec+Segment 재현은 불가, Qn 스케일만 적용한다.
+  //  쉴드 nt = pw × currentModifier는 perGroup.units/maxUnits로 근사.
+  for (const gid of Object.keys(s.perGroup)) {
+    const pg = s.perGroup[gid];
+    pg.pranges = grpPranges[gid] || null;
+    pg.spv = pg.units * qnSpv(pg.units, pg.pranges);
+  }
   return s;
+}
+
+// spviewer Qn() 그대로: e(인가 칸수)가 속한 Start 구간의 Modifier 반환.
+// pranges = [{s:Start, m:Modifier}] (db.json 단축형). 없으면 1.
+function qnSpv(units, pranges) {
+  if (!pranges || !pranges.length) return 1;
+  let mod = 1, best = -Infinity;
+  for (const p of pranges) {
+    const st = p.s != null ? p.s : 0;
+    if (units >= st && st >= best) { best = st; mod = (p.m != null ? p.m : 1); }
+  }
+  return mod;
 }
 
 function pipCells(maxU, units, extraCls) {
@@ -749,8 +782,11 @@ function renderPwrBlocks() {
     const blocks = pipCells(maxU, units, off ? ' grp-off' : '');
     const num = maxU > 0 ? `<div class="pip-num">${off ? 0 : units}</div>` : '';
     const noData = maxU === 0;
+    const qn = qnSpv(off ? 0 : units, pg.pranges);
+    const spvTxt = (!off && pg.pranges)
+      ? `<div class="pwr-w" style="opacity:.65" title="spviewer Qn: ${units}x${qn}">Qn ${fmt(pg.spv)}</div>` : '';
     const sub = noData ? '<div class="pwr-w">—</div>'
-      : `<div class="pwr-w">${off ? 'OFF' : fmt(pg.power) + 'p'}</div>`;
+      : `<div class="pwr-w">${off ? 'OFF' : fmt(pg.power) + 'p'}</div>` + spvTxt;
     const tip = noData
       ? `${g.label}: 이 함선에 해당 슬롯이 없거나 전력 데이터가 게임 덤프에 없음`
       : `${g.label}: 칸 클릭=그 칸까지 배분(아래부터), 같은 칸 재클릭=1핍 감소, 아이콘=계통 전체 ON/OFF`;
