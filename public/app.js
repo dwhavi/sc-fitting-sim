@@ -849,8 +849,18 @@ function renderPwrBlocks() {
   document.querySelectorAll('.pwr-col').forEach(el => {
     el.addEventListener('click', e => {
       const grp = el.dataset.grp;
+      let k = NaN;
       const pip = e.target.closest('.pip');
-      const k = pip ? parseInt(pip.dataset.pip, 10) : NaN;
+      if (pip) k = parseInt(pip.dataset.pip, 10);
+      else if (e.target.closest('.pips')) {
+        // 터치 게이트 확장: 칸 사이 빈틈 클릭 → 클릭 높이로 가장 가까운 칸 추정.
+        const cells = [...el.querySelectorAll('.pip')];
+        if (cells.length) {
+          const r = el.querySelector('.pips').getBoundingClientRect();
+          const frac = 1 - (e.clientY - r.top) / Math.max(1, r.height); // 아래=1
+          k = Math.max(1, Math.min(cells.length, Math.ceil(frac * cells.length)));
+        }
+      }
       if (grp.startsWith('cooler:')) { // 쿨러는 슬롯 단위 컬럼
         const slotId = grp.slice(7);
         if (e.target.closest('.pwr-ico')) pwr.coolerOff[slotId] = !pwr.coolerOff[slotId];
