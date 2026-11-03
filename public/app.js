@@ -762,32 +762,6 @@ function fitStats() {
     pg.pranges = grpPranges[gid] || null;
     pg.spv = pg.units * qnSpv(pg.units, pg.pranges);
   }
-  // ---- 100% 캡 표시: 초과 시 스톡 우선순위대로 '자동 삭감 시뮬레이션' ----
-  // stockUsed(UsedSegmentsGrouped) 비중 = 함선 기본 배분 우선순위.
-  // 실제 units는 손대지 않고(다음 클릭 시 복귀 방지) cappedUnits에만 삭감 결과를 담아
-  // PWR 컬럼에 '자동배분 후' 모습으로 표시한다. OFF 계통은 제외, weapon은 마지막.
-  s.capped = false; s.capUnits = {};
-  if (s.avail > 0 && s.power > s.avail) {
-    const ship = (DB.ships || []).find(x => (x.slug === curShip || x.class === curShip)) || {};
-    const su = ship.stockUsed || {};
-    let over = s.power - s.avail;
-    const order = Object.keys(s.perGroup)
-      .filter(gid => !pwr.grpOff[gid] && (s.perGroup[gid].units || 0) > 0 && gid !== 'engine' && gid !== 'lifeSupport')
-      .sort((a, b) => {
-        if (a === 'weapon') return 1;
-        if (b === 'weapon') return -1;
-        return (su[a] != null ? su[a] : 1e9) - (su[b] != null ? su[b] : 1e9);
-      });
-    for (const gid of order) s.capUnits[gid] = s.perGroup[gid].units;
-    for (const gid of order) {
-      if (over <= 0) break;
-      const cut = Math.min(s.capUnits[gid], Math.ceil(over));
-      if (cut <= 0) continue;
-      s.capUnits[gid] -= cut;
-      over -= cut;
-    }
-    s.capped = true;
-  }
   return s;
 }
 
@@ -831,25 +805,20 @@ function renderPwrBlocks() {
   // 빈 계통(maxU=0)은 컬럼 자체를 숨긴다 — 아이콘 자리 차지 방지.
   const famCols = PWR_GROUPS.filter(g => g.id !== 'coolers').filter(g => (f.perGroup[g.id].maxUnits || 0) > 0).map(g => {
     const pg = f.perGroup[g.id];
-    const maxU = pg.maxUnits;
-    // 100% 캡 표시: 자동배분 후 칸수 (삭감 없으면 units 그대로)
-    const capU = (!!pwr.grpOff[g.id] || !f.capped || f.capUnits[g.id] == null) ? pg.units : f.capUnits[g.id];
-    const cut = pg.units - capU;
-    const units = capU;
+    const maxU = pg.maxUnits, units = pg.units;
     const off = !!pwr.grpOff[g.id];
-    const blocks = pipCells(maxU, units, off ? ' grp-off' : '');
+    const over = f.short > 0; // 전력 오버: 게이지에 초과 표시
+    const blocks = pipCells(maxU, units, (off ? ' grp-off' : '') + (over && !off && units > 0 ? ' over' : ''));
     const num = maxU > 0 ? `<div class="pip-num">${off ? 0 : units}</div>` : '';
     const noData = maxU === 0;
     const qn = qnSpv(off ? 0 : units, pg.pranges);
     const spvTxt = (!off && pg.pranges)
-      ? `<div class="pwr-w" style="opacity:.65" title="spviewer Qn: ${units}x${qn}">Qn ${fmt(units * qn)}</div>` : '';
+      ? `<div class="pwr-w" style="opacity:.65" title="spviewer Qn: ${units}x${qn}">Qn ${fmt(pg.spv)}</div>` : '';
     const stock = stockFor(g.id);
     const stockTxt = (stock != null && !noData)
       ? `<div class="pwr-w" style="opacity:.55" title="스톡 배분 (게임 덤프 UsedSegmentsGrouped)">S ${fmt(stock)}</div>` : '';
-    const capTxt = (cut > 0 && !off)
-      ? `<div class="pwr-w" style="color:var(--warn)" title="100% 초과로 자동 삭감됨 (−${cut}핍). 스톡 우선순위 순">−${cut} 자동</div>` : '';
     const sub = noData ? '<div class="pwr-w">—</div>'
-      : `<div class="pwr-w">${off ? 'OFF' : fmt(pg.power) + 'p'}</div>` + spvTxt + stockTxt + capTxt;
+      : `<div class="pwr-w">${off ? 'OFF' : fmt(pg.power) + 'p'}</div>` + spvTxt + stockTxt;
     const tip = noData
       ? `${g.label}: 이 함선에 해당 슬롯이 없거나 전력 데이터가 게임 덤프에 없음`
       : `${g.label}: 칸 클릭=그 칸까지 배분(아래부터), 같은 칸 재클릭=1핍 감소, 아이콘=계통 전체 ON/OFF`;
@@ -1058,7 +1027,7 @@ function updateStats() {
     <div class="stat"><div class="v">${f.qdspeed ? (f.qdspeed / 299792458 * 100).toFixed(1) + '% c' : '—'}</div><div class="k">양자항행 속도</div></div>
     <div class="stat"><div class="v">${qdLine(f).v}</div><div class="k">${qdLine(f).k}</div></div>`;
   $('powerBar').innerHTML = (f.avail > 0
-    ? `<div style="font-size:12px" class="${pcls}">전력 사용률 ${pct.toFixed(0)}%${f.capped ? ' · <span style="color:var(--warn)">100% 캡 자동배분 중 (스톡 우선순위)</span>' : (f.short > 0 ? ` ⚠️ ${fmt(f.short)}핍 부족 — 핍 블럭을 끄세요` : '')}</div><div class="bar"><i style="width:${Math.min(100, pct)}%;background:${f.capped ? 'var(--warn)' : f.short > 0 ? 'var(--bad)' : pct > 85 ? 'var(--warn)' : 'var(--ok)'}"></i></div>`
+    ? `<div style="font-size:12px" class="${pcls}">전력 사용률 ${pct.toFixed(0)}%${f.short > 0 ? ` ⚠️ ${fmt(f.short)}핍 부족 — 핍 블럭을 끄세요` : ''}</div><div class="bar"><i style="width:${Math.min(100, pct)}%;background:${f.short > 0 ? 'var(--bad)' : pct > 85 ? 'var(--warn)' : 'var(--ok)'}"></i></div>`
     : '<div style="font-size:12px;color:var(--dim)">파워플랜트를 장착하세요</div>')
     + (f.cooling > 0
     ? `<div style="font-size:12px;margin-top:6px" class="${hcls}">열 부하율 ${hpct.toFixed(0)}% ${hpct > 100 ? '⚠️ 과열! 쿨러 부족' : ''}</div><div class="bar"><i style="width:${Math.min(100, hpct)}%;background:${hpct > 100 ? 'var(--bad)' : hpct > 85 ? 'var(--warn)' : 'var(--ok)'}"></i></div>`
