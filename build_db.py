@@ -6,7 +6,7 @@ Origin: StarCitizenWiki/scunpacked-data  (synced by sync_data.py)
   data/raw/.sync_meta.json         class -> ship file map
 
 Run order:
-    sync_data.py -> build_db.py -> extend_db.py -> extract_power_rn.py -> integrate_power.py
+    sync_data.py -> build_db.py (단독 — extend/integrate 내장됨, 2026-11-05 검증)
 
 Safe preview (does NOT touch the live db.json):
     python3 build_db.py --out /tmp/db_new.json

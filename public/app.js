@@ -205,9 +205,7 @@ function openCompModal(slotId, kind, opts){
   draw('');
 }
 function renderShipList(ships) {
-  $('shipSel').innerHTML = `<option value="">함선을 선택해주세요</option>` + ships.map(s => {
-    return `<option value="${s.slug}">${s.name}</option>`;
-  }).join('');
+  // shortcut: ships param unused — modal renders from DB.ships directly. Keep signature (called from init).
 }
 
 async function selectShip(slug) {
@@ -232,7 +230,6 @@ async function selectShip(slug) {
   FY = shipSlots.map(s => s.port);
   
   $('status').textContent = `${slug} — 슬롯 ${FY.length}개 (로컬 스냅샷)`;
-  try { $('shipSel').value = slug; } catch(_){}
   const _s = DB.ships.find(x => x.slug === slug);
   if (_s) $('shipCur').innerHTML = shipCurHTML(_s);
   renderSlots();
@@ -1136,13 +1133,13 @@ function renderStockCheck(f) {
 }
 
 function saveBuild() {
-  const ship = curShip || $('shipSel').value;
+  const ship = curShip;
   const data = { ship, build, pwr: { segOff: pwr.segOff, grpOff: pwr.grpOff, coolerSegs: pwr.coolerSegs, coolerOff: pwr.coolerOff, poolSel: pwr.poolSel }, savedAt: new Date().toISOString() };
   localStorage.setItem('scfit:' + ship, JSON.stringify(data));
   $('saveStatus').textContent = `저장됨 — ${ship} (${Object.keys(build).filter(k => build[k]).length}개 슬롯)`;
 }
 function loadBuild() {
-  const ship = curShip || $('shipSel').value;
+  const ship = curShip;
   const raw = localStorage.getItem('scfit:' + ship);
   if (!raw) { $('saveStatus').textContent = '저장된 빌드 없음'; return; }
   const saved = JSON.parse(raw);

@@ -13,13 +13,11 @@ public/                  배포 대상 (Vercel 정적 호스팅)
   db.json                부품/함선 DB        ← build_db.py 산출물
   ship_slots.json        함선별 슬롯 스냅샷   ← fetch_all_ship_slots.py 산출물
 
-build_db.py              db.json 생성 (scunpacked 원본 → 큐레이션)
+build_db.py              db.json 생성 (scunpacked 원본 → 큐레이션, 단독 실행)
 sync_data.py             scunpacked 원본 동기화 + 패치 감지
-extract_power_rn.py      전력 핍 추출 (ResourceNetwork 기반) + 검증
+extract_power_rn.py      전력 핍 추출 검증용 (build_db 내장, 교차검증 시 사용)
 fetch_all_ship_slots.py  슬롯 스냅샷 생성 (FleetYards)
-extend_db.py             (레거시) heat/powerBase 보강
-fetch_power_units.py     (레거시) per-item 핍 크롤
-integrate_power.py       (레거시) power_units.json 병합
+enrich_turret_slots.py   터렛 호환 보강 (ship_slots.json 후처리)
 ```
 
 ## 데이터 출처

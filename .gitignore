@@ -11,6 +11,8 @@ data/power_units.json
 public/db.json.bak
 public/db.json.prefresh
 public/db.json.pre*
+*.bak
+*.bak.*
 
 # ── 개발 잔여물 ────────────────────────────────────────────────
 public/test_*.html
