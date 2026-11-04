@@ -682,10 +682,12 @@ function fitStats() {
       guns.push(c);
       // 에너지 무기의 타입별 DPS는 2차 패스에서 sustain 비례로 넣는다 (1차 skip).
       if (!isEnergy) {
-        for (const [k, v] of Object.entries(c.dpsRaw || {})) typeDps[k] = (typeDps[k] || 0) + v * ratio;
-        // 탄도 sustain 분리 합산.
-        if (it.src === 'turret') s.turretDps = (s.turretDps || 0) + (c.dps || 0) * ratio;
-        else s.pilotDps = (s.pilotDps || 0) + (c.dps || 0) * ratio;
+        const bSus = (c.sustain != null ? c.sustain : c.dps) || 0;
+        for (const [k, v] of Object.entries(c.dpsRaw || {})) typeDps[k] = (typeDps[k] || 0) + v * ratio * (bSus / ((c.dps || 0) || 1));
+        // 탄도 sustain 분리 합산 (sustain 없으면 버스트 폴백).
+        if (it.src === 'turret') s.turretDps = (s.turretDps || 0) + bSus * ratio;
+        else s.pilotDps = (s.pilotDps || 0) + bSus * ratio;
+        if (c.sustain != null) s.hasSustain = true;
       }
       // 에너지 무기는 풀 스케일 대상 → 2차 패스에서 poolRatio 확정 후 적용.
       if (isEnergy) {
@@ -694,7 +696,7 @@ function fitStats() {
         poolItems.push({ c, sus, ratio, src: it.src || 'pilot' });
         if (sus != null || (c.capAmmo || 0) > 0) s.hasSustain = true;
       } else {
-        s.dps += (c.dps || 0) * ratio;
+        s.dps += ((c.sustain != null ? c.sustain : c.dps) || 0) * ratio;
       }
     }
     if (it.kind === 'shield') {
