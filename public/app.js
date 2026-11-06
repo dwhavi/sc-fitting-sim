@@ -93,7 +93,7 @@ function pipFmt(c){ if(c.pw!=null) return `${fmt(Math.ceil(c.pw))}핍`; if(c.pow
 function compShort(kind,c){
   if(!c) return '';
   const cb=clsBadge(c.cls);
-  if(kind==='weapon'){ const fam=c.family?` · ${c.family}`:''; const ft=fireBadge(c); return `${cb}${c.name}${fam} · ${fmt(c.dps)} DPS${susFmt(c)}${ft} · ${pipFmt(c)}${emFmt(c)}`; }
+  if(kind==='weapon'){ const fam=c.family?` · ${c.family}`:''; const ft=fireBadge(c); return `${c.name}${fam} · ${fmt(c.dps)} DPS${susFmt(c)}${ft} · ${pipFmt(c)}${emFmt(c)}`; }
   if(kind==='shield') return `${cb}${c.name} · HP ${fmt(c.hp)} · ${pipFmt(c)}${emFmt(c)}`;
   if(kind==='power') return `${cb}${c.name} · ${fmt(c.pwGen!=null?c.pwGen:c.output)}p${emFmt(c)}`;
   if(kind==='cooler') return `${cb}${c.name} · ${fmt(c.rate)} · ${pipFmt(c)}${emFmt(c)}`;
@@ -272,8 +272,7 @@ function optionsFor(kind, size) {
   }[kind] || (w => 0);
   const byPerf = (a, b) => (perf(b) - perf(a)) || ((a.name || '').localeCompare(b.name || ''));
   const f = {
-    weapon: [...DB.weapons.filter(w => w.size === size).sort(byPerf),
-             ...DB.weapons.filter(w => (w.size || 0) < size).sort((a, b) => (b.size - a.size) || byPerf(a, b))],
+    weapon: DB.weapons.filter(w => w.size === size).sort(byPerf),
     turret: (DB.turrets || []).filter(w => w.size === size),
     turretbase: (DB.turrets || []).filter(w => w.size === size),
     mount: [...(DB.turrets || []).filter(w => w.size === size)].sort(byPerf),
