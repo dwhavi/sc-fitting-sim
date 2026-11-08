@@ -44,7 +44,7 @@ const fmt = n => n == null ? '—' : (Math.round(n * 10) / 10).toLocaleString('e
 
 async function init() {
   $('status').textContent = 'DB 로딩 중…';
-  const r = await fetch('db.json');
+  const r = await fetch('db.json?v=141', {cache:'no-store'});
   DB = await r.json();
   const ships = DB.ships;
   renderShipList(ships);
@@ -216,7 +216,7 @@ async function selectShip(slug) {
   // Load ship slots from local snapshot
   if (!window.SHIP_SLOTS) {
     try {
-      const response = await fetch('ship_slots.json');
+      const response = await fetch('ship_slots.json?v=141', {cache:'no-store'});
       const data = await response.json();
       window.SHIP_SLOTS = data;
       console.log('Loaded ship slots:', data.ships.length, 'ships,', data.slots.length, 'slots');
