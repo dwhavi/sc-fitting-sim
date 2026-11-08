@@ -133,6 +133,9 @@ def cls_of(si):
 
 def base(x):
     si = x.get('stdItem', {}) or {}
+    # fix 2026-11-07: Unknown Manufacturer 필터가 새 덤프에서 정상 부품까지
+    # 걸러내 em/pranges 누락을 만들었음 (radars 59, powerplants 21 등).
+    # mfr 표기는 유지하되 필터에서는 제외한다.
     return {
         'class': x['className'],
         'name': si.get('Name') or x['className'],
@@ -394,6 +397,51 @@ def main():
 
     # ------------------------------------------------------------ ships
     ships, ship_missing = [], []
+    # sig 2026-11-07: 부품 EM 룩업 (스톡 스냅샷용). rn_power와 동일 규칙.
+    def _em_of(si):
+        R = (si or {}).get('ResourceNetwork') or {}
+        st = (R.get('States') or [{}])[0] or {}
+        sg = st.get('Signature') or {}
+        if sg.get('EM') is not None:
+            return sg.get('EM')
+        mx = ((si or {}).get('Emission') or {}).get('Em') or {}
+        return mx.get('Maximum')
+    _emBy = {}
+    for _x in items:
+        _emBy[_x.get('className')] = _em_of(_x.get('stdItem'))
+    def _stock_sig(s):
+        # 스톡 장착 부품의 EM 합산 (계통별). 중첩 Loadout 재귀 수집.
+        # LifeSupport 등 고정 슬롯도 원천 Loadout에서 직접 수집 → 앱 FY 의존 없음.
+        acc = {}
+        def _add(gkey, cls):
+            v = _emBy.get(cls)
+            if v is None:
+                return
+            a = acc.get(gkey) or {'em': 0, 'count': 0}
+            a['em'] += v
+            a['count'] += 1
+            acc[gkey] = a
+        def _walk(entries):
+            for e in (entries or []):
+                t = e.get('Type') or ''
+                cls = e.get('ClassName')
+                if 'WeaponGun' in t:
+                    _add('weapon', cls)
+                elif t.startswith('Shield.') and 'Controller' not in t:
+                    _add('shield', cls)
+                elif t.startswith('PowerPlant.'):
+                    _add('power', cls)
+                elif t.startswith('Cooler.') and 'Controller' not in t:
+                    _add('coolers', cls)
+                elif t.startswith('Radar.'):
+                    _add('radar', cls)
+                elif t.startswith('QuantumDrive.'):
+                    _add('qd', cls)
+                elif 'LifeSupport' in t and 'Controller' not in t:
+                    _add('lifeSupport', cls)
+                _walk(e.get('Loadout'))
+        _walk(s.get('Loadout'))
+        return acc or None
     for klass, fname in (smeta.get('class_to_file') or {}).items():
         p = os.path.join(RAW, 'ships', fname)
         if not os.path.exists(p):
@@ -449,7 +497,13 @@ def main():
                       'emTotal': _em.get('EmShields'),
                       'emQuantum': _em.get('EmQuantum'),
                       'irTotal': _em.get('IrShields'),
+                      'irQuantum': _em.get('IrQuantum'),
                       'emPerSeg': _em.get('EmPerSegment'),
+                      # sig 2026-11-07: 스톡 부품 스냅샷 (피팅 연동 EM 보정용).
+                      #   key: sim 그룹 id, val: {em: Σ스톡부품EM, count: 슬롯수}.
+                      #   앱에서 스톡적재→실측 그룹값 비율 k=group/stockEM 을 구해
+                      #   교체 부품에도 동일 k를 곱한다 (전원 끄면 그 계통 제외).
+                      'stockSig': _stock_sig(s),
                       'stockDps': _wp.get('PilotDps'),
                       'stockSus': _wp.get('PilotSustainedDps'),
                       'stockAlpha': _wp.get('PilotAlpha'),
