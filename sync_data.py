@@ -57,10 +57,13 @@ def api(url, tries=3):
 
 
 def remote_sha():
+    """-> (sha, date, version). version은 커밋 메시지의 빌드 태그 (4.10.3-LIVE.13165946)."""
     j = api(f'https://api.github.com/repos/{REPO}/commits?sha={BRANCH}&per_page=1')
     if not j:
-        return None, None
-    return j[0]['sha'], j[0]['commit']['committer']['date']
+        return None, None, None
+    msg = (j[0]['commit'].get('message') or '').split('\n')[0]
+    m = re.match(r'^(\d+\.\d+\.\d+-[A-Z]+\.\d+)', msg)
+    return j[0]['sha'], j[0]['commit']['committer']['date'], (m.group(1) if m else None)
 
 
 def ship_file_list(rebuild=False):
@@ -170,7 +173,7 @@ def main():
     all_ships = '--all' in args
 
     os.makedirs(RAW, exist_ok=True)
-    sha, date = remote_sha()
+    sha, date, version = remote_sha()
     prev = json.load(io.open(META, encoding='utf-8')) if os.path.exists(META) else {}
 
     print(f'원본: {REPO}')
@@ -238,6 +241,7 @@ def main():
 
     if sha or prev:
         json.dump({'commit': sha or prev.get('commit'), 'date': date or prev.get('date'),
+                   'version': version or prev.get('version'),
                    'synced': time.strftime('%Y-%m-%dT%H:%M:%S'),
                    'ship_files_available': len(files),
                    'ships_total': len(targets), 'ships_ok': n_ok, 'ships_skip': n_skip,

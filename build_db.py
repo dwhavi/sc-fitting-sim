@@ -33,6 +33,7 @@ import io
 import json
 import os
 import re
+import time
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 RAW = os.path.join(ROOT, 'data', 'raw')
@@ -521,7 +522,12 @@ def main():
         'meta': {'ships': len(ships), 'weapons': len(weapons), 'shields': len(shields),
                  'powerplants': len(pps), 'coolers': len(coolers), 'qds': len(qds),
                  'racks': len(racks), 'missiles': len(missiles),
-                 'turrets': len(turrets), 'radars': len(radars)},
+                 'turrets': len(turrets), 'radars': len(radars),
+                 # 패치 추적 (4.10.3~): scunpacked 원본 커밋/게임 버전/생성 시각.
+                 'gameVersion': smeta.get('version'),
+                 'sourceCommit': smeta.get('commit'),
+                 'sourceDate': smeta.get('date'),
+                 'generated': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())},
         'ships': ships,
         'weapons': sorted(weapons, key=lambda w: (w['size'] or 0, -(w['dps'] or 0))),
         'shields': sorted(shields, key=lambda w: (w['size'] or 0, -(w['hp'] or 0))),
