@@ -262,7 +262,7 @@ function slotKind(h) {
 }
 
 function optionsFor(kind, size) {
-  // sort: exact-size match first (by perf desc), then smaller sizes
+  // 슬롯 사이즈와 동일한 부품만 나열 (하위 사이즈 표시 안 함), 성능순 정렬
   const perf = {
     weapon: w => w.dps || 0,
     turret: w => 0, turretbase: w => 0,
@@ -284,8 +284,7 @@ function optionsFor(kind, size) {
     power: DB.powerplants.filter(w => w.size === size).sort(byPerf),
     cooler: DB.coolers.filter(w => w.size === size).sort(byPerf),
     qd: DB.qds.filter(w => w.size === size).sort(byPerf),
-    radar: [...(DB.radars || []).filter(w => w.size === size).sort(byPerf),
-            ...(DB.radars || []).filter(w => (w.size || 0) < size).sort((a, b) => (b.size - a.size) || byPerf(a, b))],
+    radar: (DB.radars || []).filter(w => w.size === size).sort(byPerf),
     missile: DB.racks.filter(w => w.size === size).sort(byPerf),
   }[kind] || [];
   return f;
@@ -298,7 +297,7 @@ function labelFor(kind, c) {
     return `${c.name} [S${c.size}·${c.grade}]${fam} — α ${fmt(c.alpha)} / ${fmt(c.dps)} DPS${dt}`;
   }
   if (kind === 'mount' || kind === 'turret' || kind === 'turretbase') {
-    const layout = isGimbalCard(c) ? ('S' + c.size + ' 짐벌 (3.23+ 동일 사이즈 · 하위 호환)') : (c.guns ? '무기 ' + c.guns : '무기 없음');
+    const layout = isGimbalCard(c) ? ('S' + c.size + ' 짐벌 (3.23+ 동일 사이즈)') : (c.guns ? '무기 ' + c.guns : '무기 없음');
     return `${c.name} [S${c.size}] ${c.mfr || ''} — ${layout}`;
   }
   if (kind === 'shield') return `${c.name} [S${c.size}·${c.grade}] ${c.mfr} — HP ${fmt(c.hp)} / ${fmt(c.regen)}/s`;
@@ -502,7 +501,7 @@ function isGimbalCard(c) {
   return cls.startsWith('Mount_Gimbal_') || /varipuck|gimbal/i.test(nm);
 }
 function cardGuns(card) {
-  // 짐벌: S(n) 카드 → S(n) 무기, 하위 호환 (optionsFor가 동일 사이즈 우선·하위 사이즈 뒤로 정렬)
+  // 짐벌: S(n) 카드 → S(n) 무기 (optionsFor가 동일 사이즈만 나열)
   // 고정 마운트·터렛: DB guns 그대로 (멀티건 레이아웃 유지)
   if (isGimbalCard(card)) return [card.size];
   return parseGuns(card.guns);
