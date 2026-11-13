@@ -39,7 +39,8 @@ python3 sync_data.py                          # 원본 동기화
 python3 build_db.py --out /tmp/db_new.json    # 미리보기 (라이브 db.json 무접촉)
 python3 extract_power_rn.py --verify          # 핍 검증 (MISMATCH 0 이어야 함)
 python3 build_db.py                           # 반영
-npx vercel --prod                             # 배포 (public/ 에서)
+npx vercel --prod                             # 수동 배포 (public/ 에서)
+# 2026-11-13~: Vercel 프로젝트가 GitHub 레포와 연동됨 → main 푸시 시 자동 배포
 ```
 
 `build_db.py` 는 `turrets`/`radars` 등 핵심 배열이 비면 **exit 1 로 배포를 차단**합니다.
