@@ -360,7 +360,9 @@ def main():
             continue
         r = ((x.get('stdItem') or {}).get('MissileRack')) or {}
         e = base(x)
-        e.update({'missiles': r.get('Count'), 'msize': r.get('Size')})
+        # 4.10 덤프는 Count/Size → MissileCount/MissileSize 로 변경됨 (2026-11-13 실측)
+        e.update({'missiles': first_nonnull(r.get('Count'), r.get('MissileCount')),
+                  'msize': first_nonnull(r.get('Size'), r.get('MissileSize'))})
         racks.append(finish(e, x))
 
     # ------------------------------------------------------------ missiles

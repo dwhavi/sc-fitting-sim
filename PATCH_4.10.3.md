@@ -28,7 +28,11 @@
 5. **슬롯 스냅샷 재생성**: FleetYards 전체 재수집 (9,256슬롯) + 터렛 호환 보강
    - Carrack Expedition 등 S3 레이더 슬롯 반영 확인
 6. **DB 메타에 버전 기록** (신규): `gameVersion`, `sourceCommit`, `sourceDate`, `generated`
-7. **캐시 무력화**: `app.js` 의 `?v=141` → `?v=143`
+7. **캐시 무력화**: `app.js` 의 `?v=141` → `?v=144`
+8. **미사일 랙 복구** (이번에 발견):
+   - scunpacked 신스키마에서 랙 필드가 `Count/Size` → `MissileCount/MissileSize` 로 바뀌어 전 랙 153종의 장탄수가 누락돼 있던 것을 `build_db.py` 매핑으로 복구
+   - `app.js` `matchDefault` 에 missile 풀이 없어 스톡 랙이 미장착으로 표시되던 버그 수정 (+scKey 대소문자 무시). 이제 Galaxy 8×S2 ×4기 등 스톡 랙이 자동 선택되고 미사일 합산 패널이 동작
+   - Avenger Stalker 도 FY 4.10.3 슬롯에 미사일 랙(MSD-322 ×2)이 생겨 기존 주의사항 해소
 
 ## 파이프라인 개선
 
