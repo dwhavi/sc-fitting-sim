@@ -122,8 +122,8 @@ button.on:hover{background:#134d2e}
     <div id="powerBar" style="margin-top:8px"></div>
   </div>
   <div class="panel" style="margin-top:12px">
-    <h2>⚡ PWR 패널 — 전력 관리</h2>
-    <div style="font-size:11px;color:var(--dim);margin-bottom:6px">계통 핍 블럭 — 칸 클릭=<b>그 칸까지 배분</b>(아래부터), 같은 칸 재클릭=1핍 감소, 아이콘=계통 전체 ON·OFF<br><span style="color:var(--acc)">핍 = 게임 실제값</span> — scunpacked SPowerSegmentResourceUnit.units · 쿨러는 슬롯마다 개별 컬럼 · 미사일은 전력 계통 없음 · 값 없는 부품만 추정치</div>
+    <h2>⚡ PWR 패널 — 전력 관리 <span style="font-size:11px;color:var(--acc);font-weight:400">비행 모드 기준</span></h2>
+    <div style="font-size:11px;color:var(--dim);margin-bottom:6px">계통 핍 블럭 — 칸 클릭=<b>그 칸까지 배분</b>(아래부터), 같은 칸 재클릭=1핍 감소, 아이콘=계통 전체 ON·OFF<br><span style="color:var(--acc)">핍 = 게임 실제값</span> — 비행 모드 기준(퀀텀 드라이브는 게임 데이터상 두 모드 모두 세그먼트 집계 없음 → 컬럼 제외, 양자항행 정보는 아래 스탯에 유지) · 추진·생명유지·유틸은 함선 고정 세그먼트값 · 실드는 함선 풀 상한까지 · 복수 파워플랜트는 게임 결합식 · 쿨러는 슬롯마다 개별 컬럼 · 미사일은 전력 계통 없음</div>
     <div id="pwrBlocks"></div>
   </div>
   <div class="panel" style="margin-top:12px">

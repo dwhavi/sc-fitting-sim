@@ -493,6 +493,12 @@ def main():
                       'size': s.get('Size'), 'crew': s.get('Crew'),
                       'cargo': s.get('Cargo'),
                       'wpool': (pp.get('WeaponGun') or {}).get('Size'),
+                      # 2026-11-14: 실드 풀(전원 켜지는 실드 수) + 모드별 총 사용핍.
+                      #   spool: PowerPools.Shield.Size (켜지는 실드 수, -1=전부)
+                      #   pwShields/pwQuantum: 비행 모드/퀀텀 모드 총 사용핍 (게임 산출)
+                      'spool': (pp.get('Shield') or {}).get('Size'),
+                      'pwShields': pw.get('UsedSegmentsShields'),
+                      'pwQuantum': pw.get('UsedSegmentsQuantum'),
                       'stockGen': pw.get('GenerationSegments'),
                       'stockUsed': _su or None,
                       'stockMax': _sm or None,

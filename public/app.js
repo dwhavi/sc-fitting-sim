@@ -3,6 +3,10 @@ let DB = null, FY = [];
 let curShip = '';
 let build = {}; // slotId -> component class
 // PWR state: Erkul-style — per-group pip blocks + weapon pool + ON/OFF
+// 비행 모드 기준(2026-11-14): QD는 게임 데이터상 전력 세그먼트 집계에 없음(컬럼 제외),
+// 추진(FlightController)·생명유지·유틸은 함선 고정 세그먼트값(stockMax) 컬럼,
+// 복수 파워플랜트는 게임 결합식(Σ round(X/n)+(n-1)Σsize), 실드는 함선 풀(spool) 상한.
+// 검증: 스톡 143척 기준 그룹별 게임값(UsedSegmentsGrouped)·총량(UsedSegmentsShields) 대조.
 // Erkul model (NQEKEKTP Ln/U + Qr, main IF pips):
 //  계통핍(segOff/grpOff) = 전력 on/off. 무기 풀(poolSel) = 무기 출력, 별도 분리.
 //  Ln(): poolRatio=min(1,selected/consumption) — 에너지 무기에만 적용.
@@ -44,7 +48,7 @@ const fmt = n => n == null ? '—' : (Math.round(n * 10) / 10).toLocaleString('e
 
 async function init() {
   $('status').textContent = 'DB 로딩 중…';
-  const r = await fetch('db.json?v=144', {cache:'no-store'});
+  const r = await fetch('db.json?v=145', {cache:'no-store'});
   DB = await r.json();
   const ships = DB.ships;
   renderShipList(ships);
@@ -253,7 +257,7 @@ function slotKind(h) {
   if (cat.includes('quantumdrive')) return 'qd';
   if (cat === 'radar') return 'radar';
   if (cat.includes('lifesupport')) return 'life';
-  if (cat.includes('thruster')) return 'engine'; // 추진부: 교체 불가 고정 슬롯 (전력치 덤프 없음)
+  if (cat.includes('thruster')) return 'engine'; // 추진부: 교체 불가 고정 슬롯 (전력은 함선 세그먼트값 사용)
   return null;
 }
 
@@ -409,7 +413,7 @@ function renderSlots() {
     || '<p>무장 슬롯 없음</p>';
   const engSlots = FY.filter(h => slotKind(h) === 'engine');
   $('sysSlots').innerHTML = `<div class="slots-grid">${sys.map(h => slotHTML(h, slotKind(h))).join('')}</div>`
-    + (engSlots.length ? `<div class="sec-h">추진부 (고정 슬롯 · 게임 덤프에 전력치 없음)</div><div style="font-size:11px;color:var(--dim)">${engSummary(engSlots)}</div>` : '')
+    + (engSlots.length ? `<div class="sec-h">추진부 (고정 슬롯 · 전력은 PWR 패널 🚀 컬럼 참조)</div><div style="font-size:11px;color:var(--dim)">${engSummary(engSlots)}</div>` : '')
     || '<p>시스템 슬롯 없음</p>';
   document.querySelectorAll('button.comp-btn[data-cslot]').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -542,6 +546,7 @@ function fitStats() {
   const perGroup = {};
   for (const g of PWR_GROUPS) perGroup[g.id] = { power: 0, heat: 0, units: 0, maxUnits: 0 };
   const items = [];
+  const pps = []; // 장착 파워플랜트 (루프 밖에서 발전핍 결합)
   const coolerList = [];
   const effVal = (h, kind) => ((h.id in build) ? build[h.id] : (h.component ? matchDefault(kind, h.component) : ''));
   const pushWeaponSub = (slotId, cls, src) => {
@@ -580,9 +585,8 @@ function fitStats() {
     const c = findComp(kind, val);
     if (!c) continue;
     if (kind === 'power') {
-      // 실제 발전핍(pwGen=SPowerSegmentResourceUnit.units). 없으면 구형 추정치.
-      s.output += (c.pwGen != null ? c.pwGen : (c.output || 0));
-      s.ppPips = (s.ppPips || 0) + (c.pwGen != null ? c.pwGen : (c.output || 0));
+      // 발전핍(pwGen)은 루프 밖에서 결합한다 (복수 PP는 단순 합산이 아님).
+      pps.push(c);
       continue;
     }
     // 미사일 랙 합산 (Erkul fn() 대응 2026-11-01): capacity × 동사이즈 대표 미사일.
@@ -602,6 +606,14 @@ function fitStats() {
       continue;
     }
     if (NO_POWER_KINDS.has(kind)) continue; // 미사일 등: 전력 배분 대상 아님 (핍·열·추정 모두 제외)
+    if (kind === 'qd') {
+      // 비행 모드 기준(2026-11-14): 게임 함선 데이터(UsedSegmentsShields/Quantum)에서
+      // QD는 비행·퀀텀 두 모드 모두 전력 세그먼트 집계에 없다. PWR 컬럼·전력·열 집계에서
+      // 제외하고, 양자항행 정보(속도/스풀/이동시간) 표시용 스펙만 수집한다.
+      s.qdspeed = Math.max(s.qdspeed, c.speed || 0);
+      if (!s.qd || (c.speed || 0) > (s.qd.speed || 0)) s.qd = c;
+      continue;
+    }
     const grp = kindToGroup(kind);
     // 그룹 OFF 여도 아이템은 수집한다 (위와 동일 — 핍 영역 유지). 스탯·핍 배분은 2차 루프에서 제외.
     const grpOff = !!pwr.grpOff[grp]; // 그룹 전체 OFF (Erkul powerToggle)
@@ -612,6 +624,52 @@ function fitStats() {
     const maxU = Math.max(1, Math.ceil(pwRaw));
     items.push({ slotId: h.id, c, kind, grp, grpOff, maxU, real, pwRaw });
   }
+  // 비행 모드 기준 고정 계통(2026-11-14): 추진(FlightController)·생명유지(LifeSupportGenerator)는
+  // 교체 불가 고정 슬롯이라 아이템 덤프에 전력치가 없지만, 함선 데이터의 계통별 세그먼트
+  // (Power.UsedSegmentsGrouped/MaxSegments → stockUsed/stockMax)에 실제 게임값이 있다.
+  // 1핍=1세그먼트(pwRaw=1) 고정 컬럼으로 추가한다 (비행 모드에서 상시 ON).
+  {
+    const ship0 = (DB.ships || []).find(x => (x.slug === curShip || x.class === curShip)) || {};
+    for (const gid of ['engine', 'lifeSupport']) {
+      const mx = ship0.stockMax && ship0.stockMax[gid];
+      if (mx == null || mx <= 0) continue;
+      const maxU = Math.max(1, Math.ceil(mx));
+      // pwRaw=maxU 여야 eff=pwRaw×units/maxU=units 가 된다 (1핍=1세그먼트).
+      items.push({ slotId: '__' + gid, c: { name: gid }, kind: gid, grp: gid, grpOff: !!pwr.grpOff[gid], maxU, real: true, pwRaw: maxU });
+    }
+    // 유틸 고정 계통: 트랙터빔·마이닝헤드·살비지헤드·QED·휠컨트롤러 등
+    // 표준 그룹 밖 스톡 세그먼트(게임값)를 유틸 컬럼 하나로 합산한다.
+    const KNOWN = new Set(['weapon', 'coolers', 'shield', 'radar', 'lifeSupport', 'engine', 'qd', 'power']);
+    let ux = 0;
+    for (const [k, v] of Object.entries(ship0.stockMax || {})) if (!KNOWN.has(k) && v > 0) ux += v;
+    if (ux > 0) {
+      const maxU = Math.max(1, Math.ceil(ux));
+      items.push({ slotId: '__utility', c: { name: 'utility' }, kind: 'utility', grp: 'utility', grpOff: !!pwr.grpOff.utility, maxU, real: true, pwRaw: maxU });
+    }
+  }
+  // 복수 파워플랜트 결합(2026-11-14): 게임 GenerationSegments는 단순 합산이 아니라
+  //   segments = Σ round(X_i/n) + (n-1)×Σ size_i   (스톡 141/142척 일치)
+  // 단일 PP면 그대로.
+  {
+    const gen = p => (p.pwGen != null ? p.pwGen : (p.output || 0));
+    const n = pps.length;
+    if (n === 1) s.output = gen(pps[0]);
+    else if (n > 1) s.output = pps.reduce((a, p) => a + Math.round(gen(p) / n), 0)
+      + (n - 1) * pps.reduce((a, p) => a + (p.size || 0), 0);
+    s.ppPips = s.output;
+  }
+  // 실드 풀 캡(2026-11-14): 게임은 PowerPools.Shield.Size(동시에 켜지는 실드 수)만큼만
+  // 세그먼트를 쓴다 (스톡 121/123척 일치). 풀을 넘는 실드는 전력·열·핍에서 제외(기본 OFF).
+  // HP/재생 등 방어 스탯 표시는 기존대로 장착분 전체 합산.
+  {
+    const ship0 = (DB.ships || []).find(x => (x.slug === curShip || x.class === curShip)) || {};
+    const sh = items.filter(i => i.kind === 'shield');
+    if (sh.length) {
+      let n = ship0.spool;
+      if (n == null || n === -1) n = sh.length;
+      [...sh].sort((a, b) => b.pwRaw - a.pwRaw).forEach((it, i) => { it.poolOff = i >= n; });
+    }
+  }
   // 그룹별 총 핍 → 목표 배분량.
   //  segOff = 그룹에서 꺼진 핍 수 이므로 목표 = 총량 - off.
   //  아이템별 비례 반올림으로 나누면 총량이 목표와 어긋난다
@@ -619,7 +677,7 @@ function fitStats() {
   //  슬롯 순서대로 목표량까지 채워 총량을 정확히 맞춘다.
   const grpMax = {}, grpLeft = {}, grpPranges = {};
   for (const it of items) {
-    grpMax[it.grp] = (grpMax[it.grp] || 0) + it.maxU;
+    grpMax[it.grp] = (grpMax[it.grp] || 0) + (it.poolOff ? 0 : it.maxU);
     // P0: 그룹별 pranges 수집 — 슬롯 중 최대 Start 범위를 가진 대표 pranges 사용.
     // (동일 계통 내 아이템 pranges가 다르면 Start 최대값이 가장 보수적)
     const pr = it.c.pranges;
@@ -634,9 +692,10 @@ function fitStats() {
     const off = Math.max(0, Math.min(pwr.segOff[gid] || 0, grpMax[gid]));
     grpLeft[gid] = grpMax[gid] - off;
   }
-  for (const it of items) {
-    if (it.grpOff) { perGroup[it.grp].maxUnits += it.maxU; continue; } // OFF 계통: 총핍(maxUnits)만 집계해 컬럼 유지, 스탯·핍 배분 제외
-    let units = it.maxU;
+  // 실드는 pw 큰 것부터 채운다 (풀 캡 안 우선순위).
+  for (const it of items.slice().sort((a, b) => (a.kind === 'shield' && b.kind === 'shield') ? b.pwRaw - a.pwRaw : 0)) {
+    if (it.grpOff) { perGroup[it.grp].maxUnits += it.poolOff ? 0 : it.maxU; continue; } // OFF 계통: 총핍(maxUnits)만 집계해 컬럼 유지, 스탯·핍 배분 제외
+    let units = it.poolOff ? 0 : it.maxU;
     const slotId = it.slotId;
     if (it.kind === 'cooler') {
       // 쿨러는 그룹이 아니라 슬롯 단위로 관리 (Erkul: 쿨러마다 독립 컬럼)
@@ -651,11 +710,11 @@ function fitStats() {
     const eff = it.maxU > 0 ? it.pwRaw * units / it.maxU : 0;
     s.power += eff; s.powerBase += it.c.powerBase || 0;
     if (!it.real) s.estCount = (s.estCount || 0) + 1;
-    s.heat += it.c.heat || 0;
+    s.heat += it.poolOff ? 0 : (it.c.heat || 0);
     perGroup[it.grp].power += eff;
-    perGroup[it.grp].heat += it.c.heat || 0;
+    perGroup[it.grp].heat += it.poolOff ? 0 : (it.c.heat || 0);
     perGroup[it.grp].units += units;
-    perGroup[it.grp].maxUnits += it.maxU;
+    perGroup[it.grp].maxUnits += it.poolOff ? 0 : it.maxU;
     if (it.kind === 'cooler') {
       s.cooling += (it.c.rate || 0) * units / it.maxU;
       coolerList.push({ slotId, name: it.c.name || '', units, maxUnits: it.maxU, pwRaw: it.pwRaw, off: !!pwr.coolerOff[slotId], pranges: it.c.pranges || null });
@@ -718,8 +777,8 @@ function fitStats() {
       if (it.c.downedDelay != null) s.downedDelay = Math.max(s.downedDelay, it.c.downedDelay);
       if (it.c.damagedDelay != null) s.damagedDelay = Math.max(s.damagedDelay, it.c.damagedDelay);
     }
-    if (it.kind === 'qd') { s.qdspeed = Math.max(s.qdspeed, it.c.speed || 0); if (!s.qd || (it.c.speed || 0) > (s.qd.speed || 0)) s.qd = it.c; }
   } // end for (FY slots)
+  // (QD 집계용 코드는 제거됨 — QD 스펙은 슬롯 수집 단계에서 s.qd/s.qdspeed로 직접 수집)
   // ---- 2차 패스: Erkul Ln() 무기 풀 (2026-11-01) ----
   // poolSize = 함선 PowerPools.WeaponGun.Size (-1=무제한, null=정보없음→풀없음).
   // consumption = Σ장착 에너지무기 pw(계통핍 배분 후 실소모).
