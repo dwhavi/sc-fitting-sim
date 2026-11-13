@@ -44,7 +44,7 @@ const fmt = n => n == null ? '—' : (Math.round(n * 10) / 10).toLocaleString('e
 
 async function init() {
   $('status').textContent = 'DB 로딩 중…';
-  const r = await fetch('db.json?v=143', {cache:'no-store'});
+  const r = await fetch('db.json?v=144', {cache:'no-store'});
   DB = await r.json();
   const ships = DB.ships;
   renderShipList(ships);
@@ -216,7 +216,7 @@ async function selectShip(slug) {
   // Load ship slots from local snapshot
   if (!window.SHIP_SLOTS) {
     try {
-      const response = await fetch('ship_slots.json?v=143', {cache:'no-store'});
+      const response = await fetch('ship_slots.json?v=144', {cache:'no-store'});
       const data = await response.json();
       window.SHIP_SLOTS = data;
       console.log('Loaded ship slots:', data.ships.length, 'ships,', data.slots.length, 'slots');
@@ -510,8 +510,11 @@ function matchDefault(kind, comp) {
     const hit = findTurret(comp.scKey, comp.name);
     return hit ? hit.class : '';
   }
-  const pool = { weapon: DB.weapons, shield: DB.shields, power: DB.powerplants, cooler: DB.coolers, qd: DB.qds, radar: DB.radars || [] }[kind] || [];
-  const hit = pool.find(c => c.class === comp.scKey || c.name === comp.name);
+  const pool = { weapon: DB.weapons, shield: DB.shields, power: DB.powerplants, cooler: DB.coolers, qd: DB.qds, missile: DB.racks, radar: DB.radars || [] }[kind] || [];
+  // 2026-11-13: missile 풀 추가(미사일 랙 기본 선택 복구) + scKey 대소문자 무시 (FY scKey 는 소문자)
+  const sk = String(comp.scKey || '').toLowerCase();
+  const hit = (sk && pool.find(c => (c.class || '').toLowerCase() === sk))
+           || pool.find(c => c.class === comp.scKey || c.name === comp.name);
   return hit ? hit.class : '';
 }
 
