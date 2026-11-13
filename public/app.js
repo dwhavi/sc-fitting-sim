@@ -549,11 +549,12 @@ function fitStats() {
     const c = findComp('weapon', cls);
     if (!c) return;
     const grp = kindToGroup('weapon');
-    if (pwr.grpOff[grp]) return;
+    // 그룹 OFF 여도 아이템은 수집한다 — 컬럼(핍 영역) 유지용 maxUnits 집계. 스탯·핍 배분만 건너뛴다.
+    const grpOff = !!pwr.grpOff[grp];
     const real = c.pw != null;
     const pwRaw = real ? c.pw : (c.power || 0);
     const maxU = Math.max(1, Math.ceil(pwRaw));
-    items.push({ slotId, c, kind: 'weapon', grp, maxU, real, pwRaw, src: src || 'pilot' });
+    items.push({ slotId, c, kind: 'weapon', grp, grpOff, maxU, real, pwRaw, src: src || 'pilot' });
   };
   for (const h of (FY || [])) {
     const kind = slotKind(h);
@@ -602,13 +603,14 @@ function fitStats() {
     }
     if (NO_POWER_KINDS.has(kind)) continue; // 미사일 등: 전력 배분 대상 아님 (핍·열·추정 모두 제외)
     const grp = kindToGroup(kind);
-    if (pwr.grpOff[grp]) continue; // 그룹 전체 OFF (Erkul powerToggle)
+    // 그룹 OFF 여도 아이템은 수집한다 (위와 동일 — 핍 영역 유지). 스탯·핍 배분은 2차 루프에서 제외.
+    const grpOff = !!pwr.grpOff[grp]; // 그룹 전체 OFF (Erkul powerToggle)
     // 핍 = 실제 게임값 pw(SPowerSegmentResourceUnit.units).
     // 없을 때만 PowerDraw 기반 추정치로 폴백하고 real=false 로 표시한다.
     const real = c.pw != null;
     const pwRaw = real ? c.pw : (c.power || 0);
     const maxU = Math.max(1, Math.ceil(pwRaw));
-    items.push({ slotId: h.id, c, kind, grp, maxU, real, pwRaw });
+    items.push({ slotId: h.id, c, kind, grp, grpOff, maxU, real, pwRaw });
   }
   // 그룹별 총 핍 → 목표 배분량.
   //  segOff = 그룹에서 꺼진 핍 수 이므로 목표 = 총량 - off.
@@ -633,6 +635,7 @@ function fitStats() {
     grpLeft[gid] = grpMax[gid] - off;
   }
   for (const it of items) {
+    if (it.grpOff) { perGroup[it.grp].maxUnits += it.maxU; continue; } // OFF 계통: 총핍(maxUnits)만 집계해 컬럼 유지, 스탯·핍 배분 제외
     let units = it.maxU;
     const slotId = it.slotId;
     if (it.kind === 'cooler') {
@@ -829,7 +832,8 @@ function renderPwrBlocks() {
     const maxU = pg.maxUnits, units = pg.units;
     const off = !!pwr.grpOff[g.id];
     const over = f.short > 0; // 전력 오버: 게이지에 초과 표시
-    const blocks = pipCells(maxU, units, (off ? ' grp-off' : '') + (over && !off && units > 0 ? ' over' : ''));
+    // OFF 계통도 핍 칸은 그대로 보이게: 전체 칸을 회색(grp-off)으로 채운다.
+    const blocks = pipCells(maxU, off ? maxU : units, (off ? ' grp-off' : '') + (over && !off && units > 0 ? ' over' : ''));
     const num = maxU > 0 ? `<div class="pip-num">${off ? 0 : units}</div>` : '';
     const noData = maxU === 0;
     const qn = qnSpv(off ? 0 : units, pg.pranges);
@@ -864,7 +868,8 @@ function renderPwrBlocks() {
     const off = !!pwr.coolerOff[cc.slotId];
     const units = off ? 0 : cc.units;
     const maxU = cc.maxUnits;
-    const blocks = pipCells(maxU, units, off ? ' grp-off' : '');
+    // OFF 쿨러도 핍 칸 유지: 전체 칸을 회색(grp-off)으로 채운다.
+    const blocks = pipCells(maxU, off ? maxU : units, off ? ' grp-off' : '');
     const useTxt = `<div class="pwr-w use-line">${off ? 'OFF' : units + '/' + maxU + '핍'}</div>`;
     const draw = maxU > 0 ? cc.pwRaw * units / maxU : 0;
     const cqn = qnSpv(off ? 0 : units, cc.pranges);
