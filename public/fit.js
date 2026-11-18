@@ -11,7 +11,7 @@
   const SYS_KO = { Stanton: '스탠턴', Pyro: '파이로', Nyx: '닉스' };
   const OPT_KEY = 'scfit:opts';
   const opt = (() => {
-    const d = { sys: ['Stanton'], onlyBuy: true, budget: 0, preset: 'combat', range: 'mid' };
+    const d = { sys: ['Stanton'], onlyBuy: true, budget: 0, preset: 'combat', range: 'mid', lock: [] };
     try { Object.assign(d, JSON.parse(localStorage.getItem(OPT_KEY) || '{}')); } catch (e) { /* ignore */ }
     return d;
   })();
@@ -129,6 +129,7 @@
     for (const s of slots) (g[s.key] = g[s.key] || []).push(s);
     return Object.values(g);
   }
+  const locked = k => (opt.lock || []).includes(k);
   const allowed = (s, cls) => cls === s.stock || !opt.onlyBuy || minPrice(cls) != null;
 
   function optimize(slots, preset, baseBuild, base0, baseAsg, extra) {
@@ -143,6 +144,7 @@
     };
     const withGroup = (asg, g, cls) => { const n = Object.assign({}, asg); for (const s of g) n[s.id] = (cls === '__stock' ? s.stock : cls); return n; };
     const candsOf = g => {
+      if (locked(g[0].kind)) return [];
       const set = new Set(['__stock']);
       for (const c of g[0].opts) if (g.every(s => allowed(s, c.class))) set.add(c.class);
       return [...set];
@@ -161,6 +163,7 @@
         }
         // 슬롯 단위 정제 (같은 그룹 안에서 개별 선택)
         if (!improved) for (const s of slots) {
+          if (locked(s.kind)) continue;
           let bestA = null, bestS = curS;
           for (const c of s.opts) {
             if (!allowed(s, c.class)) continue;
@@ -194,7 +197,7 @@
       let a = Object.assign({}, baseAsg);
       for (const g of groups) {
         const ok = g[0].opts.filter(c => g.every(s => allowed(s, c.class)));
-        if (!ok.length) continue;
+        if (!ok.length || locked(g[0].kind)) continue;
         const best = ok.reduce((x, y) => fn(g[0].kind, y) > fn(g[0].kind, x) ? y : x);
         a = withGroup(a, g, best.class);
       }
@@ -334,6 +337,7 @@
       <div class="chips" style="padding:0">${sysChipsHTML('data-fitsys')}</div>
       <div class="chips" style="padding:8px 0 0"><span class="grp-lbl">예산</span>${bud}<input id="fitBud" type="number" min="0" step="10000" placeholder="직접 입력 (aUEC)" value="${opt.budget && ![50000, 200000, 500000, 1000000].includes(opt.budget) ? opt.budget : ''}" style="width:160px"></div>
       <div class="chips" style="padding:8px 0 0"><span class="grp-lbl">교전 거리</span>${Object.keys(RANGE_KO).map(k => `<button class="chip${opt.range === k ? ' on' : ''}" data-r="${k}">${RANGE_KO[k]}</button>`).join('')}</div>
+      <div class="chips" style="padding:8px 0 0"><span class="grp-lbl">지금 장착 유지</span>${['weapon', 'shield', 'power', 'cooler', 'qd', 'radar'].map(k => `<button class="chip${(opt.lock || []).includes(k) ? ' on' : ''}" data-lk="${k}">${KIND_KO[k]}</button>`).join('')}</div>
       <label class="fit-chk"><input type="checkbox" id="fitBuy" ${opt.onlyBuy ? 'checked' : ''}> 선택한 지역에서 살 수 있는 부품만 (끄면 구매처 없는 부품도 후보)</label>
       <div class="fit-dim" style="margin-top:4px">예산 = 현재 장착을 스톡으로 보고 새로 사야 하는 부품의 합계(품목별 최저가). 스톡 부품은 이미 보유한 걸로 계산.</div>
       <div style="margin-top:12px"><button id="fitGo" class="fit-go">🎯 추천 만들기</button></div>
@@ -341,6 +345,7 @@
     body.querySelectorAll('.fit-card').forEach(b => b.onclick = () => { opt.preset = b.dataset.p; saveOpt(); body.querySelectorAll('.fit-card').forEach(x => x.classList.toggle('on', x === b)); if (RES) { RES.sel = opt.preset; drawResult(); } });
     bindSysChips('#fitBody [data-fitsys]', drawFitForm);
     body.querySelectorAll('[data-b]').forEach(b => b.onclick = () => { opt.budget = +b.dataset.b; saveOpt(); drawFitForm(); });
+    body.querySelectorAll('[data-lk]').forEach(b => b.onclick = () => { const a = opt.lock = opt.lock || []; const i = a.indexOf(b.dataset.lk); if (i >= 0) a.splice(i, 1); else a.push(b.dataset.lk); saveOpt(); drawFitForm(); });
     body.querySelectorAll('[data-r]').forEach(b => b.onclick = () => { opt.range = b.dataset.r; saveOpt(); drawFitForm(); });
     $q('fitBud').onchange = e => { opt.budget = Math.max(0, +e.target.value || 0); saveOpt(); drawFitForm(); };
     $q('fitBuy').onchange = e => { opt.onlyBuy = e.target.checked; saveOpt(); };
@@ -406,9 +411,16 @@
       const p = minPrice(c.to);
       return `<div class="fit-line"><span><span class="fit-dim">${esc(c.s.label)}</span><br>${esc(a ? a.name : '— 없음')} → <b>${esc(b ? b.name : '— 없음')}</b></span><span>${c.to === c.s.stock ? '<span class="fit-dim">스톡 복귀</span>' : (p != null ? '💰 ' + nf(p) : '<span class="warn">구매처 미확인</span>')}</span></div>`;
     }).join('') : '<div class="fit-dim">현재 장착이 이 취향에서 이미 최적입니다 (조건 안에서).</div>';
+    const pc = (a, b) => (a > 0 ? Math.round((b - a) / a * 100) : 0);
+    const sg = n => (n > 0 ? '+' : '') + n + '%';
+    const qdp = (base0.t10 && r.m.t10) ? Math.round((base0.t10 - r.m.t10) / base0.t10 * 100) : null;
+    let hl = [`DPS ${sg(pc(base0.dpsEff, r.m.dpsEff))}`, `실드 ${sg(pc(base0.D, r.m.D))}`, `EM ${sg(pc(base0.em, r.m.em))}`, `IR ${sg(pc(base0.ir, r.m.ir))}`];
+    if (qdp != null) hl = sel === 'travel' ? [`퀀텀 ${qdp >= 0 ? sg(qdp) + ' 빠름' : sg(-qdp) + ' 느림'}`].concat(hl) : hl.concat([`퀀텀 ${qdp >= 0 ? sg(qdp) + ' 빠름' : sg(-qdp) + ' 느림'}`]);
+    const headline = `<div class="fit-head">${PRESETS[sel].ico} <b>${PRESETS[sel].t}</b> 추천 — 현재 대비 ${hl.slice(0, 5).join(' · ')} · 💰 ${nf(r.cost.sum)} aUEC${r.cost.unknown ? ` (+구매처 미확인 ${r.cost.unknown}개)` : ''}</div>`;
     el.innerHTML = `
       <div class="sec-h" style="margin-top:16px">3. 결과 <span class="fit-dim">(${Object.keys(PRESETS).length}개 취향 계산 ${Math.round(RES.ms)}ms)</span></div>
       <div class="chips" style="padding:0 0 8px">${tabs}</div>
+      ${headline}
       <table class="fit-cmp"><tr><th></th><th>현재</th><th>${PRESETS[sel].ico} ${PRESETS[sel].t} 추천</th></tr>${cmp}</table>
       ${base0.short > 0.5 ? `<div class="fit-dim warn" style="margin:4px 0 0">현재 빌드는 전력이 ${(Math.round(base0.short * 10) / 10)}핍 부족해요(전 계통 100% 가동 기준). 그래서 DPS 증가율이 크게 나올 수 있어요.</div>` : ''}
       <div class="fit-dim" style="margin:4px 0 0">EM·IR 지표는 장착 부품 정격값의 합(상대 비교용, 게임 내 실제 탐지 거리가 아님). ★ 최적화 기준 DPS: 파일럿 무기 + 터렛 절반 가중, 선택한 교전 거리보다 사거리가 짧은 무기는 깎아서 계산.</div>
