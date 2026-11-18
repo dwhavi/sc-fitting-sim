@@ -84,6 +84,29 @@ button.on:hover{background:#134d2e}
 .comp-btn{flex:1;min-width:0;text-align:left;background:#0e141c;border:1px solid var(--line);color:var(--txt);border-radius:6px;padding:6px 8px;font-size:12px;cursor:pointer;line-height:1.4}
 .comp-btn:hover{border-color:var(--acc)}.comp-btn .ph{color:var(--dim)}
 @media(max-width:860px){.modal{max-height:90vh}}
+
+/* 최적 피팅 템플릿 / 구매처 */
+.fit-dim{color:var(--dim);font-size:11px}
+.fit-btn{width:100%;font-size:14px;padding:10px;background:#1b3a2a;color:var(--ok);border-color:#1e6e42}
+.fit-btn:hover{background:#215038}.fit-btn:disabled{opacity:.4;cursor:not-allowed}
+.fit-modal{width:760px}
+.fit-body{overflow-y:auto;padding:4px 16px 18px}
+.fit-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.fit-card{display:flex;flex-direction:column;gap:3px;align-items:flex-start;text-align:left;background:#0e141c;border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:10px 11px}
+.fit-card .ic{font-size:22px}.fit-card b{font-size:14px}.fit-card.on{border-color:var(--ok);background:#0e3d24}
+.fit-chk{display:block;margin-top:10px;font-size:13px}.fit-chk input{width:auto;margin-right:6px}
+.fit-go{background:#0e3d24;color:var(--ok);border-color:#1e6e42;padding:10px 16px;font-size:14px;font-weight:700}
+.fit-go:hover{background:#134d2e}.fit-go:disabled{opacity:.5}
+.fit-cmp th,.fit-cmp td{padding:6px 8px}.fit-cmp td:nth-child(n+2){text-align:right;font-variant-numeric:tabular-nums}.fit-cmp th:nth-child(n+2){text-align:right}
+.fit-list{background:#0e141c;border:1px solid var(--line);border-radius:8px;padding:4px 10px}
+.fit-line{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--line);font-size:12px}.fit-line:last-child{border-bottom:0}
+.fit-line>span:last-child{text-align:right;white-space:nowrap}
+.fit-stop{padding:6px 0 2px}.fit-stop-h{display:flex;justify-content:space-between;gap:8px;font-size:12px;padding:4px 0;border-bottom:1px solid #2e4258}
+.fit-sub{color:var(--warn);white-space:nowrap}.fit-miss .fit-stop-h{color:var(--warn)}
+.fit-total{padding:8px 0 4px;font-weight:700;text-align:right}
+.fit-note{margin-top:8px;font-size:11px;color:var(--dim);line-height:1.5}
+.fit-foot{display:flex;gap:8px;margin-top:14px;position:sticky;bottom:0;background:var(--panel);padding:10px 0 0}
+.spec-mini.price{color:var(--warn);border-color:#6e5a1e}
 </style>
 </head>
 <body>
@@ -98,6 +121,12 @@ button.on:hover{background:#134d2e}
     <div id="shipCur" class="ship-cur">함선을 선택하세요.</div>
     <select id="shipSel" style="display:none"></select>
     <div id="status">DB 로딩 중…</div>
+  </div>
+  <div class="panel" style="margin-top:12px">
+    <h2>최적 피팅 템플릿</h2>
+    <button id="fitBtn" class="fit-btn" disabled>🎯 취향별 추천 피팅 (전투·스텔스·이동…)</button>
+    <button id="fitUndo" style="display:none;width:100%;margin-top:6px">↩︎ 추천 적용 되돌리기</button>
+    <div class="fit-dim" style="margin-top:6px">구매처·가격까지 같이 보여줘요.</div>
   </div>
   <div class="panel" style="margin-top:12px">
     <h2>빌드 관리</h2>
@@ -134,9 +163,14 @@ button.on:hover{background:#134d2e}
     <h2>시스템 컴포넌트</h2>
     <div id="sysSlots"></div>
   </div>
+  <div class="panel" style="margin-top:12px">
+    <h2>🛒 구매 목록 — 스톡에서 바꾼 부품을 파는 곳</h2>
+    <div id="shopPanel"><div class="fit-dim">함선을 선택하세요.</div></div>
+  </div>
 </div>
 </main>
 <div id="modalRoot"></div>
 <script src="app.js"></script>
+<script src="fit.js?v=1"></script>
 </body>
 </html>

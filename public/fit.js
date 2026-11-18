@@ -1,0 +1,445 @@
+// SC Fitting Sim — 최적 피팅 템플릿 + 구매처 (app.js 뒤에 로드, app.js 전역을 사용)
+// - 취향(전투/스텔스/이동/방어/균형) 프리셋 -> 부품 조합 탐색 (fitStats 를 평가 함수로 재사용)
+// - 구매처: shops.json (fetch_shops.py 가 UEX Corp API 에서 생성한 스냅샷, 커뮤니티 제보 기반)
+(function () {
+  'use strict';
+  const $q = id => document.getElementById(id);
+  const nf = n => (n == null || !isFinite(n)) ? '—' : Math.round(n).toLocaleString('en-US');
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  // ---------- 옵션 (지역 · 예산 · 구매 가능만) ----------
+  const SYS_KO = { Stanton: '스탠턴', Pyro: '파이로', Nyx: '닉스' };
+  const OPT_KEY = 'scfit:opts';
+  const opt = (() => {
+    const d = { sys: ['Stanton'], onlyBuy: true, budget: 0, preset: 'combat', range: 'mid' };
+    try { Object.assign(d, JSON.parse(localStorage.getItem(OPT_KEY) || '{}')); } catch (e) { /* ignore */ }
+    return d;
+  })();
+  const saveOpt = () => { try { localStorage.setItem(OPT_KEY, JSON.stringify(opt)); } catch (e) { /* ignore */ } };
+
+  // ---------- 상점 데이터 ----------
+  let SHOPS = null; // null=로딩전, false=실패
+  async function loadShops() {
+    if (SHOPS !== null) return SHOPS;
+    try { const r = await fetch('shops.json?v=1', { cache: 'no-store' }); SHOPS = await r.json(); }
+    catch (e) { SHOPS = false; }
+    return SHOPS;
+  }
+  const sysOK = t => opt.sys.includes(SHOPS.terms[t].sys);
+  // 허용 지역 내 판매처 [[termIdx, price]] (가격 오름차순)
+  function offers(cls) {
+    if (!SHOPS || !SHOPS.items[cls]) return [];
+    return SHOPS.items[cls].filter(o => sysOK(o[0]));
+  }
+  function minPrice(cls) { const o = offers(cls); return o.length ? o[0][1] : null; }
+  function anyPrice(cls) { return SHOPS && SHOPS.items[cls] ? SHOPS.items[cls][0][1] : null; }
+
+  // ---------- 슬롯 열거 ----------
+  const STOCK_KINDS = ['weapon', 'shield', 'power', 'cooler', 'qd', 'radar'];
+  const KIND_KO = { weapon: '무기', shield: '실드', power: '파워플랜트', cooler: '쿨러', qd: '퀀텀드라이브', radar: '레이더' };
+  const okName = c => c && !/PLACEHOLDER/i.test(c.name || '');
+  function enumSlots() {
+    const out = [];
+    const mk = (id, kind, size, label, src, stock) => {
+      let opts = optionsFor(kind, size).filter(okName);
+      if (!opts.length) return;
+      out.push({ id, kind, size, label, src, stock: stock || '', opts, key: kind + '|' + size + '|' + src });
+    };
+    for (const h of (FY || [])) {
+      const kind = slotKind(h);
+      if (!kind) continue;
+      if (STOCK_KINDS.includes(kind)) {
+        mk(h.id, kind, h.maxSize, `${KIND_KO[kind]} S${h.maxSize}`, 'pilot', matchDefault(kind, h.component));
+      } else if (kind === 'mount' || kind === 'turret') {
+        const raw = (h.id in build) ? build[h.id] : matchDefault(kind, h.component || {});
+        let selObj = raw ? ((DB.turrets || []).find(c => c.class === raw) || null) : findTurret((h.component || {}).scKey, (h.component || {}).name);
+        if ((h.id in build) && !build[h.id]) selObj = null;
+        let sizes = [];
+        if (selObj && (selObj.guns || isGimbalCard(selObj))) sizes = cardGuns(selObj);
+        else if (h.childGuns && h.childGuns.length) sizes = h.childGuns.filter(g => g.max > 0).map(g => g.max);
+        sizes.forEach((gs, i) => {
+          const sid = h.id + ':w' + i;
+          mk(sid, 'weapon', gs, `${shortName(h.name)} ↳ 무기 ${i + 1} S${gs}`, kind === 'turret' ? 'turret' : 'pilot', stockGunFor(sid));
+        });
+      }
+    }
+    return out;
+  }
+  const curOf = (s, asg) => (s.id in asg) ? asg[s.id] : s.stock;
+
+  const RANGE_T = { short: 1000, mid: 1800, long: 2600, any: 0 };
+  const RANGE_KO = { short: '근거리 (~1km)', mid: '중거리 (~1.8km)', long: '원거리 (2.6km~)', any: '상관없음' };
+  // ---------- 평가 ----------
+  const freshPwr = () => ({ segOff: {}, grpOff: {}, coolerSegs: {}, coolerOff: {}, poolSel: null });
+  function evalAsg(slots, asg, baseBuild) {
+    const sb = build, sp = pwr;
+    build = Object.assign({}, baseBuild, asg); pwr = freshPwr();
+    let f;
+    try { f = fitStats(); } finally { build = sb; pwr = sp; }
+    let em = 0, ir = 0;
+    for (const s of slots) {
+      const c = findComp(s.kind, curOf(s, asg));
+      if (!c) continue;
+      em += c.em || 0; ir += c.ir || 0;
+    }
+    const pilot = f.pilotDps || 0, tur = f.turretDps || 0;
+    let dpsEff = (pilot + tur) > 0 ? pilot + 0.5 * tur : f.dps;
+    // 교전 거리 취향: 사거리가 목표보다 짧은 무기는 DPS 를 깎아서 본다 (스캐터건 편중 방지)
+    const tgt = RANGE_T[opt.range || 'mid'];
+    if (tgt && f.guns && f.guns.length) {
+      let a = 0, b = 0;
+      for (const g of f.guns) { const w = g.dps || 0; b += w; a += w * Math.min(1, Math.pow((g.range || tgt) / tgt, 1.5)); }
+      if (b > 0) dpsEff *= a / b;
+    }
+    const qd = f.qd || null;
+    const t10 = qd ? (qd.t10gm != null ? qd.t10gm : (qd.driveSpeed || qd.speed ? 1e10 / (qd.driveSpeed || qd.speed) : null)) : null;
+    return {
+      dps: f.dps || 0, dpsEff, alpha: f.alpha || 0, hp: f.hp || 0, regen: f.regen || 0,
+      D: (f.hp || 0) + 10 * (f.regen || 0), em, ir, short: f.short || 0,
+      qdspeed: f.qdspeed || 0, t10, spool: qd && qd.spool != null ? qd.spool : null,
+      fuel: qd && qd.fuelReq != null ? qd.fuelReq : null, power: f.power || 0, avail: f.avail || 0
+    };
+  }
+  function costOf(slots, asg) {
+    let sum = 0, unknown = 0;
+    for (const s of slots) {
+      const cur = curOf(s, asg);
+      if (!cur || cur === s.stock) continue;
+      const p = minPrice(cur);
+      if (p == null) unknown++; else sum += p;
+    }
+    return { sum, unknown };
+  }
+
+  // ---------- 프리셋 ----------
+  const R = (a, b) => Math.log(Math.max(a, 1e-9) / Math.max(b, 1e-9));
+  const PRESETS = {
+    combat: { ico: '⚔️', t: '전투', d: '지속 DPS 최대, 실드 충분히', f: (m, b) => 1.0 * R(m.dpsEff, b.dpsEff) + 0.5 * R(m.D, b.D) - 0.15 * m.short },
+    stealth: { ico: '🥷', t: '스텔스', d: 'EM·IR 신호 최소, 전투력은 유지', f: (m, b) => -1.2 * R(m.em, b.em) - 0.6 * R(m.ir, b.ir) + 0.25 * R(m.dpsEff, b.dpsEff) + 0.1 * R(m.D, b.D) - 0.15 * m.short },
+    travel: { ico: '🚀', t: '이동', d: '퀀텀 속도·스풀 우선, 방어는 보통', f: (m, b) => 1.5 * R(m.qdspeed, b.qdspeed) - 0.4 * R(m.spool == null ? 1 : m.spool, b.spool == null ? 1 : b.spool) - 0.3 * R(m.fuel == null ? 1 : m.fuel, b.fuel == null ? 1 : b.fuel) + 0.2 * R(m.D, b.D) + 0.15 * R(m.dpsEff, b.dpsEff) - 0.1 * R(m.em, b.em) - 0.15 * m.short },
+    tank: { ico: '🛡️', t: '방어', d: '실드 HP·재생 최대', f: (m, b) => 1.2 * R(m.D, b.D) + 0.3 * R(m.dpsEff, b.dpsEff) - 0.05 * R(m.em, b.em) - 0.15 * m.short },
+    balanced: { ico: '⚖️', t: '균형', d: 'DPS·방어·이동·신호 고루', f: (m, b) => 0.5 * R(m.dpsEff, b.dpsEff) + 0.5 * R(m.D, b.D) + 0.25 * R(m.qdspeed, b.qdspeed) - 0.25 * R(m.em, b.em) - 0.15 * m.short }
+  };
+
+  // ---------- 최적화 ----------
+  function groupsOf(slots) {
+    const g = {};
+    for (const s of slots) (g[s.key] = g[s.key] || []).push(s);
+    return Object.values(g);
+  }
+  const allowed = (s, cls) => cls === s.stock || !opt.onlyBuy || minPrice(cls) != null;
+
+  function optimize(slots, preset, baseBuild, base0, baseAsg) {
+    const groups = groupsOf(slots);
+    const feasible = asg => { if (!opt.budget) return true; return costOf(slots, asg).sum <= opt.budget; };
+    const memo = new Map();
+    const score = asg => {
+      const k = slots.map(s => curOf(s, asg)).join('|');
+      let v = memo.get(k);
+      if (v === undefined) { v = PRESETS[preset].f(evalAsg(slots, asg, baseBuild), base0); memo.set(k, v); }
+      return v;
+    };
+    const withGroup = (asg, g, cls) => { const n = Object.assign({}, asg); for (const s of g) n[s.id] = (cls === '__stock' ? s.stock : cls); return n; };
+    const candsOf = g => {
+      const set = new Set(['__stock']);
+      for (const c of g[0].opts) if (g.every(s => allowed(s, c.class))) set.add(c.class);
+      return [...set];
+    };
+    const descend = start => {
+      let cur = start, curS = feasible(cur) ? score(cur) : -1e9;
+      for (let pass = 0; pass < 6; pass++) {
+        let improved = false;
+        for (const g of groups) {
+          let bestA = null, bestS = curS;
+          for (const c of candsOf(g)) {
+            const a = withGroup(cur, g, c); if (!feasible(a)) continue;
+            const sc = score(a); if (sc > bestS + 1e-9) { bestS = sc; bestA = a; }
+          }
+          if (bestA) { cur = bestA; curS = bestS; improved = true; }
+        }
+        // 슬롯 단위 정제 (같은 그룹 안에서 개별 선택)
+        for (const s of slots) {
+          let bestA = null, bestS = curS;
+          for (const c of s.opts) {
+            if (!allowed(s, c.class)) continue;
+            const a = Object.assign({}, cur, { [s.id]: c.class }); if (!feasible(a)) continue;
+            const sc = score(a); if (sc > bestS + 1e-9) { bestS = sc; bestA = a; }
+          }
+          if (bestA) { cur = bestA; curS = bestS; improved = true; }
+        }
+        if (!improved) {
+          // 쌍 이동: 파워플랜트/실드/쿨러/무기 사이의 상호작용 (전력 균형). 단일 이동이 막혔을 때만.
+          for (let i = 0; i < groups.length; i++) for (let j = i + 1; j < groups.length; j++) {
+            const A = candsOf(groups[i]), B = candsOf(groups[j]);
+            if (A.length * B.length > 600) continue;
+            let bestA = null, bestS = curS;
+            for (const a of A) for (const b of B) {
+              const n = withGroup(withGroup(cur, groups[i], a), groups[j], b); if (!feasible(n)) continue;
+              const sc = score(n); if (sc > bestS + 1e-9) { bestS = sc; bestA = n; }
+            }
+            if (bestA) { cur = bestA; curS = bestS; improved = true; }
+          }
+        }
+        if (!improved) break;
+      }
+      return { asg: cur, score: curS };
+    };
+    // 시작점: 현재 / 부품별 최고 성능 / 부품별 최저 EM
+    const key = { weapon: c => c.dps || 0, shield: c => (c.hp || 0) + 10 * (c.regen || 0), power: c => (c.pwGen != null ? c.pwGen : c.output) || 0, cooler: c => c.rate || 0, qd: c => c.speed || 0, radar: c => 0 };
+    const startBy = fn => {
+      let a = Object.assign({}, baseAsg);
+      for (const g of groups) {
+        const ok = g[0].opts.filter(c => g.every(s => allowed(s, c.class)));
+        if (!ok.length) continue;
+        const best = ok.reduce((x, y) => fn(g[0].kind, y) > fn(g[0].kind, x) ? y : x);
+        a = withGroup(a, g, best.class);
+      }
+      return a;
+    };
+    const starts = [baseAsg, startBy((k, c) => key[k](c)), startBy((k, c) => -(c.em == null ? 1e9 : c.em))];
+    let best = null;
+    for (const st of starts) {
+      const r = descend(feasible(st) ? st : baseAsg);
+      if (!best || r.score > best.score) best = r;
+    }
+    return best.asg;
+  }
+
+  // ---------- 구매 계획 (스테이션별 묶음) ----------
+  function buildPlan(items) {
+    // items: [{cls,name,qty,kind}] -> stops 그리디 커버
+    const left = items.filter(i => offers(i.cls).length);
+    const missing = items.filter(i => !offers(i.cls).length);
+    const stops = [];
+    let rest = left.slice();
+    while (rest.length) {
+      const cov = {};
+      for (const it of rest) for (const [t, p] of offers(it.cls)) {
+        const e = cov[t] = cov[t] || { n: 0, sum: 0 }; e.n++; e.sum += p * it.qty;
+      }
+      const best = Object.entries(cov).sort((a, b) => (b[1].n - a[1].n) || (a[1].sum - b[1].sum))[0];
+      const t = +best[0];
+      const got = rest.filter(it => offers(it.cls).some(o => o[0] === t));
+      const lines = got.map(it => {
+        const price = offers(it.cls).find(o => o[0] === t)[1];
+        return Object.assign({}, it, { price, min: offers(it.cls)[0][1] });
+      });
+      stops.push({ t, lines, sub: lines.reduce((a, l) => a + l.price * l.qty, 0) });
+      rest = rest.filter(it => !got.includes(it));
+    }
+    const total = stops.reduce((a, s) => a + s.sub, 0);
+    const minTotal = left.reduce((a, it) => a + offers(it.cls)[0][1] * it.qty, 0);
+    return { stops, missing, total, minTotal };
+  }
+  function itemsFromAsg(slots, asg) {
+    const by = {};
+    for (const s of slots) {
+      const cur = curOf(s, asg);
+      if (!cur || cur === s.stock) continue;
+      const c = findComp(s.kind, cur);
+      if (!c) continue;
+      const e = by[cur] = by[cur] || { cls: cur, name: c.name, qty: 0, kind: s.kind, size: c.size };
+      e.qty++;
+    }
+    return Object.values(by);
+  }
+  function planHTML(plan, opts) {
+    opts = opts || {};
+    const stopName = t => { const T = SHOPS.terms[t]; return `<b>${esc(T.n)}</b><span class="fit-dim"> · ${esc(SYS_KO[T.sys] || T.sys)} · ${esc(T.loc)}</span>`; };
+    let h = '';
+    plan.stops.forEach((st, i) => {
+      h += `<div class="fit-stop"><div class="fit-stop-h">${i + 1}. ${stopName(st.t)}<span class="fit-sub">${nf(st.sub)} aUEC</span></div>`
+        + st.lines.map(l => `<div class="fit-line"><span>${esc(l.name)}${l.qty > 1 ? ' ×' + l.qty : ''} <span class="fit-dim">${KIND_KO[l.kind] || l.kind} S${l.size}</span></span><span>${nf(l.price * l.qty)}${l.price > l.min * 1.05 ? `<span class="fit-dim"> (최저 ${nf(l.min)})</span>` : ''}</span></div>`).join('')
+        + '</div>';
+    });
+    if (plan.missing.length) {
+      h += `<div class="fit-stop fit-miss"><div class="fit-stop-h">⚠️ 구매처 미확인 (선택 지역 ${opt.sys.map(s => SYS_KO[s] || s).join('/')} 기준)</div>`
+        + plan.missing.map(m => { const p = anyPrice(m.cls); return `<div class="fit-line"><span>${esc(m.name)}${m.qty > 1 ? ' ×' + m.qty : ''}</span><span class="fit-dim">${p != null ? '다른 지역에는 있음 (지역 칩 확인)' : '데이터 없음 · 인게임 확인 필요'}</span></div>`; }).join('') + '</div>';
+    }
+    if (plan.stops.length) h += `<div class="fit-total">합계 ${nf(plan.total)} aUEC <span class="fit-dim">(스테이션 묶음 기준${plan.minTotal < plan.total ? ' · 품목별 최저가 합 ' + nf(plan.minTotal) : ''})</span></div>`;
+    return h;
+  }
+  const shopNote = () => SHOPS ? `가격·재고: ${esc(SHOPS.meta.source)} · 제보 기준 ${esc(SHOPS.meta.newestReport)} (게임 ${esc(Object.keys(SHOPS.meta.reportVersions).sort().join('/'))}). 커뮤니티 제보라 실제와 다를 수 있음 — 구매 전 인게임에서 확인.` : '구매처 데이터를 불러오지 못했습니다.';
+
+  // ---------- 지역 칩 ----------
+  function sysChipsHTML(idAttr) {
+    return `<span class="grp-lbl">지역</span>` + Object.keys(SYS_KO).map(k => `<button class="chip${opt.sys.includes(k) ? ' on' : ''}" ${idAttr}="${k}">${SYS_KO[k]}</button>`).join('');
+  }
+  function bindSysChips(sel, after) {
+    document.querySelectorAll(sel).forEach(b => b.onclick = () => {
+      const k = b.dataset.fitsys, i = opt.sys.indexOf(k);
+      if (i >= 0) { if (opt.sys.length > 1) opt.sys.splice(i, 1); } else opt.sys.push(k);
+      saveOpt(); after();
+    });
+  }
+
+  // ---------- 메인 페이지: 구매 목록 패널 ----------
+  function renderShopPanel() {
+    const el = $q('shopPanel'); if (!el) return;
+    if (!SHOPS) { el.innerHTML = `<div class="fit-dim">${SHOPS === false ? '구매처 데이터를 불러오지 못했습니다.' : '구매처 데이터 로딩 중…'}</div>`; return; }
+    if (!curShip || !DB) { el.innerHTML = '<div class="fit-dim">함선을 선택하세요.</div>'; return; }
+    const slots = enumSlots();
+    const asg = {}; for (const s of slots) asg[s.id] = (s.id in build) ? build[s.id] : s.stock;
+    const items = itemsFromAsg(slots, asg);
+    let h = `<div class="chips" style="padding:0 0 8px" id="shopChips">${sysChipsHTML('data-fitsys')}</div>`;
+    if (!items.length) h += '<div class="fit-dim">스톡 부품 그대로예요 — 새로 살 부품이 없습니다. 부품을 바꾸면 여기에 파는 곳이 나와요.</div>';
+    else h += planHTML(buildPlan(items));
+    h += `<div class="fit-note">${shopNote()}</div>`;
+    el.innerHTML = h;
+    bindSysChips('#shopChips .chip', renderShopPanel);
+  }
+
+  // 부품 선택 목록에 최저가 표시
+  const _cs = compShort;
+  compShort = function (kind, c) {
+    const base = _cs(kind, c);
+    if (!SHOPS || !c || !c.class) return base;
+    const p = minPrice(c.class);
+    return base + (p != null ? ` <span class="spec-mini price">💰 ${nf(p)}</span>` : '');
+  };
+  const _us = updateStats;
+  updateStats = function () { _us(); renderShopPanel(); updateFitBtn(); };
+
+  // ---------- 추천 모달 ----------
+  let RES = null; // {slots, baseAsg, baseBuild, base0, results:{preset:{asg,m,cost,plan,changes}}, sel}
+  function updateFitBtn() {
+    const b = $q('fitBtn'); if (!b) return;
+    b.disabled = !curShip;
+    const u = $q('fitUndo'); if (u) u.style.display = window._fitUndo && window._fitUndo.ship === curShip ? '' : 'none';
+  }
+  function openFitModal() {
+    if (!curShip) return;
+    $q('modalRoot').innerHTML = `<div class="modal-ov" id="mov"><div class="modal fit-modal">
+      <div class="modal-h"><b>🎯 최적 피팅 템플릿</b><span class="sub">${esc((DB.ships.find(s => s.slug === curShip) || {}).name || curShip)}</span><button class="modal-x" id="mx">✕</button></div>
+      <div class="fit-body" id="fitBody"></div></div></div>`;
+    $q('mx').onclick = closeModal;
+    $q('mov').addEventListener('click', e => { if (e.target.id === 'mov') closeModal(); });
+    drawFitForm();
+  }
+  function drawFitForm() {
+    const body = $q('fitBody');
+    const cards = Object.entries(PRESETS).map(([k, p]) => `<button class="fit-card${opt.preset === k ? ' on' : ''}" data-p="${k}"><span class="ic">${p.ico}</span><b>${p.t}</b><span class="fit-dim">${p.d}</span></button>`).join('');
+    const bud = [0, 50000, 200000, 500000, 1000000].map(v => `<button class="chip${opt.budget === v ? ' on' : ''}" data-b="${v}">${v ? nf(v / 1000) + 'k' : '무제한'}</button>`).join('');
+    body.innerHTML = `
+      <div class="sec-h">1. 어떤 취향으로 맞출까요?</div>
+      <div class="fit-cards">${cards}</div>
+      <div class="sec-h">2. 구매 조건</div>
+      <div class="chips" style="padding:0">${sysChipsHTML('data-fitsys')}</div>
+      <div class="chips" style="padding:8px 0 0"><span class="grp-lbl">예산</span>${bud}<input id="fitBud" type="number" min="0" step="10000" placeholder="직접 입력 (aUEC)" value="${opt.budget && ![50000, 200000, 500000, 1000000].includes(opt.budget) ? opt.budget : ''}" style="width:160px"></div>
+      <div class="chips" style="padding:8px 0 0"><span class="grp-lbl">교전 거리</span>${Object.keys(RANGE_KO).map(k => `<button class="chip${opt.range === k ? ' on' : ''}" data-r="${k}">${RANGE_KO[k]}</button>`).join('')}</div>
+      <label class="fit-chk"><input type="checkbox" id="fitBuy" ${opt.onlyBuy ? 'checked' : ''}> 선택한 지역에서 살 수 있는 부품만 (끄면 구매처 없는 부품도 후보)</label>
+      <div class="fit-dim" style="margin-top:4px">예산 = 현재 장착을 스톡으로 보고 새로 사야 하는 부품의 합계(품목별 최저가). 스톡 부품은 이미 보유한 걸로 계산.</div>
+      <div style="margin-top:12px"><button id="fitGo" class="fit-go">🎯 추천 만들기</button></div>
+      <div id="fitRes"></div>`;
+    body.querySelectorAll('.fit-card').forEach(b => b.onclick = () => { opt.preset = b.dataset.p; saveOpt(); body.querySelectorAll('.fit-card').forEach(x => x.classList.toggle('on', x === b)); if (RES) { RES.sel = opt.preset; drawResult(); } });
+    bindSysChips('#fitBody [data-fitsys]', drawFitForm);
+    body.querySelectorAll('[data-b]').forEach(b => b.onclick = () => { opt.budget = +b.dataset.b; saveOpt(); drawFitForm(); });
+    body.querySelectorAll('[data-r]').forEach(b => b.onclick = () => { opt.range = b.dataset.r; saveOpt(); drawFitForm(); });
+    $q('fitBud').onchange = e => { opt.budget = Math.max(0, +e.target.value || 0); saveOpt(); drawFitForm(); };
+    $q('fitBuy').onchange = e => { opt.onlyBuy = e.target.checked; saveOpt(); };
+    $q('fitGo').onclick = runFit;
+    if (RES && RES.ship === curShip) drawResult();
+  }
+  async function runFit() {
+    const go = $q('fitGo'); go.disabled = true; go.textContent = '계산 중…';
+    await loadShops();
+    await new Promise(r => setTimeout(r, 30));
+    if (!SHOPS) { $q('fitRes').innerHTML = '<div class="fit-dim">구매처 데이터를 불러오지 못해 구매 조건 없이 계산합니다.</div>'; opt.onlyBuy = false; }
+    const slots = enumSlots();
+    const baseBuild = Object.assign({}, build);
+    const baseAsg = {}; for (const s of slots) baseAsg[s.id] = (s.id in build) ? build[s.id] : s.stock;
+    const base0 = evalAsg(slots, baseAsg, baseBuild);
+    const stockAsg = {}; for (const s of slots) stockAsg[s.id] = s.stock;
+    const results = {};
+    const t0 = performance.now();
+    let done = 0;
+    for (const k of Object.keys(PRESETS)) {
+      go.textContent = `계산 중… (${++done}/${Object.keys(PRESETS).length})`;
+      await new Promise(r => setTimeout(r, 0));
+      const asg = optimize(slots, k, baseBuild, base0, baseAsg);
+      const m = evalAsg(slots, asg, baseBuild);
+      const items = itemsFromAsg(slots, asg);
+      const plan = SHOPS ? buildPlan(items) : { stops: [], missing: items, total: 0, minTotal: 0 };
+      const changes = slots.filter(s => curOf(s, asg) !== curOf(s, baseAsg)).map(s => ({ s, from: curOf(s, baseAsg), to: curOf(s, asg) }));
+      results[k] = { asg, m, plan, changes, cost: costOf(slots, asg) };
+    }
+    RES = { ship: curShip, slots, baseAsg, baseBuild, base0, results, sel: opt.preset, ms: performance.now() - t0 };
+    go.disabled = false; go.textContent = '🎯 다시 만들기';
+    drawResult();
+  }
+  const dir = { dps: 1, dpsEff: 1, hp: 1, regen: 1, em: -1, ir: -1, t10: -1, short: -1 };
+  function deltaCell(k, a, b, fmtFn) {
+    fmtFn = fmtFn || nf;
+    if (a == null || b == null) return `<td>${b == null ? '—' : fmtFn(b)}</td>`;
+    const d = b - a, rel = a ? d / a : 0;
+    let cls = '';
+    if (Math.abs(rel) > 0.005 && dir[k]) cls = (d * dir[k] > 0) ? 'ok' : 'bad';
+    return `<td class="${cls}">${fmtFn(b)}${Math.abs(rel) > 0.005 ? `<span class="fit-dim"> ${rel > 0 ? '+' : ''}${(rel * 100).toFixed(0)}%</span>` : ''}</td>`;
+  }
+  function drawResult() {
+    const el = $q('fitRes'); if (!el || !RES) return;
+    const { slots, base0, results, sel } = RES;
+    const r = results[sel];
+    const rows = [
+      ['지속 DPS', 'dps', m => m.dps, nf], ['실드 HP', 'hp', m => m.hp, nf], ['실드 재생/s', 'regen', m => m.regen, nf],
+      ['EM 지표', 'em', m => m.em, nf], ['IR 지표', 'ir', m => m.ir, nf],
+      ['퀀텀 10Gm', 't10', m => m.t10, v => v == null ? '—' : Math.round(v) + 's'], ['전력 부족(핍)', 'short', m => m.short, v => (Math.round(v * 10) / 10).toString()]
+    ];
+    const tabs = Object.entries(PRESETS).map(([k, p]) => `<button class="chip${sel === k ? ' on' : ''}" data-t="${k}">${p.ico} ${p.t}</button>`).join('');
+    const cmp = rows.map(([lbl, k, g, f]) => `<tr><td>${lbl}</td><td>${f(g(base0))}</td>${deltaCell(k, g(base0), g(r.m), f)}</tr>`).join('');
+    const chg = r.changes.length ? r.changes.map(c => {
+      const a = findComp(c.s.kind, c.from), b = findComp(c.s.kind, c.to);
+      const p = minPrice(c.to);
+      return `<div class="fit-line"><span><span class="fit-dim">${esc(c.s.label)}</span><br>${esc(a ? a.name : '— 없음')} → <b>${esc(b ? b.name : '— 없음')}</b></span><span>${c.to === c.s.stock ? '<span class="fit-dim">스톡 복귀</span>' : (p != null ? '💰 ' + nf(p) : '<span class="warn">구매처 미확인</span>')}</span></div>`;
+    }).join('') : '<div class="fit-dim">현재 장착이 이 취향에서 이미 최적입니다 (조건 안에서).</div>';
+    el.innerHTML = `
+      <div class="sec-h" style="margin-top:16px">3. 결과 <span class="fit-dim">(${Object.keys(PRESETS).length}개 취향 계산 ${Math.round(RES.ms)}ms)</span></div>
+      <div class="chips" style="padding:0 0 8px">${tabs}</div>
+      <table class="fit-cmp"><tr><th></th><th>현재</th><th>${PRESETS[sel].ico} ${PRESETS[sel].t} 추천</th></tr>${cmp}</table>
+      <div class="fit-dim" style="margin:4px 0 0">EM·IR 지표는 장착 부품 정격값의 합(상대 비교용, 게임 내 실제 탐지 거리가 아님). DPS는 파일럿 무기 + 터렛 절반 가중으로 최적화, 표시는 시뮬레이터 합계.</div>
+      <div class="sec-h">바뀌는 부품 ${r.changes.length}개</div>
+      <div class="fit-list">${chg}</div>
+      <div class="sec-h">🛒 어디서 살까</div>
+      <div class="fit-list">${r.plan.stops.length || r.plan.missing.length ? planHTML(r.plan) : '<div class="fit-dim">새로 살 부품 없음.</div>'}</div>
+      <div class="fit-note">${shopNote()}${opt.budget && r.plan.minTotal > opt.budget ? '<br><span class="warn">⚠️ 묶음 구매 합계가 예산을 넘을 수 있어요 (최적화는 품목별 최저가 기준).</span>' : ''}</div>
+      <div class="fit-foot"><button id="fitApply" class="fit-go">✅ 이 빌드 적용</button><button id="fitCopy">📋 쇼핑 리스트 복사</button></div>`;
+    el.querySelectorAll('[data-t]').forEach(b => b.onclick = () => { RES.sel = b.dataset.t; opt.preset = b.dataset.t; saveOpt(); drawResult(); document.querySelectorAll('.fit-card').forEach(x => x.classList.toggle('on', x.dataset.p === opt.preset)); });
+    $q('fitApply').onclick = () => applyFit(r);
+    $q('fitCopy').onclick = () => copyList(r);
+  }
+  function applyFit(r) {
+    window._fitUndo = { ship: curShip, build: Object.assign({}, build), pwr: JSON.parse(JSON.stringify(pwr)) };
+    build = Object.assign({}, RES.baseBuild, r.asg);
+    pwr = freshPwr();
+    closeModal(); renderSlots(); updateStats();
+    const st = $q('saveStatus'); if (st) st.textContent = `추천 빌드 적용됨 (${PRESETS[RES.sel].t}) — 💾 저장하면 보관돼요`;
+  }
+  function undoFit() {
+    const u = window._fitUndo; if (!u || u.ship !== curShip) return;
+    build = u.build; pwr = u.pwr; window._fitUndo = null;
+    renderSlots(); updateStats();
+    const st = $q('saveStatus'); if (st) st.textContent = '추천 적용을 되돌렸어요';
+  }
+  function copyList(r) {
+    const ship = (DB.ships.find(s => s.slug === curShip) || {}).name || curShip;
+    const L = [`[${ship}] ${PRESETS[RES.sel].t} 피팅 — 구매 목록`];
+    r.plan.stops.forEach((st, i) => { const T = SHOPS.terms[st.t]; L.push(`${i + 1}) ${T.n} (${T.sys} · ${T.loc}) ${nf(st.sub)} aUEC`); st.lines.forEach(l => L.push(`   - ${l.name}${l.qty > 1 ? ' x' + l.qty : ''} ${nf(l.price * l.qty)}`)); });
+    r.plan.missing.forEach(m => L.push(`? ${m.name} x${m.qty} (구매처 미확인)`));
+    L.push(`합계 ${nf(r.plan.total)} aUEC · 출처 UEX(${SHOPS.meta.newestReport})`);
+    const txt = L.join('\n');
+    const done = () => { $q('fitCopy').textContent = '✅ 복사됨'; };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done, () => { prompt('복사하세요', txt); });
+    else prompt('복사하세요', txt);
+  }
+
+  // ---------- 초기화 ----------
+  function boot() {
+    const b = $q('fitBtn'); if (!b) return;
+    b.onclick = openFitModal;
+    const u = $q('fitUndo'); if (u) u.onclick = undoFit;
+    loadShops().then(() => { renderShopPanel(); });
+    updateFitBtn();
+  }
+  window.SCFIT = { enumSlots, evalAsg, optimize, PRESETS, opt, loadShops, offers, buildPlan, openFitModal, get RES() { return RES; } };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
