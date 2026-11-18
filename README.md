@@ -12,7 +12,10 @@ public/                  배포 대상 (Vercel 정적 호스팅)
   app.js                 전체 로직 (피팅 · 핍 배분 · 실드 탱킹)
   db.json                부품/함선 DB        ← build_db.py 산출물
   ship_slots.json        함선별 슬롯 스냅샷   ← fetch_all_ship_slots.py 산출물
+  fit.js                 최적 피팅 템플릿(취향 프리셋) + 구매 목록 패널 (app.js 전역 사용)
+  shops.json             부품 구매처·가격 스냅샷 ← fetch_shops.py 산출물 (UEX Corp API)
 
+fetch_shops.py           shops.json 생성 (UEX Corp API 2.0, 표준 라이브러리만)
 build_db.py              db.json 생성 (scunpacked 원본 → 큐레이션, 단독 실행)
 sync_data.py             scunpacked 원본 동기화 + 패치 감지
 extract_power_rn.py      전력 핍 추출 검증용 (build_db 내장, 교차검증 시 사용)
@@ -67,3 +70,15 @@ cd public && python3 -m http.server 8811     # 로컬 서버
 ## 라이선스
 
 게임 데이터는 Cloud Imperium Games 자산입니다. 이 저장소의 코드는 팬 프로젝트입니다.
+
+## 최적 피팅 템플릿 · 구매처 (2026-11-19~)
+
+- **🎯 취향별 추천 피팅**: 전투 / 스텔스 / 이동 / 방어 / 균형 + 교전 거리 + 지역(스탠턴·파이로·닉스) + 예산.
+  `fit.js` 가 시뮬레이터의 `fitStats()` 를 평가 함수로 재사용해 슬롯별 부품 조합을 탐색한다
+  (같은 종류 슬롯 일괄 → 슬롯 개별 → 전력 쌍 이동; 다른 취향 결과도 시작점으로 사용).
+  카드(마운트·터렛)는 바꾸지 않고 하위 무기만 고른다. 미사일 랙·추진부는 대상 아님.
+- **EM/IR 지표**는 부품 정격값의 합(상대 비교용). 게임 내 실제 탐지 거리가 아니다.
+- **구매처**: `shops.json` 은 `python3 fetch_shops.py` 로 UEX Corp API(커뮤니티 제보)에서 만든 스냅샷이다.
+  db.json 부품과는 **이름+사이즈**로 매칭하고, 같은 이름의 변종 class(마운트형·NPC·AA 등)는 대표 1개에만 연결한다.
+  구매처가 없는 부품은 "구매처 미확인". 패치마다 `build_db.py` 후 `fetch_shops.py` 를 다시 실행할 것.
+- 현재 빌드가 전력 부족(전 계통 100% 가동 기준)이면 DPS 증가율이 과장돼 보일 수 있다 (UI에 경고 표시).

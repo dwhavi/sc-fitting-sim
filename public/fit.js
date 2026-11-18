@@ -21,7 +21,7 @@
   let SHOPS = null; // null=로딩전, false=실패
   async function loadShops() {
     if (SHOPS !== null) return SHOPS;
-    try { const r = await fetch('shops.json?v=1', { cache: 'no-store' }); SHOPS = await r.json(); }
+    try { const r = await fetch('shops.json?v=2', { cache: 'no-store' }); SHOPS = await r.json(); }
     catch (e) { SHOPS = false; }
     return SHOPS;
   }
@@ -37,6 +37,8 @@
   // ---------- 슬롯 열거 ----------
   const STOCK_KINDS = ['weapon', 'shield', 'power', 'cooler', 'qd', 'radar'];
   const KIND_KO = { weapon: '무기', shield: '실드', power: '파워플랜트', cooler: '쿨러', qd: '퀀텀드라이브', radar: '레이더' };
+  const WORD_KO = { turret: '터렛', side: '측면', front: '앞', back: '뒤', left: '좌', right: '우', top: '상단', bottom: '하단', rear: '후방', nose: '기수', wing: '날개', center: '중앙', centre: '중앙', gun: '주포', remote: '원격', manned: '유인', chin: '턱', belly: '하부', tail: '후미' };
+  const pretty = n => String(n || '').split(/\s+/).map(w => WORD_KO[w.toLowerCase()] || w).join(' ');
   const okName = c => c && !/PLACEHOLDER/i.test(c.name || '');
   function enumSlots() {
     const out = [];
@@ -59,7 +61,7 @@
         else if (h.childGuns && h.childGuns.length) sizes = h.childGuns.filter(g => g.max > 0).map(g => g.max);
         sizes.forEach((gs, i) => {
           const sid = h.id + ':w' + i;
-          mk(sid, 'weapon', gs, `${shortName(h.name)} ↳ 무기 ${i + 1} S${gs}`, kind === 'turret' ? 'turret' : 'pilot', stockGunFor(sid));
+          mk(sid, 'weapon', gs, `${pretty(shortName(h.name))} ↳ 무기 ${i + 1} S${gs}`, kind === 'turret' ? 'turret' : 'pilot', stockGunFor(sid));
         });
       }
     }
@@ -129,7 +131,7 @@
   }
   const allowed = (s, cls) => cls === s.stock || !opt.onlyBuy || minPrice(cls) != null;
 
-  function optimize(slots, preset, baseBuild, base0, baseAsg) {
+  function optimize(slots, preset, baseBuild, base0, baseAsg, extra) {
     const groups = groupsOf(slots);
     const feasible = asg => { if (!opt.budget) return true; return costOf(slots, asg).sum <= opt.budget; };
     const memo = new Map();
@@ -158,7 +160,7 @@
           if (bestA) { cur = bestA; curS = bestS; improved = true; }
         }
         // 슬롯 단위 정제 (같은 그룹 안에서 개별 선택)
-        for (const s of slots) {
+        if (!improved) for (const s of slots) {
           let bestA = null, bestS = curS;
           for (const c of s.opts) {
             if (!allowed(s, c.class)) continue;
@@ -169,11 +171,13 @@
         }
         if (!improved) {
           // 쌍 이동: 파워플랜트/실드/쿨러/무기 사이의 상호작용 (전력 균형). 단일 이동이 막혔을 때만.
+          const topC = (g, k) => candsOf(g).map(c => [c, feasible(withGroup(cur, g, c)) ? score(withGroup(cur, g, c)) : -1e9]).sort((x, y) => y[1] - x[1]).slice(0, k).map(x => x[0]);
+          const tops = groups.map(g => topC(g, 8));
           for (let i = 0; i < groups.length; i++) for (let j = i + 1; j < groups.length; j++) {
-            const A = candsOf(groups[i]), B = candsOf(groups[j]);
-            if (A.length * B.length > 600) continue;
+            const ki = groups[i][0].kind, kj = groups[j][0].kind;
+            if (!(ki === 'power' || kj === 'power' || (ki === 'shield' && kj === 'cooler') || (ki === 'cooler' && kj === 'shield'))) continue;
             let bestA = null, bestS = curS;
-            for (const a of A) for (const b of B) {
+            for (const a of tops[i]) for (const b of tops[j]) {
               const n = withGroup(withGroup(cur, groups[i], a), groups[j], b); if (!feasible(n)) continue;
               const sc = score(n); if (sc > bestS + 1e-9) { bestS = sc; bestA = n; }
             }
@@ -196,7 +200,9 @@
       }
       return a;
     };
-    const starts = [baseAsg, startBy((k, c) => key[k](c)), startBy((k, c) => -(c.em == null ? 1e9 : c.em))];
+    const starts = [baseAsg, startBy((k, c) => key[k](c))];
+    if (preset === 'stealth' || preset === 'balanced') starts.push(startBy((k, c) => -(c.em == null ? 1e9 : c.em)));
+    for (const e of (extra || [])) starts.push(e);
     let best = null;
     for (const st of starts) {
       const r = descend(feasible(st) ? st : baseAsg);
@@ -353,10 +359,17 @@
     const results = {};
     const t0 = performance.now();
     let done = 0;
-    for (const k of Object.keys(PRESETS)) {
-      go.textContent = `계산 중… (${++done}/${Object.keys(PRESETS).length})`;
+    const keys = Object.keys(PRESETS), first = {};
+    for (const k of keys) {
+      go.textContent = `계산 중… (${++done}/${keys.length * 2})`;
       await new Promise(r => setTimeout(r, 0));
-      const asg = optimize(slots, k, baseBuild, base0, baseAsg);
+      first[k] = optimize(slots, k, baseBuild, base0, baseAsg);
+    }
+    for (const k of keys) {
+      go.textContent = `다듬는 중… (${++done}/${keys.length * 2})`;
+      await new Promise(r => setTimeout(r, 0));
+      // 다른 취향의 결과도 시작점으로 써서 지역 최적에서 벗어난다
+      const asg = optimize(slots, k, baseBuild, base0, baseAsg, keys.filter(x => x !== k).map(x => first[x]));
       const m = evalAsg(slots, asg, baseBuild);
       const items = itemsFromAsg(slots, asg);
       const plan = SHOPS ? buildPlan(items) : { stops: [], missing: items, total: 0, minTotal: 0 };
@@ -381,7 +394,7 @@
     const { slots, base0, results, sel } = RES;
     const r = results[sel];
     const rows = [
-      ['지속 DPS', 'dps', m => m.dps, nf], ['실드 HP', 'hp', m => m.hp, nf], ['실드 재생/s', 'regen', m => m.regen, nf],
+      ['지속 DPS (시뮬 합계)', 'dps', m => m.dps, nf], ['거리 보정 DPS ★', 'dpsEff', m => m.dpsEff, nf], ['실드 HP', 'hp', m => m.hp, nf], ['실드 재생/s', 'regen', m => m.regen, nf],
       ['EM 지표', 'em', m => m.em, nf], ['IR 지표', 'ir', m => m.ir, nf],
       ['퀀텀 10Gm', 't10', m => m.t10, v => v == null ? '—' : Math.round(v) + 's'], ['전력 부족(핍)', 'short', m => m.short, v => (Math.round(v * 10) / 10).toString()]
     ];
@@ -396,7 +409,8 @@
       <div class="sec-h" style="margin-top:16px">3. 결과 <span class="fit-dim">(${Object.keys(PRESETS).length}개 취향 계산 ${Math.round(RES.ms)}ms)</span></div>
       <div class="chips" style="padding:0 0 8px">${tabs}</div>
       <table class="fit-cmp"><tr><th></th><th>현재</th><th>${PRESETS[sel].ico} ${PRESETS[sel].t} 추천</th></tr>${cmp}</table>
-      <div class="fit-dim" style="margin:4px 0 0">EM·IR 지표는 장착 부품 정격값의 합(상대 비교용, 게임 내 실제 탐지 거리가 아님). DPS는 파일럿 무기 + 터렛 절반 가중으로 최적화, 표시는 시뮬레이터 합계.</div>
+      ${base0.short > 0.5 ? `<div class="fit-dim warn" style="margin:4px 0 0">현재 빌드는 전력이 ${(Math.round(base0.short * 10) / 10)}핍 부족해요(전 계통 100% 가동 기준). 그래서 DPS 증가율이 크게 나올 수 있어요.</div>` : ''}
+      <div class="fit-dim" style="margin:4px 0 0">EM·IR 지표는 장착 부품 정격값의 합(상대 비교용, 게임 내 실제 탐지 거리가 아님). ★ 최적화 기준 DPS: 파일럿 무기 + 터렛 절반 가중, 선택한 교전 거리보다 사거리가 짧은 무기는 깎아서 계산.</div>
       <div class="sec-h">바뀌는 부품 ${r.changes.length}개</div>
       <div class="fit-list">${chg}</div>
       <div class="sec-h">🛒 어디서 살까</div>
