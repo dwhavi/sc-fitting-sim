@@ -312,6 +312,7 @@
     const b = $q('fitBtn'); if (!b) return;
     b.disabled = !curShip;
     const u = $q('fitUndo'); if (u) u.style.display = window._fitUndo && window._fitUndo.ship === curShip ? '' : 'none';
+    renderTplPanel();
   }
   function openFitModal() {
     if (!curShip) return;
@@ -416,10 +417,14 @@
       <div class="sec-h">🛒 어디서 살까</div>
       <div class="fit-list">${r.plan.stops.length || r.plan.missing.length ? planHTML(r.plan) : '<div class="fit-dim">새로 살 부품 없음.</div>'}</div>
       <div class="fit-note">${shopNote()}${opt.budget && r.plan.minTotal > opt.budget ? '<br><span class="warn">⚠️ 묶음 구매 합계가 예산을 넘을 수 있어요 (최적화는 품목별 최저가 기준).</span>' : ''}</div>
-      <div class="fit-foot"><button id="fitApply" class="fit-go">✅ 이 빌드 적용</button><button id="fitCopy">📋 쇼핑 리스트 복사</button></div>`;
+      <div class="fit-foot"><button id="fitApply" class="fit-go">✅ 이 빌드 적용</button><button id="fitCopy">📋 쇼핑 리스트 복사</button><button id="fitTpl">💾 템플릿 저장</button></div>`;
     el.querySelectorAll('[data-t]').forEach(b => b.onclick = () => { RES.sel = b.dataset.t; opt.preset = b.dataset.t; saveOpt(); drawResult(); document.querySelectorAll('.fit-card').forEach(x => x.classList.toggle('on', x.dataset.p === opt.preset)); });
     $q('fitApply').onclick = () => applyFit(r);
     $q('fitCopy').onclick = () => copyList(r);
+    $q('fitTpl').onclick = () => {
+      const n = prompt('템플릿 이름', `${(DB.ships.find(x => x.slug === curShip) || {}).name || curShip} ${PRESETS[RES.sel].t}`);
+      if (n !== null) { saveTpl(n, Object.assign({}, RES.baseBuild, r.asg)); $q('fitTpl').textContent = '✅ 저장됨'; }
+    };
   }
   function applyFit(r) {
     window._fitUndo = { ship: curShip, build: Object.assign({}, build), pwr: JSON.parse(JSON.stringify(pwr)) };
@@ -444,6 +449,32 @@
     const done = () => { $q('fitCopy').textContent = '✅ 복사됨'; };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done, () => { prompt('복사하세요', txt); });
     else prompt('복사하세요', txt);
+  }
+
+  // ---------- 내 템플릿 (이름 붙여 저장) ----------
+  const TPL_KEY = 'scfit:tpls';
+  const tplAll = () => { try { return JSON.parse(localStorage.getItem(TPL_KEY) || '[]'); } catch (e) { return []; } };
+  const tplWrite = a => { try { localStorage.setItem(TPL_KEY, JSON.stringify(a)); } catch (e) { /* ignore */ } };
+  function saveTpl(name, b) {
+    const ship = (DB.ships.find(x => x.slug === curShip) || {}).name || curShip;
+    name = (name || '').trim() || `${ship} ${new Date().toISOString().slice(5, 10)}`;
+    const a = tplAll(); a.push({ id: Date.now(), name, ship: curShip, build: b, savedAt: new Date().toISOString() });
+    tplWrite(a); renderTplPanel();
+    return name;
+  }
+  function renderTplPanel() {
+    const el = $q('tplPanel'); if (!el) return;
+    const mine = tplAll().filter(t => t.ship === curShip);
+    el.innerHTML = (mine.length ? mine.map(t => `<div class="fit-line"><button class="chip" data-tapply="${t.id}" style="text-align:left;flex:1">📂 ${esc(t.name)}</button><button class="chip" data-tdel="${t.id}" title="삭제">✕</button></div>`).join('') : '<div class="fit-dim">저장된 템플릿 없음</div>')
+      + `<button id="tplSave" style="width:100%;margin-top:6px" ${curShip ? '' : 'disabled'}>➕ 현재 빌드를 템플릿으로 저장</button>`;
+    el.querySelectorAll('[data-tapply]').forEach(b => b.onclick = () => {
+      const t = tplAll().find(x => String(x.id) === b.dataset.tapply); if (!t) return;
+      window._fitUndo = { ship: curShip, build: Object.assign({}, build), pwr: JSON.parse(JSON.stringify(pwr)) };
+      build = Object.assign({}, t.build); pwr = freshPwr(); renderSlots(); updateStats();
+      const st = $q('saveStatus'); if (st) st.textContent = `템플릿 적용: ${t.name}`;
+    });
+    el.querySelectorAll('[data-tdel]').forEach(b => b.onclick = () => { tplWrite(tplAll().filter(x => String(x.id) !== b.dataset.tdel)); renderTplPanel(); });
+    const sv = $q('tplSave'); if (sv) sv.onclick = () => { const n = prompt('템플릿 이름', ''); if (n !== null) saveTpl(n, Object.assign({}, build)); };
   }
 
   // ---------- 초기화 ----------
