@@ -130,10 +130,12 @@
     return Object.values(g);
   }
   const locked = k => (opt.lock || []).includes(k);
+  const pinsOf = () => ((opt.pins = opt.pins || {})[curShip] = (opt.pins[curShip] || []));
+  const pinned = s => pinsOf().includes(s.id);
   const allowed = (s, cls) => cls === s.stock || !opt.onlyBuy || minPrice(cls) != null;
 
   function optimize(slots, preset, baseBuild, base0, baseAsg, extra) {
-    const groups = groupsOf(slots);
+    const groups = groupsOf(slots.filter(s => !pinned(s)));
     const feasible = asg => { if (!opt.budget) return true; return costOf(slots, asg).sum <= opt.budget; };
     const memo = new Map();
     const score = asg => {
@@ -163,7 +165,7 @@
         }
         // 슬롯 단위 정제 (같은 그룹 안에서 개별 선택)
         if (!improved) for (const s of slots) {
-          if (locked(s.kind)) continue;
+          if (locked(s.kind) || pinned(s)) continue;
           let bestA = null, bestS = curS;
           for (const c of s.opts) {
             if (!allowed(s, c.class)) continue;
@@ -326,6 +328,16 @@
     $q('mov').addEventListener('click', e => { if (e.target.id === 'mov') closeModal(); });
     drawFitForm();
   }
+  function pinListHTML() {
+    const slots = enumSlots(); const pins = pinsOf();
+    const n = slots.filter(x => pins.includes(x.id)).length;
+    const rows = slots.map(x => {
+      const cur = (x.id in build) ? build[x.id] : x.stock; const c = cur ? findComp(x.kind, cur) : null;
+      const on = pins.includes(x.id);
+      return `<button class="pin-row${on ? ' on' : ''}" data-pin="${esc(x.id)}"><span class="pin-ic">${on ? '🔒' : '🔓'}</span><span class="pin-t"><span class="fit-dim">${esc(x.label)}</span><br>${esc(c ? c.name : '— 비어 있음')}</span></button>`;
+    }).join('');
+    return `<details class="pin-box"${n ? ' open' : ''}><summary>📌 슬롯 하나만 고정하기 <b>${n ? n + '개 고정됨' : '(선택)'}</b></summary><div class="fit-dim" style="padding:4px 0">원하는 무기/모듈을 먼저 장착한 뒤, 아래에서 그 슬롯을 눌러 🔒로 만드세요. 그 슬롯은 그대로 두고 나머지를 추천해요.</div><div class="pin-list">${rows}</div></details>`;
+  }
   function drawFitForm() {
     const body = $q('fitBody');
     const cards = Object.entries(PRESETS).map(([k, p]) => `<button class="fit-card${opt.preset === k ? ' on' : ''}" data-p="${k}"><span class="ic">${p.ico}</span><b>${p.t}</b><span class="fit-dim">${p.d}</span></button>`).join('');
@@ -337,7 +349,7 @@
       <div class="chips" style="padding:0">${sysChipsHTML('data-fitsys')}</div>
       <div class="chips" style="padding:8px 0 0"><span class="grp-lbl">예산</span>${bud}<input id="fitBud" type="number" min="0" step="10000" placeholder="직접 입력 (aUEC)" value="${opt.budget && ![50000, 200000, 500000, 1000000].includes(opt.budget) ? opt.budget : ''}" style="width:160px"></div>
       <div class="chips" style="padding:8px 0 0"><span class="grp-lbl">교전 거리</span>${Object.keys(RANGE_KO).map(k => `<button class="chip${opt.range === k ? ' on' : ''}" data-r="${k}">${RANGE_KO[k]}</button>`).join('')}</div>
-      <div class="fit-lock"><div class="fit-lock-h">🔒 이 부품은 그대로 두기</div><div class="fit-dim">누른 종류는 지금 장착한 부품을 바꾸지 않고, 나머지만 추천해요. (켜짐 = 🔒)</div><div class="chips" style="padding:6px 0 0">${['weapon', 'shield', 'power', 'cooler', 'qd', 'radar'].map(k => { const on = (opt.lock || []).includes(k); return `<button class="chip lk${on ? ' on' : ''}" data-lk="${k}">${on ? '🔒 ' : ''}${KIND_KO[k]}</button>`; }).join('')}</div></div>
+      <div class="fit-lock"><div class="fit-lock-h">🔒 이 부품은 그대로 두기</div><div class="fit-dim">누른 종류는 지금 장착한 부품을 바꾸지 않고, 나머지만 추천해요. (켜짐 = 🔒)</div><div class="chips" style="padding:6px 0 0">${['weapon', 'shield', 'power', 'cooler', 'qd', 'radar'].map(k => { const on = (opt.lock || []).includes(k); return `<button class="chip lk${on ? ' on' : ''}" data-lk="${k}">${on ? '🔒 ' : ''}${KIND_KO[k]}</button>`; }).join('')}</div>${pinListHTML()}</div>
       <label class="fit-chk"><input type="checkbox" id="fitBuy" ${opt.onlyBuy ? 'checked' : ''}> 선택한 지역에서 살 수 있는 부품만 (끄면 구매처 없는 부품도 후보)</label>
       <div class="fit-dim" style="margin-top:4px">예산 = 현재 장착을 스톡으로 보고 새로 사야 하는 부품의 합계(품목별 최저가). 스톡 부품은 이미 보유한 걸로 계산.</div>
       <div style="margin-top:12px"><button id="fitGo" class="fit-go">🎯 추천 만들기</button></div>
@@ -345,6 +357,7 @@
     body.querySelectorAll('.fit-card').forEach(b => b.onclick = () => { opt.preset = b.dataset.p; saveOpt(); body.querySelectorAll('.fit-card').forEach(x => x.classList.toggle('on', x === b)); if (RES) { RES.sel = opt.preset; drawResult(); } });
     bindSysChips('#fitBody [data-fitsys]', drawFitForm);
     body.querySelectorAll('[data-b]').forEach(b => b.onclick = () => { opt.budget = +b.dataset.b; saveOpt(); drawFitForm(); });
+    body.querySelectorAll('[data-pin]').forEach(b => b.onclick = () => { const a = pinsOf(); const i = a.indexOf(b.dataset.pin); if (i >= 0) a.splice(i, 1); else a.push(b.dataset.pin); saveOpt(); drawFitForm(); const d = body.querySelector('.pin-box'); if (d) d.open = true; });
     body.querySelectorAll('[data-lk]').forEach(b => b.onclick = () => { const a = opt.lock = opt.lock || []; const i = a.indexOf(b.dataset.lk); if (i >= 0) a.splice(i, 1); else a.push(b.dataset.lk); saveOpt(); drawFitForm(); });
     body.querySelectorAll('[data-r]').forEach(b => b.onclick = () => { opt.range = b.dataset.r; saveOpt(); drawFitForm(); });
     $q('fitBud').onchange = e => { opt.budget = Math.max(0, +e.target.value || 0); saveOpt(); drawFitForm(); };
