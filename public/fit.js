@@ -337,7 +337,7 @@
       <div class="chips" style="padding:0">${sysChipsHTML('data-fitsys')}</div>
       <div class="chips" style="padding:8px 0 0"><span class="grp-lbl">예산</span>${bud}<input id="fitBud" type="number" min="0" step="10000" placeholder="직접 입력 (aUEC)" value="${opt.budget && ![50000, 200000, 500000, 1000000].includes(opt.budget) ? opt.budget : ''}" style="width:160px"></div>
       <div class="chips" style="padding:8px 0 0"><span class="grp-lbl">교전 거리</span>${Object.keys(RANGE_KO).map(k => `<button class="chip${opt.range === k ? ' on' : ''}" data-r="${k}">${RANGE_KO[k]}</button>`).join('')}</div>
-      <div class="chips" style="padding:8px 0 0"><span class="grp-lbl">지금 장착 유지</span>${['weapon', 'shield', 'power', 'cooler', 'qd', 'radar'].map(k => `<button class="chip${(opt.lock || []).includes(k) ? ' on' : ''}" data-lk="${k}">${KIND_KO[k]}</button>`).join('')}</div>
+      <div class="fit-lock"><div class="fit-lock-h">🔒 이 부품은 그대로 두기</div><div class="fit-dim">누른 종류는 지금 장착한 부품을 바꾸지 않고, 나머지만 추천해요. (켜짐 = 🔒)</div><div class="chips" style="padding:6px 0 0">${['weapon', 'shield', 'power', 'cooler', 'qd', 'radar'].map(k => { const on = (opt.lock || []).includes(k); return `<button class="chip lk${on ? ' on' : ''}" data-lk="${k}">${on ? '🔒 ' : ''}${KIND_KO[k]}</button>`; }).join('')}</div></div>
       <label class="fit-chk"><input type="checkbox" id="fitBuy" ${opt.onlyBuy ? 'checked' : ''}> 선택한 지역에서 살 수 있는 부품만 (끄면 구매처 없는 부품도 후보)</label>
       <div class="fit-dim" style="margin-top:4px">예산 = 현재 장착을 스톡으로 보고 새로 사야 하는 부품의 합계(품목별 최저가). 스톡 부품은 이미 보유한 걸로 계산.</div>
       <div style="margin-top:12px"><button id="fitGo" class="fit-go">🎯 추천 만들기</button></div>
