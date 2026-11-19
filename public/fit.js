@@ -123,6 +123,8 @@
     balanced: { ico: '⚖️', t: '균형', d: 'DPS·방어·이동·신호 고루', f: (m, b) => 0.5 * R(m.dpsEff, b.dpsEff) + 0.5 * R(m.D, b.D) + 0.25 * R(m.qdspeed, b.qdspeed) - 0.25 * R(m.em, b.em) - 0.15 * m.short }
   };
 
+  // 동률 처리: 성능이 사실상 같으면 EM 이 낮은 쪽 (모든 프리셋 공통). 남는 전력은 점수에 없으므로 전력이 충분할 땐 낮은 EM 이 이김.
+  const TIE_EM = 0.004;
   // ---------- 최적화 ----------
   function groupsOf(slots) {
     const g = {};
@@ -141,7 +143,7 @@
     const score = asg => {
       const k = slots.map(s => curOf(s, asg)).join('|');
       let v = memo.get(k);
-      if (v === undefined) { v = PRESETS[preset].f(evalAsg(slots, asg, baseBuild), base0); memo.set(k, v); }
+      if (v === undefined) { const mm = evalAsg(slots, asg, baseBuild); v = PRESETS[preset].f(mm, base0) - TIE_EM * R(mm.em, base0.em); memo.set(k, v); }
       return v;
     };
     const withGroup = (asg, g, cls) => { const n = Object.assign({}, asg); for (const s of g) n[s.id] = (cls === '__stock' ? s.stock : cls); return n; };
