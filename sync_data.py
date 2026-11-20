@@ -22,10 +22,10 @@
 사용:
   python3 sync_data.py              # db.json 함선만 (기본)
   python3 sync_data.py --all        # 저장소 전체 함선
-  python3 sync_data.py --rebuild    # 이미 있어도 다시 받음
+  python3 sync_data.py --rebuild    # 호환 옵션: 모든 동기화는 전체 재검증
   python3 sync_data.py --check      # 다운로드 없이 새 패치만 확인
 """
-import json, io, os, re, sys, time, urllib.request
+import json, io, os, re, sys, time, urllib.request, tempfile, shutil
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 RAW = os.path.join(ROOT, 'data', 'raw')
@@ -36,7 +36,7 @@ BRANCH = 'master'
 BASE = f'https://raw.githubusercontent.com/{REPO}/{BRANCH}'
 UA = {'User-Agent': 'curl/8'}
 
-BULK = ['ship-items.json', 'labels.json', 'manufacturers.json']
+BULK = ['items.json', 'labels.json', 'manufacturers.json']
 
 
 def fetch(url, headers=None, timeout=60):
@@ -126,7 +126,7 @@ def resolve(klass, files):
 def pick_by_name(cands, db_name, files):
     """모호한 후보 중 파일 안의 Name 이 db 이름과 가장 잘 맞는 것을 고른다."""
     target = re.sub(r'[^a-z0-9]', '', (db_name or '').lower())
-    best, best_score = None, -1
+    best, best_score, tied = None, -1, False
     for c in cands:
         if c not in files:
             continue
@@ -141,8 +141,10 @@ def pick_by_name(cands, db_name, files):
         elif nm and target and (nm in target or target in nm):
             score = 50 + min(len(nm), len(target)) / max(len(nm), len(target), 1)
         if score > best_score:
-            best, best_score = c, score
-    return best or cands[0]
+            best, best_score, tied = c, score, False
+        elif score == best_score:
+            tied = True
+    return best if best_score > 0 and not tied else None
 
 
 def get(remote, dest, rebuild=False):
@@ -154,6 +156,7 @@ def get(remote, dest, rebuild=False):
         data = fetch(f'{BASE}/{remote}')
         if len(data) < 100:          # 404 페이지 등
             return 'fail'
+        json.loads(data)  # Reject error pages / truncated JSON before saving.
         with open(dest, 'wb') as f:
             f.write(data)
         return 'ok'
@@ -167,93 +170,84 @@ def db_ships():
 
 
 def main():
+    global RAW, META, FILELIST, BASE
     args = set(sys.argv[1:])
-    rebuild = '--rebuild' in args
-    check_only = '--check' in args
-    all_ships = '--all' in args
-
-    os.makedirs(RAW, exist_ok=True)
     sha, date, version = remote_sha()
+    print(f'원본: {REPO} / {sha} / {version}')
+    if not sha or not version or '-LIVE.' not in version:
+        raise SystemExit('LIVE 원본 버전 확인 실패. 기존 스냅샷을 유지합니다.')
     prev = json.load(io.open(META, encoding='utf-8')) if os.path.exists(META) else {}
-
-    print(f'원본: {REPO}')
-    if sha:
-        print(f'  최신 커밋: {sha[:10]}  ({date})')
-        if prev.get('commit'):
-            same = prev['commit'] == sha
-            print(f'  이전 동기화: {prev["commit"][:10]}  → '
-                  f'{"변경 없음" if same else "★ 새 패치 있음"}')
-            if same and check_only:
-                print('\n새 패치 없음. 종료.')
-                return
-        elif check_only:
-            print('  (이전 기록 없음 — 첫 동기화 필요)')
-    else:
-        print('  ⚠️ 커밋 조회 실패(API 레이트리밋) — 기존 기록 유지')
-
-    if check_only:
-        print('\n다운로드하려면 --check 없이 실행하세요.')
+    if '--check' in args:
+        print('변경 없음' if prev.get('commit') == sha else '동기화 필요')
         return
 
-    bulk_failed = []
-    for name in BULK:
-        st = get(name, os.path.join(RAW, name), rebuild)
-        if st == 'fail':
-            bulk_failed.append(name)
-        print(f'  [{st:4}] {name}')
-
-    files = ship_file_list(rebuild)
-    print(f'\n저장소 함선 파일: {len(files)}개')
-
-    if all_ships:
-        targets = [(f[:-5], f) for f in files]
-    else:
-        targets = []
-        unresolved = []
-        for s in db_ships():
-            f, cands = resolve(s['class'], files)
-            if not f and cands:
-                f = pick_by_name(cands, s['name'], files)
-                print(f'  [모호해결] {s["class"]} -> {f}  (후보 {len(cands)})')
-            if f:
-                targets.append((s['class'], f))
-            else:
-                unresolved.append(s['class'])
-        if unresolved:
-            print(f'  ⚠️ 파일 못 찾음 {len(unresolved)}척: {unresolved}')
-
-    print(f'함선 {len(targets)}척 동기화 중…')
-    n_ok = n_skip = 0
-    failed = []
-    mapping = {}
-    for i, (klass, fn) in enumerate(targets, 1):
-        mapping[klass] = fn
-        st = get(f'ships/{fn}', os.path.join(RAW, 'ships', fn), rebuild)
-        if st == 'fail':
-            failed.append(fn)
-        elif st == 'ok':
-            n_ok += 1
+    # Pin every request, including ambiguous ship-name lookups, to ONE commit.
+    # Stage a complete snapshot; never label stale / partial files as a new patch.
+    original_raw = RAW
+    parent = os.path.dirname(RAW)
+    os.makedirs(parent, exist_ok=True)
+    stage = tempfile.mkdtemp(prefix='.raw-sync-', dir=parent)
+    BASE = f'https://raw.githubusercontent.com/{REPO}/{sha}'
+    RAW, META, FILELIST = stage, os.path.join(stage, '.sync_meta.json'), os.path.join(stage, 'ship_files.json')
+    try:
+        for name in BULK:
+            if get(name, os.path.join(stage, name), True) != 'ok':
+                raise RuntimeError(f'원본 다운로드 실패: {name}')
+        # The file listing is also pinned, not the moving master branch.
+        tree = api(f'https://api.github.com/repos/{REPO}/git/trees/{sha}?recursive=1')
+        if not isinstance(tree, dict) or tree.get('truncated'):
+            raise RuntimeError('함선 목록을 검증할 수 없습니다.')
+        files = sorted(x['path'].split('/')[-1] for x in tree.get('tree', [])
+                       if x['path'].startswith('ships/') and x['path'].endswith('.json'))
+        if not files:
+            raise RuntimeError('함선 목록이 비었습니다.')
+        json.dump({'files': files, 'commit': sha}, io.open(FILELIST, 'w', encoding='utf-8'))
+        targets, unresolved = [], []
+        if '--all' in args:
+            targets = [(f[:-5], f) for f in files]
         else:
-            n_skip += 1
-        if i % 40 == 0 or i == len(targets):
-            print(f'  {i}/{len(targets)}  (신규 {n_ok} · 기존 {n_skip} · 실패 {len(failed)})')
-        time.sleep(0.05)
-
-    if sha or prev:
-        json.dump({'commit': sha or prev.get('commit'), 'date': date or prev.get('date'),
-                   'version': version or prev.get('version'),
-                   'synced': time.strftime('%Y-%m-%dT%H:%M:%S'),
-                   'ship_files_available': len(files),
-                   'ships_total': len(targets), 'ships_ok': n_ok, 'ships_skip': n_skip,
-                   'ships_failed': failed[:50], 'bulk_failed': bulk_failed,
-                   'class_to_file': mapping},
+            for ship in db_ships():
+                f, cands = resolve(ship['class'], files)
+                if not f and cands:
+                    f = pick_by_name(cands, ship['name'], files)
+                if not f:
+                    unresolved.append(ship['class'])
+                else:
+                    targets.append((ship['class'], f))
+        if unresolved:
+            raise RuntimeError(f'함선 파일 미해결: {unresolved}')
+        mapping = {}
+        for i, (klass, fn) in enumerate(targets, 1):
+            if get(f'ships/{fn}', os.path.join(stage, 'ships', fn), True) != 'ok':
+                raise RuntimeError(f'함선 다운로드 실패: {fn}')
+            mapping[klass] = fn
+            if i % 40 == 0 or i == len(targets):
+                print(f'함선 {i}/{len(targets)}')
+        json.dump({'commit': sha, 'date': date, 'version': version,
+                   'complete': True, 'synced': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
+                   'ship_files_available': len(files), 'ships_total': len(targets),
+                   'ships_ok': len(targets), 'ships_skip': 0, 'ships_failed': [],
+                   'bulk_failed': [], 'class_to_file': mapping},
                   io.open(META, 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
-
-    print(f'\n완료 — 커밋 {(sha or "?")[:10]}')
-    print(f'  함선: 신규 {n_ok} · 기존 {n_skip} · 실패 {len(failed)}')
-    if bulk_failed or failed:
-        print(f'  ⚠️ 실패: {bulk_failed + failed[:10]}')
-    print('  기록: data/raw/.sync_meta.json')
+        backup = original_raw + '.previous'
+        if os.path.exists(backup):
+            raise RuntimeError('이전 백업이 있습니다. data/raw.previous 확인이 필요합니다.')
+        if os.path.exists(original_raw):
+            os.replace(original_raw, backup)
+        try:
+            os.replace(stage, original_raw)
+        except Exception:
+            if os.path.exists(backup):
+                os.replace(backup, original_raw)
+            raise
+        if os.path.exists(backup):
+            shutil.rmtree(backup)
+        print(f'완료: {version}, {len(targets)}척 (커밋 고정·전체 검증)')
+    finally:
+        RAW = original_raw
+        META, FILELIST = os.path.join(RAW, '.sync_meta.json'), os.path.join(RAW, 'ship_files.json')
+        if os.path.exists(stage):
+            shutil.rmtree(stage)
 
 
 if __name__ == '__main__':

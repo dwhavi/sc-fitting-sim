@@ -1,0 +1,10 @@
+{
+  "checkedAt": "2026-11-20 KST",
+  "liveVersion": "4.10.3",
+  "liveClientBuild": "13220821",
+  "liveServerBuild": "13165946",
+  "dataVersion": "4.10.3-LIVE.13165946",
+  "summary": "11/19 공식 핫픽스: Vulkan을 포함한 주요 클라이언트 크래시 3건 수정. 공식 내역에 피팅 수치 변경은 없으며, 계산 데이터 원본도 같은 커밋입니다.",
+  "ptuNote": "5.0 PTU의 무기·실드 TTK 밸런스는 테스트 중이므로 LIVE 계산에 적용하지 않았습니다.",
+  "sourceUrl": "https://robertsspaceindustries.com/spectrum/community/SC/forum/190048/thread/star-citizen-alpha-4-10-live-hotfix-central"
+}

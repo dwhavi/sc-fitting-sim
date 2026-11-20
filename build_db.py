@@ -207,6 +207,10 @@ def main():
         raise SystemExit('no data/raw/items.json — run sync_data.py first')
     items = json.load(io.open(items_p, encoding='utf-8'))
     smeta = json.load(io.open(os.path.join(RAW, '.sync_meta.json'), encoding='utf-8'))
+    if not smeta.get('complete') or '-LIVE.' not in (smeta.get('version') or ''):
+        raise SystemExit('검증된 LIVE 스냅샷이 아닙니다. sync_data.py 재실행 필요')
+    if smeta.get('ships_failed') or smeta.get('bulk_failed'):
+        raise SystemExit('원본 다운로드 실패 기록이 있습니다. DB 생성 중단')
 
     frozen = {}
     if not a.no_freeze and os.path.exists(a.freeze_from):
@@ -562,7 +566,17 @@ def main():
         if restored:
             print('restored %d classes missing from new dump (old DB carried)' % restored)
 
-    json.dump(db, io.open(a.out, 'w', encoding='utf-8'), ensure_ascii=False)
+    # Validate before replacing the output; a failed build must leave it untouched.
+    if ship_missing:
+        raise SystemExit('함선 원본 누락: ' + ', '.join(ship_missing))
+    for key in ('ships', 'turrets', 'radars', 'weapons', 'shields', 'powerplants'):
+        if not db[key]:
+            raise SystemExit('필수 배열이 비었습니다: ' + key)
+    for key in ('ships', 'weapons', 'shields', 'powerplants', 'coolers', 'qds', 'racks', 'missiles', 'turrets', 'radars'):
+        db['meta'][key] = len(db[key])
+    temp_out = a.out + '.tmp'
+    json.dump(db, io.open(temp_out, 'w', encoding='utf-8'), ensure_ascii=False)
+    os.replace(temp_out, a.out)
     print('wrote', a.out)
     print('meta:', db['meta'])
     print('source:', os.path.relpath(items_p, ROOT))

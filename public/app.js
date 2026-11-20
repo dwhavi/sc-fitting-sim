@@ -48,14 +48,47 @@ const fmt = n => n == null ? '—' : (Math.round(n * 10) / 10).toLocaleString('e
 
 async function init() {
   $('status').textContent = 'DB 로딩 중…';
-  const r = await fetch('db.json?v=145', {cache:'no-store'});
+  const r = await fetch('db.json?v=146', {cache:'no-store'});
+  if (!r.ok) throw new Error('DB HTTP ' + r.status);
   DB = await r.json();
+  loadPatchStatus();
   const ships = DB.ships;
   renderShipList(ships);
   $('status').textContent = `DB 로드 완료 — 함선 ${DB.meta.ships} · 무기 ${DB.meta.weapons} · 실드 ${DB.meta.shields} · 파워 ${DB.meta.powerplants}`;
   $('shipBtn').addEventListener('click', openShipModal);
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
   $('saveBtn').onclick = saveBuild; $('loadBtn').onclick = loadBuild; $('resetBtn').onclick = resetBuild;
+}
+
+async function loadPatchStatus() {
+  const summary = $('patchSummary'), info = $('patchInfo');
+  try {
+    const response = await fetch('patch-status.json?v=1', {cache:'no-store'});
+    if (!response.ok) throw new Error('patch status HTTP ' + response.status);
+    const patch = await response.json();
+    summary.textContent = `LIVE ${patch.liveVersion} · 패치 확인 ${patch.checkedAt}`;
+    const lines = [
+      `최신 LIVE 클라이언트: ${patch.liveClientBuild}`,
+      `계산 데이터: ${DB.meta.gameVersion || '버전 미확인'}`,
+      patch.summary,
+      patch.ptuNote,
+      '계산 제약: 지속 DPS는 근사치이며 일부 함선의 전력은 원본과 차이가 있습니다. 아래 스톡 비교값을 함께 확인하세요.',
+      '이번 반영: Drake Marauder 추가 (144척)·무기 풀 전력 집계 보정. 원본 부품 성능치는 유지했습니다.',
+    ];
+    if (patch.dataVersion !== DB.meta.gameVersion) {
+      lines.unshift('주의: 패치 확인 기록과 현재 DB 버전이 다릅니다. 계산 데이터 버전을 확인하세요.');
+    }
+    info.replaceChildren();
+    for (const line of lines) {
+      const p = document.createElement('p'); p.textContent = line; info.append(p);
+    }
+    const a = document.createElement('a');
+    a.href = patch.sourceUrl; a.textContent = '공식 핫픽스 내역 ↗';
+    a.target = '_blank'; a.rel = 'noopener noreferrer'; info.append(a);
+  } catch (error) {
+    summary.textContent = `계산 데이터: ${DB.meta.gameVersion || '버전 미확인'}`;
+    info.textContent = '패치 확인 기록을 불러오지 못했습니다. 피팅 계산은 표시된 DB 버전을 사용합니다.';
+  }
 }
 
 const CAREER_ICON = {'Combat':'⚔️','Ground':'🛞','Industrial':'⛏️','Competition':'🏁','Transporter':'🚚','Exploration':'🔭','Support':'🛟','Multi-Role':'🔀','Personal Transport':'🚐','Starter':'🌱'};
@@ -687,6 +720,18 @@ function fitStats() {
       if (!cur || span > curSpan) grpPranges[it.grp] = pr;
     }
   }
+  // Weapon items share a ship-level power pool. Seven 1-pip guns on a
+  // 4-pip pool consume 4 ship pips, not 7. Keep the item/pool DPS scaling
+  // separate: reducing the shared group scales all guns together.
+  const poolShip = (DB.ships || []).find(x => x.slug === curShip || x.class === curShip) || {};
+  const weaponItems = items.filter(it => it.kind === 'weapon');
+  const weaponRawMax = grpMax.weapon || 0;
+  const weaponRawPower = weaponItems.reduce((sum, it) => sum + it.pwRaw, 0);
+  const weaponCap = poolShip.wpool > 0 && weaponRawPower > poolShip.wpool
+    ? Math.min(weaponRawMax, poolShip.wpool) : weaponRawMax;
+  const weaponPooled = weaponCap < weaponRawMax;
+  if (weaponPooled) grpMax.weapon = weaponCap;
+  const weaponPowerScale = weaponRawPower > 0 ? Math.min(1, weaponCap / weaponRawPower) : 1;
   for (const gid of Object.keys(grpMax)) {
     const off = Math.max(0, Math.min(pwr.segOff[gid] || 0, grpMax[gid]));
     grpLeft[gid] = grpMax[gid] - off;
@@ -701,12 +746,14 @@ function fitStats() {
       if (pwr.coolerOff[slotId]) units = 0;
       else if (pwr.coolerSegs[slotId] != null) units = Math.max(0, Math.min(it.maxU, pwr.coolerSegs[slotId]));
       else units = it.maxU;
+    } else if (it.kind === 'weapon' && weaponPooled) {
+      units = weaponCap > 0 ? it.maxU * (grpLeft.weapon || 0) / weaponCap : 0;
     } else {
       const take = Math.max(0, Math.min(it.maxU, grpLeft[it.grp] || 0));
       grpLeft[it.grp] = (grpLeft[it.grp] || 0) - take;
       units = take;
     }
-    const eff = it.maxU > 0 ? it.pwRaw * units / it.maxU : 0;
+    const eff = it.maxU > 0 ? it.pwRaw * units / it.maxU * (it.kind === 'weapon' ? weaponPowerScale : 1) : 0;
     s.power += eff; s.powerBase += it.c.powerBase || 0;
     if (!it.real) s.estCount = (s.estCount || 0) + 1;
     s.heat += it.poolOff ? 0 : (it.c.heat || 0);
@@ -777,6 +824,10 @@ function fitStats() {
       if (it.c.damagedDelay != null) s.damagedDelay = Math.max(s.damagedDelay, it.c.damagedDelay);
     }
   } // end for (FY slots)
+  if (weaponPooled) {
+    perGroup.weapon.maxUnits = weaponCap;
+    perGroup.weapon.units = pwr.grpOff.weapon ? 0 : (grpLeft.weapon || 0);
+  }
   // (QD 집계용 코드는 제거됨 — QD 스펙은 슬롯 수집 단계에서 s.qd/s.qdspeed로 직접 수집)
   // ---- 2차 패스: Erkul Ln() 무기 풀 (2026-11-01) ----
   // poolSize = 함선 PowerPools.WeaponGun.Size (-1=무제한, null=정보없음→풀없음).

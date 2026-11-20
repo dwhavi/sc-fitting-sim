@@ -82,3 +82,11 @@ cd public && python3 -m http.server 8811     # 로컬 서버
   db.json 부품과는 **이름+사이즈**로 매칭하고, 같은 이름의 변종 class(마운트형·NPC·AA 등)는 대표 1개에만 연결한다.
   구매처가 없는 부품은 "구매처 미확인". 패치마다 `build_db.py` 후 `fetch_shops.py` 를 다시 실행할 것.
 - 현재 빌드가 전력 부족(전 계통 100% 가동 기준)이면 DPS 증가율이 과장돼 보일 수 있다 (UI에 경고 표시).
+
+## 2026-11-20 패치 점검
+
+- LIVE 클라이언트 핫픽스와 계산 원본 버전을 구분해 표시한다.
+- Marauder 추가 및 공유 무기 풀의 선박 전력 집계를 보정했다.
+- `sync_data.py`는 LIVE 버전과 전체 다운로드를 검증한 새 스냅샷만 교체한다. 기존 원본은 최초 1회 다시 동기화해야 한다.
+- [분석·검증·남은 계산 제약](docs/PATCH_2026-11-20.md)
+- 오프라인 회귀 테스트: `python3 -m unittest discover -s tests -v`, `node tests/test_power.cjs`
