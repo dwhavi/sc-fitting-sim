@@ -1,0 +1,6797 @@
+{
+  "source": "https://raw.githubusercontent.com/StarCitizenWiki/scunpacked-data/f182b7f111279c9193df81927c9b4dbc8c4f3291/items.json",
+  "radars": [
+    {
+      "className": "RADR_S02_Fake",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 1,
+            "CS": 1,
+            "EM": 1,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 1,
+            "CS": 1,
+            "EM": 1,
+            "RS": 1,
+            "dB": 1
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": 0,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 1400,
+            "DistanceMaxAssignment": 1610,
+            "OutsideRangeBufferDistance": 120
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_WLOP_S03_Socoria",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.95,
+            "CS": 1,
+            "EM": 0.95,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.7,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 1860,
+            "DistanceMaxAssignment": 2691,
+            "OutsideRangeBufferDistance": 120
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_NAVE_S02_SNSR7x",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.9,
+            "CS": 0.9,
+            "EM": 0.9,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.65,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 1200,
+            "DistanceMaxAssignment": 1925,
+            "OutsideRangeBufferDistance": 135
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_GRNP_S03_Resolu",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.95,
+            "CS": 1,
+            "EM": 0.95,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.7,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 2015,
+            "DistanceMaxAssignment": 3380,
+            "OutsideRangeBufferDistance": 90
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_BLTR_S01_Pelerous",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.8,
+            "CS": 0.8,
+            "EM": 0.8,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.55,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 780,
+            "DistanceMaxAssignment": 935,
+            "OutsideRangeBufferDistance": 60
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_BLTR_S01_Hunter",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.8,
+            "CS": 0.8,
+            "EM": 0.8,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.55,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 780,
+            "DistanceMaxAssignment": 1028.5,
+            "OutsideRangeBufferDistance": 60
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_GRNP_S02_Savoir",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.9,
+            "CS": 0.9,
+            "EM": 0.9,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.65,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 1300,
+            "DistanceMaxAssignment": 1638,
+            "OutsideRangeBufferDistance": 90
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_CHCO_S01_ObserverLite",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.8,
+            "CS": 0.8,
+            "EM": 0.8,
+            "RS": 0.6,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.55,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 0.6,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 845,
+            "DistanceMaxAssignment": 879.75,
+            "OutsideRangeBufferDistance": 80
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_CHCO_S01_SurveyorLite",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.8,
+            "CS": 0.8,
+            "EM": 0.8,
+            "RS": 0.8,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.55,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 845,
+            "DistanceMaxAssignment": 977.5,
+            "OutsideRangeBufferDistance": 80
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_Unmanned_AI_S05_TSGLaser",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 1,
+            "CS": 1,
+            "EM": 1,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.75,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 10000,
+            "DistanceMaxAssignment": 10000,
+            "OutsideRangeBufferDistance": 80
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_WLOP_S00_Vogel",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.75,
+            "CS": 0.5,
+            "EM": 0.75,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 1,
+            "CS": 1,
+            "EM": 1,
+            "RS": 1,
+            "dB": 1
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": 0,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.75,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.75,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.5,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 540,
+            "DistanceMaxAssignment": 695.75,
+            "OutsideRangeBufferDistance": 80
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_IASI_S03_Name",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.95,
+            "CS": 1,
+            "EM": 0.95,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.7,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 2170,
+            "DistanceMaxAssignment": 3289,
+            "OutsideRangeBufferDistance": 120
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_IASI_S02_Name",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.9,
+            "CS": 0.9,
+            "EM": 0.9,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.65,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 1400,
+            "DistanceMaxAssignment": 1771,
+            "OutsideRangeBufferDistance": 120
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_WLOP_S01_Backlund",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.8,
+            "CS": 0.8,
+            "EM": 0.8,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.55,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 780,
+            "DistanceMaxAssignment": 1075.25,
+            "OutsideRangeBufferDistance": 80
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_BLTR_S02_Cassandra",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.9,
+            "CS": 0.9,
+            "EM": 0.9,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.65,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 1200,
+            "DistanceMaxAssignment": 1848,
+            "OutsideRangeBufferDistance": 90
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_CHCO_S00_ObserverGo",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.75,
+            "CS": 0.5,
+            "EM": 0.75,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 1,
+            "CS": 1,
+            "EM": 1,
+            "RS": 1,
+            "dB": 1
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": 0,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.75,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.75,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.5,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 585,
+            "DistanceMaxAssignment": 569.25,
+            "OutsideRangeBufferDistance": 80
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_GRNP_S01_Tige",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.8,
+            "CS": 0.8,
+            "EM": 0.8,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.55,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 845,
+            "DistanceMaxAssignment": 1215.5,
+            "OutsideRangeBufferDistance": 60
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_CHCO_S03_FullSpecMax",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.95,
+            "CS": 1,
+            "EM": 0.95,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.7,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 2015,
+            "DistanceMaxAssignment": 3588,
+            "OutsideRangeBufferDistance": 120
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_CHCO_S00_FullSpecGo",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.75,
+            "CS": 0.5,
+            "EM": 0.75,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 1,
+            "CS": 1,
+            "EM": 1,
+            "RS": 1,
+            "dB": 1
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": 0,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.75,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.75,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.5,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 585,
+            "DistanceMaxAssignment": 759,
+            "OutsideRangeBufferDistance": 80
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_CHCO_S02_Observer",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.9,
+            "CS": 0.9,
+            "EM": 0.9,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.65,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 1300,
+            "DistanceMaxAssignment": 1449,
+            "OutsideRangeBufferDistance": 120
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_Default",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.8,
+            "CS": 0.8,
+            "EM": 0.8,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.55,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 910,
+            "DistanceMaxAssignment": 977.5,
+            "OutsideRangeBufferDistance": 80
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_CHCO_S00_BroadSpecGo",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.75,
+            "CS": 0.5,
+            "EM": 0.75,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 1,
+            "CS": 1,
+            "EM": 1,
+            "RS": 1,
+            "dB": 1
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": 0,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.75,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.75,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.5,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 585,
+            "DistanceMaxAssignment": 695.75,
+            "OutsideRangeBufferDistance": 80
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_GRNP_S00_V6026",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.75,
+            "CS": 0.5,
+            "EM": 0.75,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 1,
+            "CS": 1,
+            "EM": 1,
+            "RS": 1,
+            "dB": 1
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": 0,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.75,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.75,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.5,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 585,
+            "DistanceMaxAssignment": 858,
+            "OutsideRangeBufferDistance": 60
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_GRNP_S03_Devoue",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.95,
+            "CS": 1,
+            "EM": 0.95,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.7,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 2015,
+            "DistanceMaxAssignment": 3718,
+            "OutsideRangeBufferDistance": 90
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_GRNO_S00_Agure",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.75,
+            "CS": 0.5,
+            "EM": 0.75,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 1,
+            "CS": 1,
+            "EM": 1,
+            "RS": 1,
+            "dB": 1
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": 0,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.75,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.75,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.5,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 585,
+            "DistanceMaxAssignment": 643.5,
+            "OutsideRangeBufferDistance": 60
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_GRNP_S02_Epier",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.9,
+            "CS": 0.9,
+            "EM": 0.9,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.65,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 1300,
+            "DistanceMaxAssignment": 1820,
+            "OutsideRangeBufferDistance": 90
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_NAVE_S01_SNSR7",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.8,
+            "CS": 0.8,
+            "EM": 0.8,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.55,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 780,
+            "DistanceMaxAssignment": 1168.75,
+            "OutsideRangeBufferDistance": 90
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_GNRP_S03_Idris_TEMP",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.95,
+            "CS": 1,
+            "EM": 0.95,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.7,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 2015,
+            "DistanceMaxAssignment": 3380,
+            "OutsideRangeBufferDistance": 90
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_CHCO_S04_BroadSpecMax",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.95,
+            "CS": 1,
+            "EM": 0.95,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.7,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 3640,
+            "DistanceMaxAssignment": 5313,
+            "OutsideRangeBufferDistance": 120
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_NAVE_S02_SNS_R6x",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.9,
+            "CS": 0.9,
+            "EM": 0.9,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.65,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 1200,
+            "DistanceMaxAssignment": 1750,
+            "OutsideRangeBufferDistance": 135
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_WLOP_S01_Capstan",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.8,
+            "CS": 0.8,
+            "EM": 0.8,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.55,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 780,
+            "DistanceMaxAssignment": 977.5,
+            "OutsideRangeBufferDistance": 80
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_NAVE_S01_SNSR6",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.8,
+            "CS": 0.8,
+            "EM": 0.8,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.55,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 780,
+            "DistanceMaxAssignment": 1062.5,
+            "OutsideRangeBufferDistance": 90
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_GRNP_S01_Ecouter",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.8,
+            "CS": 0.8,
+            "EM": 0.8,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.55,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 845,
+            "DistanceMaxAssignment": 1105,
+            "OutsideRangeBufferDistance": 60
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_WLOP_S02_Battani",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.9,
+            "CS": 0.9,
+            "EM": 0.9,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.65,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 1200,
+            "DistanceMaxAssignment": 1771,
+            "OutsideRangeBufferDistance": 120
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_S01_Template",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.8,
+            "CS": 0.8,
+            "EM": 0.8,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.55,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 910,
+            "DistanceMaxAssignment": 977.5,
+            "OutsideRangeBufferDistance": 80
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_CHCO_S02_Surveyor",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.9,
+            "CS": 0.9,
+            "EM": 0.9,
+            "RS": 0.85,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.65,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 0.85,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 1300,
+            "DistanceMaxAssignment": 1610,
+            "OutsideRangeBufferDistance": 120
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_NAVE_S01_SNSR5",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.8,
+            "CS": 0.8,
+            "EM": 0.8,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.55,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 780,
+            "DistanceMaxAssignment": 956.25,
+            "OutsideRangeBufferDistance": 90
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_GRNP_S01_V80111",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.8,
+            "CS": 0.8,
+            "EM": 0.8,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.55,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 845,
+            "DistanceMaxAssignment": 1326,
+            "OutsideRangeBufferDistance": 60
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_WLOP_S00_Fabian",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.75,
+            "CS": 0.5,
+            "EM": 0.75,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 1,
+            "CS": 1,
+            "EM": 1,
+            "RS": 1,
+            "dB": 1
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": 0,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.75,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.75,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.5,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 540,
+            "DistanceMaxAssignment": 759,
+            "OutsideRangeBufferDistance": 80
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_BLTR_S02_Spyglass",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.9,
+            "CS": 0.9,
+            "EM": 0.9,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.65,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 1200,
+            "DistanceMaxAssignment": 1540,
+            "OutsideRangeBufferDistance": 90
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_S03_Template",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.95,
+            "CS": 1,
+            "EM": 0.95,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.7,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 2170,
+            "DistanceMaxAssignment": 2990,
+            "OutsideRangeBufferDistance": 120
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_GRNP_S03_Fidele",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.95,
+            "CS": 1,
+            "EM": 0.95,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.7,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 2015,
+            "DistanceMaxAssignment": 3042,
+            "OutsideRangeBufferDistance": 90
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_IASI_S01_Name",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.8,
+            "CS": 0.8,
+            "EM": 0.8,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.55,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 910,
+            "DistanceMaxAssignment": 1075.25,
+            "OutsideRangeBufferDistance": 80
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_WLOP_S01_Fleming",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.8,
+            "CS": 0.8,
+            "EM": 0.8,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.55,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 780,
+            "DistanceMaxAssignment": 879.75,
+            "OutsideRangeBufferDistance": 80
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_GRNP_S01_Ecouter_Piercing",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 1,
+            "CS": 1,
+            "EM": 1,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.55,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 845,
+            "DistanceMaxAssignment": 1105,
+            "OutsideRangeBufferDistance": 60
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_CHCO_S03_SurveyorMax",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.95,
+            "CS": 1,
+            "EM": 0.95,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.7,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 2015,
+            "DistanceMaxAssignment": 2990,
+            "OutsideRangeBufferDistance": 120
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_CHCO_S02_BroadSpec_Lite",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.9,
+            "CS": 0.9,
+            "EM": 0.9,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.65,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 1300,
+            "DistanceMaxAssignment": 1771,
+            "OutsideRangeBufferDistance": 120
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_RSI_S04_Polaris",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.95,
+            "CS": 1,
+            "EM": 0.95,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.7,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 3920,
+            "DistanceMaxAssignment": 4830,
+            "OutsideRangeBufferDistance": 120
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_VNCL_S02_Mauler",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.9,
+            "CS": 0.9,
+            "EM": 0.9,
+            "RS": 0.85,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.65,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 0.85,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 1300,
+            "DistanceMaxAssignment": 2002,
+            "OutsideRangeBufferDistance": 90
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_AntiPersonnel_Turret",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 0,
+          "Sensitivity": {
+            "IR": 0.75,
+            "CS": 0.5,
+            "EM": 0.75,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 1,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.75,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.75,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.75,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.5,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 630,
+            "DistanceMaxAssignment": 632.5,
+            "OutsideRangeBufferDistance": 80
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_S00_Fake",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 1,
+            "CS": 1,
+            "EM": 1,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 1,
+            "CS": 1,
+            "EM": 1,
+            "RS": 1,
+            "dB": 1
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": 0,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 630,
+            "DistanceMaxAssignment": 632.5,
+            "OutsideRangeBufferDistance": 80
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_S02_Template",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.9,
+            "CS": 0.9,
+            "EM": 0.9,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.65,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 1400,
+            "DistanceMaxAssignment": 1610,
+            "OutsideRangeBufferDistance": 120
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_WLOP_S02_Fawad",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.9,
+            "CS": 0.9,
+            "EM": 0.9,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.65,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 1200,
+            "DistanceMaxAssignment": 1449,
+            "OutsideRangeBufferDistance": 120
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_GRNP_S02_VB80112",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.9,
+            "CS": 0.9,
+            "EM": 0.9,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.65,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 1300,
+            "DistanceMaxAssignment": 2184,
+            "OutsideRangeBufferDistance": 90
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_CHCO_S00_SurveyorGo",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.75,
+            "CS": 0.5,
+            "EM": 0.75,
+            "RS": 0.75,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 1,
+            "CS": 1,
+            "EM": 1,
+            "RS": 1,
+            "dB": 1
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": 0,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.75,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.75,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.5,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 0.75,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 585,
+            "DistanceMaxAssignment": 632.5,
+            "OutsideRangeBufferDistance": 80
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_WLOP_S03_Anysta",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.95,
+            "CS": 1,
+            "EM": 0.95,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.7,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 1860,
+            "DistanceMaxAssignment": 3588,
+            "OutsideRangeBufferDistance": 120
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_GRNP_S00_Sens",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.75,
+            "CS": 0.5,
+            "EM": 0.75,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 1,
+            "CS": 1,
+            "EM": 1,
+            "RS": 1,
+            "dB": 1
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": 0,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.75,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.75,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.5,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 585,
+            "DistanceMaxAssignment": 786.5,
+            "OutsideRangeBufferDistance": 60
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_NAVE_S02_SNSR5x",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.9,
+            "CS": 0.9,
+            "EM": 0.9,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.65,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 1200,
+            "DistanceMaxAssignment": 1575,
+            "OutsideRangeBufferDistance": 135
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_BLTR_S01_Prophet",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.8,
+            "CS": 0.8,
+            "EM": 0.8,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.55,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 780,
+            "DistanceMaxAssignment": 1122,
+            "OutsideRangeBufferDistance": 60
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_WLOP_S01_Abetti",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.8,
+            "CS": 0.8,
+            "EM": 0.8,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.55,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 780,
+            "DistanceMaxAssignment": 1173,
+            "OutsideRangeBufferDistance": 80
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_GRNP_S03_V880",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.95,
+            "CS": 1,
+            "EM": 0.95,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.7,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 2015,
+            "DistanceMaxAssignment": 4056,
+            "OutsideRangeBufferDistance": 90
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_GRNP_S00_Prevenir",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.75,
+            "CS": 0.5,
+            "EM": 0.75,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 1,
+            "CS": 1,
+            "EM": 1,
+            "RS": 1,
+            "dB": 1
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": 0,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.75,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.75,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.5,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 585,
+            "DistanceMaxAssignment": 715,
+            "OutsideRangeBufferDistance": 60
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_CHCO_S03_ObserverMax",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.95,
+            "CS": 1,
+            "EM": 0.95,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.7,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 2015,
+            "DistanceMaxAssignment": 2691,
+            "OutsideRangeBufferDistance": 120
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_Unmanned_AI_S04",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 1,
+            "CS": 1,
+            "EM": 1,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.75,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 4200,
+            "DistanceMaxAssignment": 4200,
+            "OutsideRangeBufferDistance": 100
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_WLOP_S03_Capsulo",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.95,
+            "CS": 1,
+            "EM": 0.95,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.7,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 1860,
+            "DistanceMaxAssignment": 3289,
+            "OutsideRangeBufferDistance": 120
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_WLOP_S03_Lephari",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.95,
+            "CS": 1,
+            "EM": 0.95,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.7,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 1860,
+            "DistanceMaxAssignment": 2990,
+            "OutsideRangeBufferDistance": 120
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_Unmanned_AI_S05",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 1,
+            "CS": 1,
+            "EM": 1,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.75,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 7500,
+            "DistanceMaxAssignment": 7500,
+            "OutsideRangeBufferDistance": 100
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_CHCO_S03_BroudSpec",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.95,
+            "CS": 1,
+            "EM": 0.95,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.7,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.95,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 2015,
+            "DistanceMaxAssignment": 3289,
+            "OutsideRangeBufferDistance": 120
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_BLTR_S02_Predator",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.9,
+            "CS": 0.9,
+            "EM": 0.9,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.65,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 1200,
+            "DistanceMaxAssignment": 1694,
+            "OutsideRangeBufferDistance": 90
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_Unmanned_AI_S01",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 1,
+            "CS": 1,
+            "EM": 1,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.75,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 850,
+            "DistanceMaxAssignment": 850,
+            "OutsideRangeBufferDistance": 100
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_WLOP_S02_Agrippa",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.9,
+            "CS": 0.9,
+            "EM": 0.9,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.65,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 1200,
+            "DistanceMaxAssignment": 1932,
+            "OutsideRangeBufferDistance": 120
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_Unmanned_AI_S00",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 1,
+            "CS": 1,
+            "EM": 1,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.75,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 550,
+            "DistanceMaxAssignment": 550,
+            "OutsideRangeBufferDistance": 100
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_WLOP_S00_Denning",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.75,
+            "CS": 0.5,
+            "EM": 0.75,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 1,
+            "CS": 1,
+            "EM": 1,
+            "RS": 1,
+            "dB": 1
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": 0,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.75,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.75,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.5,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 540,
+            "DistanceMaxAssignment": 632.5,
+            "OutsideRangeBufferDistance": 80
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_GRNP_S01_Voir",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.8,
+            "CS": 0.8,
+            "EM": 0.8,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.55,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.8,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 845,
+            "DistanceMaxAssignment": 994.5,
+            "OutsideRangeBufferDistance": 60
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_CHCO_S02_FullSpec",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.9,
+            "CS": 0.9,
+            "EM": 0.9,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.65,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 1300,
+            "DistanceMaxAssignment": 1932,
+            "OutsideRangeBufferDistance": 120
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_Unmanned_AI_S02",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 1,
+            "CS": 1,
+            "EM": 1,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.75,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 1400,
+            "DistanceMaxAssignment": 1400,
+            "OutsideRangeBufferDistance": 100
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_WLOP_S02_Chernykh",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.9,
+            "CS": 0.9,
+            "EM": 0.9,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.65,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 1200,
+            "DistanceMaxAssignment": 1610,
+            "OutsideRangeBufferDistance": 120
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_Unmanned_AI_S03",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 1,
+            "CS": 1,
+            "EM": 1,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.75,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 2600,
+            "DistanceMaxAssignment": 2600,
+            "OutsideRangeBufferDistance": 100
+          }
+        }
+      }
+    },
+    {
+      "className": "RADR_GRNP_S02_Vigilance",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0.9,
+            "CS": 0.9,
+            "EM": 0.9,
+            "RS": 1,
+            "dB": 0
+          },
+          "GroundVehicleDetectionSensitivity": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 1,
+            "dB": 0.25
+          },
+          "GroundVehicleSensitivityAddition": -0.65,
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0.9,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 1,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 1,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 0,
+              "PermitActiveDetection": 0
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 1300,
+            "DistanceMaxAssignment": 2002,
+            "OutsideRangeBufferDistance": 90
+          }
+        }
+      }
+    },
+    {
+      "className": "test_PlayerRadar",
+      "stdItem": {
+        "Radar": {
+          "Cooldown": 2.5,
+          "Sensitivity": {
+            "IR": 0,
+            "CS": 0,
+            "EM": 0,
+            "RS": 0,
+            "dB": 0
+          },
+          "Piercing": {
+            "IR": 0.25,
+            "CS": 0.25,
+            "EM": 0.25,
+            "RS": 0.25,
+            "dB": 0.25
+          },
+          "SignatureDetection": [
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            },
+            {
+              "Sensitivity": 0,
+              "Piercing": 0.25,
+              "PermitPassiveDetection": 1,
+              "PermitActiveDetection": 1
+            }
+          ],
+          "AimAssist": {
+            "DistanceMinAssignment": 500,
+            "DistanceMaxAssignment": 700,
+            "OutsideRangeBufferDistance": 100
+          }
+        }
+      }
+    }
+  ]
+}

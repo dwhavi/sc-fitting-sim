@@ -114,7 +114,7 @@
   // ---------- 프리셋 ----------
   const R = (a, b) => Math.log(Math.max(a, 1e-9) / Math.max(b, 1e-9));
   const PRESETS = {
-    combat: { ico: '⚔️', t: '전투', d: '지속 DPS 최대, 실드 충분히', f: (m, b) => 1.0 * R(m.dpsEff, b.dpsEff) + 0.5 * R(m.D, b.D) - 0.15 * m.short },
+    combat: { ico: '⚔️', t: '전투', d: '최상위 탐지 레이더 우선, 지속 DPS·실드', f: (m, b) => 1.0 * R(m.dpsEff, b.dpsEff) + 0.5 * R(m.D, b.D) - 0.15 * m.short },
     stealth: { ico: '🥷', t: '스텔스', d: 'EM·IR 신호 최소, 전투력은 유지', f: (m, b) => -1.2 * R(m.em, b.em) - 0.6 * R(m.ir, b.ir) + 0.25 * R(m.dpsEff, b.dpsEff) + 0.1 * R(m.D, b.D) - 0.15 * m.short },
     travel: { ico: '🚀', t: '이동', d: '퀀텀 속도·스풀 우선, 방어는 보통', f: (m, b) => 1.5 * R(m.qdspeed, b.qdspeed) - 0.4 * R(m.spool == null ? 1 : m.spool, b.spool == null ? 1 : b.spool) - 0.3 * R(m.fuel == null ? 1 : m.fuel, b.fuel == null ? 1 : b.fuel) + 0.2 * R(m.D, b.D) + 0.15 * R(m.dpsEff, b.dpsEff) - 0.1 * R(m.em, b.em) - 0.15 * m.short },
     tank: { ico: '🛡️', t: '방어', d: '실드 HP·재생 최대', f: (m, b) => 1.2 * R(m.D, b.D) + 0.3 * R(m.dpsEff, b.dpsEff) - 0.05 * R(m.em, b.em) - 0.15 * m.short },
@@ -134,8 +134,80 @@
   const pinned = s => pinsOf().includes(s.id);
   const allowed = (s, cls) => cls === s.stock || !opt.onlyBuy || minPrice(cls) != null;
 
+  // Combat radar is a hard detection-tier constraint, not a weighted score.
+  // Pareto dominance avoids inventing exchange rates between signature types.
+  function radarVector(c) {
+    const d = c && c.detection;
+    if (!d || !d.Sensitivity || !d.Piercing || !Array.isArray(d.SignatureDetection) || !Number.isFinite(d.Cooldown)) return null;
+    const v = [];
+    for (const key of ['Sensitivity', 'Piercing', 'GroundVehicleDetectionSensitivity']) {
+      if (!d[key]) return null;
+      for (const sig of ['IR', 'CS', 'EM', 'RS', 'dB']) {
+        if (!Number.isFinite(d[key][sig])) return null;
+        v.push(d[key][sig]);
+      }
+    }
+    for (const sig of d.SignatureDetection) for (const key of ['Sensitivity', 'Piercing', 'PermitPassiveDetection', 'PermitActiveDetection']) {
+      if (!Number.isFinite(sig[key])) return null;
+      v.push(sig[key]);
+    }
+    v.push(-d.Cooldown);
+    return v;
+  }
+  const dominatesRadar = (a, b) => a.length === b.length && a.every((v, i) => v >= b[i]) && a.some((v, i) => v > b[i]);
+  function topRadars(s, baseAsg) {
+    // Stock/current equipment can stay on its own hull. Bespoke variants must
+    // not leak to unrelated hulls just because their nominal size matches.
+    const current = curOf(s, baseAsg);
+    const candidates = s.opts.filter(c => !c.radarStockOnly || c.class === s.stock || c.class === current);
+    if (!candidates.length || candidates.some(c => !radarVector(c))) return { top: [], unknown: true };
+    return { top: candidates.filter(c => !candidates.some(b => dominatesRadar(radarVector(b), radarVector(c)))), unknown: false };
+  }
+  function combatRadarRules(slots, baseAsg) {
+    return slots.filter(s => s.kind === 'radar').map(s => {
+      const rank = topRadars(s, baseAsg);
+      const fixed = locked('radar') || pinned(s);
+      return { s, ...rank, fixed, candidates: fixed ? [] : rank.top.filter(c => allowed(s, c.class)) };
+    });
+  }
+  function radarNoteHTML(slots, asg, baseAsg) {
+    const rules = combatRadarRules(slots, baseAsg);
+    if (!rules.length) return '<div class="fit-note">📡 전투 레이더: 교체 가능한 레이더 슬롯 없음.</div>';
+    return rules.map(r => {
+      const c = findComp('radar', curOf(r.s, asg));
+      const satisfied = r.top.some(t => t.class === (c && c.class));
+      const vectors = new Set(r.top.map(t => JSON.stringify(radarVector(t))));
+      let status = r.unknown ? '⚠️ 탐지 원본 누락: 최상위 판정 불가, 현재 장착 유지.'
+        : !satisfied ? `⚠️ 최상위 탐지 조건 미충족: ${r.fixed ? '레이더 잠금 유지' : '구매 지역/구매 가능 조건 충돌'}.`
+        : `최상위 탐지군 ${r.top.length}종 중 선택${r.top.length > 1 ? (vectors.size > 1 ? ' (항목별 우열이 달라 단일 1위 없음)' : ' (탐지 성능 동률, 기존 효율·저EM 기준 유지)') : ''}.`;
+      const d = c && c.detection;
+      return `<div class="fit-note">📡 <b>전투 레이더 S${r.s.size}: ${esc(c ? c.name : '미장착')}</b><br>${status}${d ? `<br>원본 감도 IR/CS/EM/RS: ${['IR','CS','EM','RS'].map(k => esc(d.Sensitivity[k])).join('/')} · 갱신 대기 ${esc(d.Cooldown)}s` : ''}<br>감도·관통·탐지 허용·갱신 대기 원본값 비교. 등급/가격/조준 보조 거리는 탐지 거리로 환산하지 않음. 실제 게임 탐지 거리 실측 아님.</div>`;
+    }).join('');
+  }
+
   function optimize(slots, preset, baseBuild, base0, baseAsg, extra) {
-    const groups = groupsOf(slots.filter(s => !pinned(s)));
+    const radarRules = preset === 'combat' ? combatRadarRules(slots, baseAsg) : [];
+    const ruleFor = s => radarRules.find(r => r.s.id === s.id);
+    const eligible = (s, cls) => {
+      const r = ruleFor(s);
+      if (!r) return allowed(s, cls);
+      if (r.fixed || !r.candidates.length) return cls === curOf(s, baseAsg);
+      return r.candidates.some(c => c.class === cls);
+    };
+    const normalize = asg => {
+      const n = Object.assign({}, asg);
+      for (const r of radarRules) {
+        if (r.fixed || !r.candidates.length) n[r.s.id] = curOf(r.s, baseAsg);
+        else if (!eligible(r.s, curOf(r.s, n))) {
+          const best = r.candidates.slice().sort((a, b) => (a.em ?? Infinity) - (b.em ?? Infinity) || (minPrice(a.class) ?? 0) - (minPrice(b.class) ?? 0))[0];
+          n[r.s.id] = best.class;
+        }
+      }
+      return n;
+    };
+    const seed = normalize(baseAsg);
+    const free = slots.filter(s => !pinned(s));
+    const groups = preset === 'combat' ? groupsOf(free.filter(s => s.kind !== 'radar')).concat(free.filter(s => s.kind === 'radar').map(s => [s])) : groupsOf(free);
     const feasible = asg => { if (!opt.budget) return true; return costOf(slots, asg).sum <= opt.budget; };
     const memo = new Map();
     const score = asg => {
@@ -147,8 +219,9 @@
     const withGroup = (asg, g, cls) => { const n = Object.assign({}, asg); for (const s of g) n[s.id] = (cls === '__stock' ? s.stock : cls); return n; };
     const candsOf = g => {
       if (locked(g[0].kind)) return [];
-      const set = new Set(['__stock']);
-      for (const c of g[0].opts) if (g.every(s => allowed(s, c.class))) set.add(c.class);
+      const set = new Set();
+      if (g.every(s => eligible(s, s.stock))) set.add('__stock');
+      for (const c of g[0].opts) if (g.every(s => eligible(s, c.class))) set.add(c.class);
       return [...set];
     };
     const descend = start => {
@@ -168,7 +241,7 @@
           if (locked(s.kind) || pinned(s)) continue;
           let bestA = null, bestS = curS;
           for (const c of s.opts) {
-            if (!allowed(s, c.class)) continue;
+            if (!eligible(s, c.class)) continue;
             const a = Object.assign({}, cur, { [s.id]: c.class }); if (!feasible(a)) continue;
             const sc = score(a); if (sc > bestS + 1e-9) { bestS = sc; bestA = a; }
           }
@@ -196,21 +269,21 @@
     // 시작점: 현재 / 부품별 최고 성능 / 부품별 최저 EM
     const key = { weapon: c => c.dps || 0, shield: c => (c.hp || 0) + 10 * (c.regen || 0), power: c => (c.pwGen != null ? c.pwGen : c.output) || 0, cooler: c => c.rate || 0, qd: c => c.speed || 0, radar: c => 0 };
     const startBy = fn => {
-      let a = Object.assign({}, baseAsg);
+      let a = Object.assign({}, seed);
       for (const g of groups) {
-        const ok = g[0].opts.filter(c => g.every(s => allowed(s, c.class)));
+        const ok = g[0].opts.filter(c => g.every(s => eligible(s, c.class)));
         if (!ok.length || locked(g[0].kind)) continue;
         const best = ok.reduce((x, y) => fn(g[0].kind, y) > fn(g[0].kind, x) ? y : x);
         a = withGroup(a, g, best.class);
       }
       return a;
     };
-    const starts = [baseAsg, startBy((k, c) => key[k](c))];
+    const starts = [seed, startBy((k, c) => key[k](c))];
     if (preset === 'stealth' || preset === 'balanced') starts.push(startBy((k, c) => -(c.em == null ? 1e9 : c.em)));
-    for (const e of (extra || [])) starts.push(e);
+    for (const e of (extra || [])) starts.push(normalize(e));
     let best = null;
     for (const st of starts) {
-      const r = descend(feasible(st) ? st : baseAsg);
+      const r = descend(feasible(st) ? st : seed);
       if (!best || r.score > best.score) best = r;
     }
     return best.asg;
@@ -434,6 +507,8 @@
       <div class="sec-h" style="margin-top:16px">3. 결과 <span class="fit-dim">(${Object.keys(PRESETS).length}개 취향 계산 ${Math.round(RES.ms)}ms)</span></div>
       <div class="chips" style="padding:0 0 8px">${tabs}</div>
       ${headline}
+      ${sel === 'combat' ? radarNoteHTML(slots, r.asg, RES.baseAsg) : ''}
+      ${opt.budget && r.cost.sum > opt.budget ? '<div class="fit-note warn">⚠️ 예산 조건 미충족. 최상위 레이더를 낮은 탐지군으로 바꾸지 않았습니다. 예산 또는 잠금 조건을 바꾼 뒤 다시 만드세요.</div>' : ''}
       <table class="fit-cmp"><tr><th></th><th>현재</th><th>${PRESETS[sel].ico} ${PRESETS[sel].t} 추천</th></tr>${cmp}</table>
       ${base0.short > 0.5 ? `<div class="fit-dim warn" style="margin:4px 0 0">현재 빌드는 전력이 ${(Math.round(base0.short * 10) / 10)}핍 부족해요(전 계통 100% 가동 기준). 그래서 DPS 증가율이 크게 나올 수 있어요.</div>` : ''}
       <div class="fit-dim" style="margin:4px 0 0">EM·IR 지표는 장착 부품 정격값의 합(상대 비교용, 게임 내 실제 탐지 거리가 아님). ★ 최적화 기준 DPS: 파일럿 무기 + 터렛 절반 가중, 선택한 교전 거리보다 사거리가 짧은 무기는 깎아서 계산.</div>
@@ -444,6 +519,7 @@
       <div class="fit-note">${shopNote()}${opt.budget && r.plan.minTotal > opt.budget ? '<br><span class="warn">⚠️ 묶음 구매 합계가 예산을 넘을 수 있어요 (최적화는 품목별 최저가 기준).</span>' : ''}</div>
       <div class="fit-foot"><button id="fitApply" class="fit-go">✅ 이 빌드 적용</button><button id="fitCopy">📋 쇼핑 리스트 복사</button><button id="fitTpl">💾 템플릿 저장</button></div>`;
     el.querySelectorAll('[data-t]').forEach(b => b.onclick = () => { RES.sel = b.dataset.t; opt.preset = b.dataset.t; saveOpt(); drawResult(); document.querySelectorAll('.fit-card').forEach(x => x.classList.toggle('on', x.dataset.p === opt.preset)); });
+    $q('fitApply').disabled = !!(opt.budget && r.cost.sum > opt.budget);
     $q('fitApply').onclick = () => applyFit(r);
     $q('fitCopy').onclick = () => copyList(r);
     $q('fitTpl').onclick = () => {
@@ -510,6 +586,6 @@
     loadShops().then(() => { renderShopPanel(); });
     updateFitBtn();
   }
-  window.SCFIT = { enumSlots, evalAsg, optimize, PRESETS, opt, loadShops, offers, buildPlan, openFitModal, get RES() { return RES; } };
+  window.SCFIT = { enumSlots, evalAsg, optimize, radarVector, topRadars, combatRadarRules, radarNoteHTML, PRESETS, opt, loadShops, offers, buildPlan, openFitModal, get RES() { return RES; } };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();

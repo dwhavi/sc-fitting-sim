@@ -396,6 +396,8 @@ def main():
                   'dmgtype': list(dmg)})
         missiles.append(finish(e, x))
 
+    from radar_fields import radar_fields
+
     # ------------------------------------------------------------ radars
     radars = []
     for x in items:
@@ -403,6 +405,7 @@ def main():
             continue
         e = base(x)
         e['grade'] = x.get('grade')                     # live DB keeps raw grade
+        e.update(radar_fields(x))
         radars.append(finish(e, x))
 
     # ------------------------------------------------------------ turrets
