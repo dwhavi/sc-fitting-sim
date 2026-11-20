@@ -1,0 +1,341 @@
+{
+ "note": "Base ships to include in the DB although they are not yet there. Each entry is checked against starcitizen.tools \"Flight ready in\" (community wiki, checked 2026-11-21, LIVE 4.10.3). Skins, Wikelo/Exec/Collector, Display, TEMP and Boarded variants are not listed here on purpose.",
+ "include": [
+  {
+   "class": "MISC_Hull_B",
+   "wiki": "https://starcitizen.tools/Hull_B",
+   "flightReady": "Alpha 4.7.1"
+  },
+  {
+   "class": "MISC_Hull_C",
+   "wiki": "https://starcitizen.tools/Hull_C",
+   "flightReady": "Alpha 3.20.0"
+  },
+  {
+   "class": "MISC_Starlancer_Max",
+   "wiki": "https://starcitizen.tools/Starlancer_MAX",
+   "flightReady": "Alpha 3.24.3"
+  },
+  {
+   "class": "RSI_Hermes",
+   "wiki": "https://starcitizen.tools/Hermes",
+   "flightReady": "Alpha 4.6.0"
+  },
+  {
+   "class": "ARGO_MOTH",
+   "wiki": "https://starcitizen.tools/MOTH",
+   "flightReady": "Alpha 4.6.0"
+  },
+  {
+   "class": "ARGO_SRV",
+   "wiki": "https://starcitizen.tools/SRV",
+   "flightReady": "Alpha 3.21.1"
+  },
+  {
+   "class": "ARGO_MPUV_1T",
+   "wiki": "https://starcitizen.tools/MPUV_Tractor",
+   "flightReady": "Alpha 3.23.1"
+  },
+  {
+   "class": "MISC_Fortune",
+   "wiki": "https://starcitizen.tools/Fortune",
+   "flightReady": "Alpha 4.0.1"
+  },
+  {
+   "class": "DRAK_Golem",
+   "wiki": "https://starcitizen.tools/Golem",
+   "flightReady": "Alpha 4.1.0"
+  },
+  {
+   "class": "DRAK_Golem_OX",
+   "wiki": "https://starcitizen.tools/Golem_OX",
+   "flightReady": "Alpha 4.4.0"
+  },
+  {
+   "class": "CRUS_Spirit_C1",
+   "wiki": "https://starcitizen.tools/C1_Spirit",
+   "flightReady": "Alpha 3.21.1"
+  },
+  {
+   "class": "CRUS_Spirit_A1",
+   "wiki": "https://starcitizen.tools/A1_Spirit",
+   "flightReady": "Alpha 3.21.0"
+  },
+  {
+   "class": "ESPR_Prowler_Utility",
+   "wiki": "https://starcitizen.tools/Prowler_Utility",
+   "flightReady": "Alpha 4.2.0"
+  },
+  {
+   "class": "CRUS_Intrepid",
+   "wiki": "https://starcitizen.tools/Intrepid",
+   "flightReady": "Alpha 3.24.3"
+  },
+  {
+   "class": "DRAK_Clipper",
+   "wiki": "https://starcitizen.tools/Clipper",
+   "flightReady": "Alpha 4.4.0"
+  },
+  {
+   "class": "AEGS_Idris_P",
+   "wiki": "https://starcitizen.tools/Idris-P",
+   "flightReady": "Alpha 4.1.1"
+  },
+  {
+   "class": "ANVL_Asgard",
+   "wiki": "https://starcitizen.tools/Asgard",
+   "flightReady": "Alpha 4.1.1"
+  },
+  {
+   "class": "ANVL_Paladin",
+   "wiki": "https://starcitizen.tools/Paladin",
+   "flightReady": "Alpha 4.3.2"
+  },
+  {
+   "class": "ANVL_Lightning_F8C",
+   "wiki": "https://starcitizen.tools/F8C_Lightning",
+   "flightReady": "Alpha 3.20.0b"
+  },
+  {
+   "class": "RSI_Polaris",
+   "wiki": "https://starcitizen.tools/Polaris",
+   "flightReady": "Alpha 3.24.3"
+  },
+  {
+   "class": "RSI_Perseus",
+   "wiki": "https://starcitizen.tools/Perseus",
+   "flightReady": "Alpha 4.4.0"
+  },
+  {
+   "class": "DRAK_Ironclad",
+   "wiki": "https://starcitizen.tools/Ironclad",
+   "flightReady": "Alpha 4.8.0"
+  },
+  {
+   "class": "DRAK_Ironclad_Assault",
+   "wiki": "https://starcitizen.tools/Ironclad_Assault",
+   "flightReady": "Alpha 4.8.0"
+  },
+  {
+   "class": "KRIG_L21_Wolf",
+   "wiki": "https://starcitizen.tools/L-21_Wolf",
+   "flightReady": "Alpha 4.3.0"
+  },
+  {
+   "class": "KRIG_L22_AlphaWolf",
+   "wiki": "https://starcitizen.tools/L-22_Alpha_Wolf",
+   "flightReady": "Alpha 4.4.0"
+  },
+  {
+   "class": "KRIG_S65_Stingray",
+   "wiki": "https://starcitizen.tools/S-65_Stingray",
+   "flightReady": "Alpha 4.10.0"
+  },
+  {
+   "class": "MRAI_Guardian",
+   "wiki": "https://starcitizen.tools/Guardian",
+   "flightReady": "Alpha 4.0.0"
+  },
+  {
+   "class": "MRAI_Guardian_MX",
+   "wiki": "https://starcitizen.tools/Guardian_MX",
+   "flightReady": "Alpha 4.1.1"
+  },
+  {
+   "class": "MRAI_Guardian_QI",
+   "wiki": "https://starcitizen.tools/Guardian_QI",
+   "flightReady": "Alpha 4.0.0"
+  },
+  {
+   "class": "MISC_Fury",
+   "wiki": "https://starcitizen.tools/Fury",
+   "flightReady": "Alpha 3.19.0"
+  },
+  {
+   "class": "MISC_Fury_LX",
+   "wiki": "https://starcitizen.tools/Fury_LX",
+   "flightReady": "Alpha 3.20.0"
+  },
+  {
+   "class": "MISC_Fury_Miru",
+   "wiki": "https://starcitizen.tools/Fury_MX",
+   "flightReady": "Alpha 3.19.0"
+  },
+  {
+   "class": "ORIG_m80",
+   "wiki": "https://starcitizen.tools/M80",
+   "flightReady": "Alpha 4.8.0"
+  },
+  {
+   "class": "RSI_Meteor",
+   "wiki": "https://starcitizen.tools/Meteor",
+   "flightReady": "Alpha 4.2.1"
+  },
+  {
+   "class": "RSI_Skylark",
+   "wiki": "https://starcitizen.tools/Skylark",
+   "flightReady": "Alpha 4.10.2"
+  },
+  {
+   "class": "RSI_Scorpius_Antares",
+   "wiki": "https://starcitizen.tools/Scorpius_Antares",
+   "flightReady": "Alpha 3.18.0"
+  },
+  {
+   "class": "DRAK_Pitbull",
+   "wiki": "https://starcitizen.tools/Pitbull",
+   "flightReady": "Alpha 4.8.0"
+  },
+  {
+   "class": "GLSN_Basher",
+   "wiki": "https://starcitizen.tools/Basher",
+   "flightReady": "Alpha 4.9.0"
+  },
+  {
+   "class": "GLSN_Shiv",
+   "wiki": "https://starcitizen.tools/Shiv",
+   "flightReady": "Alpha 4.3.2"
+  },
+  {
+   "class": "GAMA_Railen",
+   "wiki": "https://starcitizen.tools/Railen",
+   "flightReady": "Alpha 4.8.2"
+  },
+  {
+   "class": "GAMA_Syulen",
+   "wiki": "https://starcitizen.tools/Syulen",
+   "flightReady": "Alpha 3.21.1"
+  },
+  {
+   "class": "GAMA_Tyilui",
+   "wiki": "https://starcitizen.tools/Tyilui",
+   "flightReady": "Alpha 4.8.2"
+  },
+  {
+   "class": "XNAA_SanTokYai",
+   "wiki": "https://starcitizen.tools/San%27tok.y%C4%81i",
+   "flightReady": "Alpha 3.22.0"
+  },
+  {
+   "class": "AEGS_Sabre_Firebird",
+   "wiki": "https://starcitizen.tools/Sabre_Firebird",
+   "flightReady": "Alpha 3.23.1"
+  },
+  {
+   "class": "AEGS_Sabre_Peregrine",
+   "wiki": "https://starcitizen.tools/Sabre_Peregrine",
+   "flightReady": "Alpha 3.24.0"
+  },
+  {
+   "class": "AEGS_Sabre_Raven_EX",
+   "wiki": "https://starcitizen.tools/Sabre_Raven_EX",
+   "flightReady": "Alpha 4.10.1"
+  },
+  {
+   "class": "RSI_Apollo_Triage",
+   "wiki": "https://starcitizen.tools/Apollo_Triage",
+   "flightReady": "Alpha 4.3.1"
+  },
+  {
+   "class": "RSI_Apollo_Medivac",
+   "wiki": "https://starcitizen.tools/Apollo_Medivac",
+   "flightReady": "Alpha 4.3.1"
+  },
+  {
+   "class": "ANVL_Terrapin_Medic",
+   "wiki": "https://starcitizen.tools/Terrapin_Medic",
+   "flightReady": "Alpha 3.24.3"
+  },
+  {
+   "class": "RSI_Aurora_Mk2",
+   "wiki": "https://starcitizen.tools/Aurora_Mk_II",
+   "flightReady": "Alpha 4.7.0"
+  },
+  {
+   "class": "RSI_Aurora_GS_SE",
+   "wiki": "https://starcitizen.tools/Aurora_SE",
+   "flightReady": "Alpha 4.7.0"
+  },
+  {
+   "class": "RSI_Constellation_Mk5_Centaurus",
+   "wiki": "https://starcitizen.tools/Constellation_Centaurus",
+   "flightReady": "Alpha 4.10.2"
+  },
+  {
+   "class": "MISC_Starlite",
+   "wiki": "https://starcitizen.tools/Starlite",
+   "flightReady": "Alpha 4.8.0"
+  },
+  {
+   "class": "DRAK_Cutter_Rambler",
+   "wiki": "https://starcitizen.tools/Cutter_Rambler",
+   "flightReady": "Alpha 3.22.0"
+  },
+  {
+   "class": "DRAK_Cutter_Scout",
+   "wiki": "https://starcitizen.tools/Cutter_Scout",
+   "flightReady": "Alpha 3.21.0"
+  },
+  {
+   "class": "MRAI_Pulse",
+   "wiki": "https://starcitizen.tools/Pulse",
+   "flightReady": "Alpha 3.23.0"
+  },
+  {
+   "class": "ORIG_X1",
+   "wiki": "https://starcitizen.tools/X1",
+   "flightReady": "Alpha 3.22.0"
+  },
+  {
+   "class": "RSI_Salvation",
+   "wiki": "https://starcitizen.tools/Salvation",
+   "flightReady": "Alpha 4.4.0"
+  }
+ ],
+ "pending": [
+  {
+   "class": "VNCL_Mauler",
+   "wiki": "https://starcitizen.tools/Mauler",
+   "reason": "wiki status not found; LIVE availability unverified"
+  },
+  {
+   "class": "VNCL_Stinger",
+   "wiki": "https://starcitizen.tools/Stinger",
+   "reason": "wiki status not found; LIVE availability unverified"
+  },
+  {
+   "class": "GAMA_Hyun",
+   "wiki": "https://starcitizen.tools/Hyun",
+   "reason": "wiki status not found; LIVE availability unverified"
+  },
+  {
+   "class": "DRAK_Command_Module",
+   "wiki": "https://starcitizen.tools/Command_Module",
+   "reason": "wiki says flight ready (4.8.0) but FleetYards has no hardpoints for it, so no slot data; add once slots exist"
+  },
+  {
+   "class": "AEGS_Tiburon",
+   "wiki": "https://starcitizen.tools/Tiburon",
+   "flightReady": "Alpha 4.8.0",
+   "reason": "wiki says flight ready, but FleetYards slots include a Hammerhead rear turret and miss the fixed guns, so DPS does not match the game files. Slots must be rebuilt from game files before adding."
+  },
+  {
+   "class": "MISC_Starlancer_TAC",
+   "wiki": "https://starcitizen.tools/Starlancer_TAC",
+   "flightReady": "Alpha 4.1.1",
+   "reason": "wiki says flight ready, but slot DPS does not match the game files (FleetYards fixed-gun/turret data). Slots must be rebuilt from game files before adding."
+  },
+  {
+   "class": "RSI_Zeus_CL",
+   "wiki": "https://starcitizen.tools/Zeus_Mk_II_CL",
+   "flightReady": "Alpha 3.24.2",
+   "reason": "wiki says flight ready, but FleetYards has no weapon slots for it, so DPS and weapon power do not match the game files. Slots must be rebuilt from game files before adding."
+  },
+  {
+   "class": "RSI_Zeus_ES",
+   "wiki": "https://starcitizen.tools/Zeus_Mk_II_ES",
+   "flightReady": "Alpha 3.24.2",
+   "reason": "wiki says flight ready, but FleetYards has no weapon slots for it, so DPS and weapon power do not match the game files. Slots must be rebuilt from game files before adding."
+  }
+ ]
+}

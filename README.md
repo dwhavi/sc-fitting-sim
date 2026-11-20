@@ -95,3 +95,19 @@ cd public && python3 -m http.server 8811     # 로컬 서버
 ## 계산 검증 (2026-11-21)
 
 [계산식·회귀 테스트·남은 제약](docs/CALCULATIONS_2026-11-21.md)을 참고하세요. 인게임 실측과 외부 덤프 일치를 구분합니다. 원본 갱신 뒤에는 `build_db.py`, `reconcile_slots.py`, `enrich_turret_slots.py` 순서로 실행하고 `node tests/test_power.cjs`를 통과시켜야 합니다.
+
+## 함선 목록 관리 (ship_manifest.json)
+
+`sync_data.py` 는 db.json 에 이미 있는 함선과 `ship_manifest.json` 의 `include` 목록만 동기화한다.
+처음부터 DB에 없던 함선은 자동으로 들어오지 않는다 (2026-11-21 Hull B/C 누락의 원인).
+동기화 때 "관리 밖 원본 함선 파일" 개수를 출력하고 `.sync_meta.json` 의 `unmanaged_ship_files` 에 남긴다.
+
+새 함선 추가 절차:
+
+1. 출시 여부 확인 (starcitizen.tools 의 "Flight ready in", 또는 RSI 로드맵). 원본에 파일이 있다는 것만으로는 LIVE 출시가 아니다.
+2. `ship_manifest.json` 의 `include` 에 `class`, `wiki`, `flightReady` 추가.
+3. `python3 sync_data.py && python3 build_db.py`
+4. `python3 add_ship_slots.py` (FleetYards 슬롯, 기존 슬롯은 건드리지 않음) → `enrich_turret_slots.py` → `reconcile_slots.py`
+5. `node tests/test_power.cjs` 로 게임 파일 수치와 대조. 어긋나면 슬롯 데이터(FleetYards)가 틀린 것이므로 `pending` 에 두고 사유를 적는다.
+
+스킨/Wikelo/Exec/Collector/Display/TEMP/Boarded 변형은 별도 함선으로 넣지 않았다. `pending` 은 출시 여부 또는 슬롯 정확도 미확인으로 보류한 함선이다.

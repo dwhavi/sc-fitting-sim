@@ -164,6 +164,13 @@ def get(remote, dest, rebuild=False):
         return 'fail'
 
 
+def load_manifest():
+    p = os.path.join(ROOT, 'ship_manifest.json')
+    if not os.path.exists(p):
+        return {}
+    return json.load(io.open(p, encoding='utf-8'))
+
+
 def db_ships():
     db = json.load(io.open(os.path.join(ROOT, 'public', 'db.json'), encoding='utf-8'))
     return db['ships']
@@ -216,6 +223,21 @@ def main():
                     targets.append((ship['class'], f))
         if unresolved:
             raise RuntimeError(f'함선 파일 미해결: {unresolved}')
+        # ship_manifest.json: DB에 아직 없는 출시 확인 함선. 기존 함선과 같은 파일이면 건너뛴다.
+        have_files = {f for _, f in targets}
+        manifest_missing = []
+        for ent in load_manifest().get('include', []):
+            fn = ent['class'].lower() + '.json'
+            if fn not in files:
+                manifest_missing.append(ent['class'])
+            elif fn not in have_files:
+                targets.append((ent['class'], fn))
+                have_files.add(fn)
+        if manifest_missing:
+            raise RuntimeError(f'매니페스트 함선 파일 없음: {manifest_missing}')
+        # 발견 보고: 관리 대상이 아닌 원본 함선 파일. 자동으로 추가하지 않는다 (출시 여부 미확인).
+        unmanaged = sorted(f for f in files if f not in have_files)
+        print(f'관리 밖 원본 함선 파일 {len(unmanaged)}개 (DB·매니페스트에 없음). 출시 확인 후 ship_manifest.json 에 추가.')
         mapping = {}
         for i, (klass, fn) in enumerate(targets, 1):
             if get(f'ships/{fn}', os.path.join(stage, 'ships', fn), True) != 'ok':
@@ -227,7 +249,8 @@ def main():
                    'complete': True, 'synced': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
                    'ship_files_available': len(files), 'ships_total': len(targets),
                    'ships_ok': len(targets), 'ships_skip': 0, 'ships_failed': [],
-                   'bulk_failed': [], 'class_to_file': mapping},
+                   'bulk_failed': [], 'class_to_file': mapping,
+                   'unmanaged_ship_files': unmanaged},
                   io.open(META, 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
         backup = original_raw + '.previous'
         if os.path.exists(backup):

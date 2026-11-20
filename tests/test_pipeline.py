@@ -28,6 +28,7 @@ class PipelineTests(unittest.TestCase):
                 version = '5.0.0-PTU.1' if mode == 'ptu' else '4.10.3-LIVE.1'
                 m.remote_sha = lambda: (None, None, None) if mode == 'unknown' else ('a'*40, '2026-11-20', version)
                 m.api = lambda url: {'tree': [{'path': 'ships/ship.json'}]}
+                m.load_manifest = lambda: {}
                 m.db_ships = lambda: [{'class': 'unknown' if mode == 'unresolved' else 'ship', 'name': 'Ship'}]
                 def get(remote, dest, rebuild=False):
                     self.assertIn('a'*40, m.BASE)
