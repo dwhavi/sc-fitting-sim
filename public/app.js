@@ -6,7 +6,7 @@ let build = {}; // slotId -> component class
 // 비행 모드 기준(2026-11-14): QD는 게임 데이터상 전력 세그먼트 집계에 없음(컬럼 제외),
 // 추진(FlightController)·생명유지·유틸은 함선 고정 세그먼트값(stockMax) 컬럼,
 // 복수 파워플랜트는 게임 결합식(Σ round(X/n)+(n-1)Σsize), 실드는 함선 풀(spool) 상한.
-// 검증: 스톡 143척 기준 그룹별 게임값(UsedSegmentsGrouped)·총량(UsedSegmentsShields) 대조.
+// 검증: 144척 부품 합계와 외부 덤프를 별도 대조, 인게임 실측과 구분.
 // Erkul model (NQEKEKTP Ln/U + Qr, main IF pips):
 //  계통핍(segOff/grpOff) = 전력 on/off. 무기 풀(poolSel) = 무기 출력, 별도 분리.
 //  Ln(): poolRatio=min(1,selected/consumption) — 에너지 무기에만 적용.
@@ -48,7 +48,7 @@ const fmt = n => n == null ? '—' : (Math.round(n * 10) / 10).toLocaleString('e
 
 async function init() {
   $('status').textContent = 'DB 로딩 중…';
-  const r = await fetch('db.json?v=146', {cache:'no-store'});
+  const r = await fetch('db.json?v=147', {cache:'no-store'});
   if (!r.ok) throw new Error('DB HTTP ' + r.status);
   DB = await r.json();
   loadPatchStatus();
@@ -72,8 +72,9 @@ async function loadPatchStatus() {
       `계산 데이터: ${DB.meta.gameVersion || '버전 미확인'}`,
       patch.summary,
       patch.ptuNote,
-      '계산 제약: 지속 DPS는 근사치이며 일부 함선의 전력은 원본과 차이가 있습니다. 아래 스톡 비교값을 함께 확인하세요.',
-      '이번 반영: Drake Marauder 추가 (144척)·무기 풀 전력 집계 보정. 원본 부품 성능치는 유지했습니다.',
+      '11/21 계산 검증: 지속 DPS는 탄수·연사 시간·재충전 주기로 계산합니다. 실제 게임에서 측정한 결과는 아닙니다.',
+      '전력은 선택 배분의 요구량입니다. 공급 부족 시 게임의 자동 배분·열화·손상까지 재현하지는 않습니다. 차량 11종의 덤프 합계에는 실드가 빠져 있어 부품 합계와 다릅니다.',
+      '이번 개선: 무기 캐패시터 주기·부분 전력·실드 재생·쿨러 최소 전력, Sukoran과 누락 무장 체인 복구. LIVE 부품 원본 수치는 바꾸지 않았습니다.',
     ];
     if (patch.dataVersion !== DB.meta.gameVersion) {
       lines.unshift('주의: 패치 확인 기록과 현재 DB 버전이 다릅니다. 계산 데이터 버전을 확인하세요.');
@@ -253,7 +254,7 @@ async function selectShip(slug) {
   // Load ship slots from local snapshot
   if (!window.SHIP_SLOTS) {
     try {
-      const response = await fetch('ship_slots.json?v=144', {cache:'no-store'});
+      const response = await fetch('ship_slots.json?v=145', {cache:'no-store'});
       const data = await response.json();
       window.SHIP_SLOTS = data;
       console.log('Loaded ship slots:', data.ships.length, 'ships,', data.slots.length, 'slots');
@@ -402,9 +403,7 @@ function cardSlotHTML(h, cardKind) {
   if (!selObj) selObj = findTurret(comp.scKey, comp.name);
   if ((h.id in build) && !build[h.id]) selObj = null; // user explicitly cleared
   let subs = '';
-  const gunLayout = (selObj && (selObj.guns || isGimbalCard(selObj))) ? cardGuns(selObj)
-    : ((!selObj || !(selObj.guns || isGimbalCard(selObj))) && h.childGuns && h.childGuns.length
-      ? h.childGuns.filter(g => g.max > 0).map(g => g.max) : []);
+  const gunLayout = weaponLayout(h, selObj);
   // 카드에 guns 없어도 체인 레이아웃이 있으면 하위 무기 선택 표시 (Manned 터렛 등).
   if (gunLayout.length) {
     subs = gunLayout.map((gs, i) => subWeaponHTML(h.id + ':w' + i, gs, i)).join('');
@@ -533,6 +532,13 @@ function isGimbalCard(c) {
   const cls = c.class || '', nm = c.name || '';
   return cls.startsWith('Mount_Gimbal_') || /varipuck|gimbal/i.test(nm);
 }
+function weaponLayout(h, card) {
+  if ((h.id in build) && !build[h.id]) return [];
+  const stock = h.turretClass || '';
+  if (h.childGuns && h.childGuns.length && (!card || card.class === stock))
+    return h.childGuns.filter(g => g.max > 0).map(g => g.max);
+  return card ? cardGuns(card) : [];
+}
 function cardGuns(card) {
   // 짐벌: S(n) 카드 → S(n) 무기 (optionsFor가 동일 사이즈만 나열)
   // 고정 마운트·터렛: DB guns 그대로 (멀티건 레이아웃 유지)
@@ -565,6 +571,19 @@ function bestMissile(size) {
   return list.reduce((a, b) => ((b.damage || 0) > (a.damage || 0) ? b : a));
 }
 
+// Full drain, cooldown, refill cycle. Rounded ammo count is intentional.
+// Formula cross-checked against Erkul's public energy capacitor calculation.
+function capacitorCycle(c, ratio) {
+  if (!(c.capAmmo > 0 && c.capRegen > 0 && c.rpm > 0)) return null;
+  const ammo = Math.round(c.capAmmo * Math.max(0, Math.min(1, ratio)));
+  const regen = c.capRegen * Math.max(0, Math.min(1, ratio));
+  if (ammo <= 0 || regen <= 0) return { dps: 0, ammo: 0, fire: 0, refill: 0 };
+  const fire = ammo / (c.rpm / 60);
+  const refill = (c.capCooldown || 0) + ammo / regen;
+  const alpha = c.cycleAlpha != null ? c.cycleAlpha : Object.values(c.alphaRaw || {}).reduce((a,b)=>a+b,0) || c.alpha || 0;
+  return { dps: ammo * alpha / (fire + refill), ammo, fire, refill };
+}
+
 function fitStats() {
   // Erkul-style: 2-pass. 1차: 그룹별 장착품 수집 → 2차: segOff(끈 핍 수) 분배.
   // 핍 = 실제 게임값 data/power_units.json 반영(db.json의 pw/pwGen).
@@ -595,21 +614,16 @@ function fitStats() {
   };
   for (const h of (FY || [])) {
     const kind = slotKind(h);
-    if (!kind || kind === 'engine') continue; // 추진부 고정 슬롯은 전력 집계 제외
+    if (!kind || kind === 'engine' || kind === 'turretbase') continue; // 추진부 고정 슬롯은 전력 집계 제외
     if (kind === 'mount' || kind === 'turret') {
       // 카드 구조물 자체는 전력 없음 — 하위 무기만 집계
       const cardCls = effVal(h, kind);
       let selObj = cardCls ? (((DB.turrets || []).find(c => c.class === cardCls)) || null) : findTurret((h.component || {}).scKey, (h.component || {}).name);
       if (cardCls && !selObj) selObj = null;
       if ((h.id in build) && !build[h.id]) selObj = null;
-      if (selObj && (selObj.guns || isGimbalCard(selObj))) {
-        cardGuns(selObj).forEach((gs, i) => pushWeaponSub(h.id + ':w' + i, (h.id + ':w' + i in build) ? build[h.id + ':w' + i] : stockGunFor(h.id + ':w' + i), kind === 'turret' ? 'turret' : 'pilot'));
-      } else if ((!selObj || !(selObj.guns || isGimbalCard(selObj))) && h.childGuns && h.childGuns.length) {
-        // 카드 guns 없어도 체인 레이아웃으로 하위 무기 집계 (Manned 터렛 등).
-        // mount/turret 공용 폴백: selObj 유무와 무관하게 체인이 있으면 집계한다.
-        const subs = h.childGuns.filter(g => g.max > 0);
-        subs.forEach((g, i) => pushWeaponSub(h.id + ':w' + i, (h.id + ':w' + i in build) ? build[h.id + ':w' + i] : stockGunFor(h.id + ':w' + i), kind === 'turret' ? 'turret' : 'pilot'));
-      }
+      weaponLayout(h, selObj).forEach((gs, i) => pushWeaponSub(h.id + ':w' + i,
+        (h.id + ':w' + i in build) ? build[h.id + ':w' + i] : stockGunFor(h.id + ':w' + i),
+        h.weaponControl || (kind === 'turret' ? 'turret' : 'pilot')));
       continue;
     }
     const val = effVal(h, kind);
@@ -722,16 +736,16 @@ function fitStats() {
   }
   // Weapon items share a ship-level power pool. Seven 1-pip guns on a
   // 4-pip pool consume 4 ship pips, not 7. Keep the item/pool DPS scaling
-  // separate: reducing the shared group scales all guns together.
+  // separate: reducing the shared group changes capacitor cycles for all guns.
   const poolShip = (DB.ships || []).find(x => x.slug === curShip || x.class === curShip) || {};
   const weaponItems = items.filter(it => it.kind === 'weapon');
-  const weaponRawMax = grpMax.weapon || 0;
   const weaponRawPower = weaponItems.reduce((sum, it) => sum + it.pwRaw, 0);
-  const weaponCap = poolShip.wpool > 0 && weaponRawPower > poolShip.wpool
-    ? Math.min(weaponRawMax, poolShip.wpool) : weaponRawMax;
-  const weaponPooled = weaponCap < weaponRawMax;
+  const weaponCap = Math.min(Math.ceil(weaponRawPower), poolShip.wpool > 0 ? poolShip.wpool : Infinity);
+  const weaponPooled = weaponItems.length > 0;
   if (weaponPooled) grpMax.weapon = weaponCap;
-  const weaponPowerScale = weaponRawPower > 0 ? Math.min(1, weaponCap / weaponRawPower) : 1;
+  const weaponSelected = pwr.grpOff.weapon ? 0 : Math.min(
+    Math.max(0, weaponCap - (pwr.segOff.weapon || 0)),
+    pwr.poolSel == null ? weaponCap : Math.max(0, pwr.poolSel));
   for (const gid of Object.keys(grpMax)) {
     const off = Math.max(0, Math.min(pwr.segOff[gid] || 0, grpMax[gid]));
     grpLeft[gid] = grpMax[gid] - off;
@@ -747,13 +761,14 @@ function fitStats() {
       else if (pwr.coolerSegs[slotId] != null) units = Math.max(0, Math.min(it.maxU, pwr.coolerSegs[slotId]));
       else units = it.maxU;
     } else if (it.kind === 'weapon' && weaponPooled) {
-      units = weaponCap > 0 ? it.maxU * (grpLeft.weapon || 0) / weaponCap : 0;
+      // Power allocation changes capacitor refill, not projectile damage or RPM.
+      units = weaponSelected > 0 || weaponRawPower === 0 ? it.maxU : 0;
     } else {
       const take = Math.max(0, Math.min(it.maxU, grpLeft[it.grp] || 0));
       grpLeft[it.grp] = (grpLeft[it.grp] || 0) - take;
       units = take;
     }
-    const eff = it.maxU > 0 ? it.pwRaw * units / it.maxU * (it.kind === 'weapon' ? weaponPowerScale : 1) : 0;
+    const eff = it.maxU > 0 ? it.pwRaw * units / it.maxU * (it.kind === 'weapon' ? 0 : 1) : 0;
     s.power += eff; s.powerBase += it.c.powerBase || 0;
     if (!it.real) s.estCount = (s.estCount || 0) + 1;
     s.heat += it.poolOff ? 0 : (it.c.heat || 0);
@@ -762,18 +777,16 @@ function fitStats() {
     perGroup[it.grp].units += units;
     perGroup[it.grp].maxUnits += it.poolOff ? 0 : it.maxU;
     if (it.kind === 'cooler') {
-      s.cooling += (it.c.rate || 0) * units / it.maxU;
+      const minimum = Math.max(1, Math.round(it.maxU * (it.c.pwMinFrac || 1 / it.maxU)));
+      s.cooling += units >= minimum ? (it.c.rate || 0) * units / it.maxU * qnSpv(units, it.c.pranges) : 0;
       coolerList.push({ slotId, name: it.c.name || '', units, maxUnits: it.maxU, pwRaw: it.pwRaw, off: !!pwr.coolerOff[slotId], pranges: it.c.pranges || null });
     }
     if (it.kind === 'weapon') {
-      // Erkul 풀 분리 (2026-11-01): 계통핍 ratio = 전력 on/off, poolRatio = 무기 출력.
-      //   탄도: 풀 영향 없음 (burst 그대로). 에너지: sustain × poolRatio.
-      //   En() 재계산: ammo=round(capAmmo*poolRatio), regen=capRegen*poolRatio.
-      //   Ln(): poolSize=함선 풀 상한(-1=무제한), selected=poolSel(기본 풀사이즈),
-      //         consumption=Σ무기소모(pw), poolRatio=min(1,selected/consumption).
+      // Enabled guns keep projectile damage and RPM. Energy sustained DPS is
+      // calculated below from the shared-pool capacitor cycle, not scaled twice.
       const c = it.c;
       const ratio = it.maxU > 0 ? units / it.maxU : 1;
-      const isEnergy = (c.dmgtype || []).includes('Energy');
+      const isEnergy = (c.capAmmo || 0) > 0 && (c.capRegen || 0) > 0;
       const bval = (c.dps || 0) * ratio, aval = (c.alpha || 0) * ratio;
       s.dpsBurst = (s.dpsBurst || 0) + bval;
       s.alpha += aval; s.guns++;
@@ -807,7 +820,9 @@ function fitStats() {
       }
     }
     if (it.kind === 'shield') {
-      s.hp += it.c.hp || 0; s.regen += it.c.regen || 0;
+      s.hp += it.c.hp || 0;
+      const minimum = Math.max(1, Math.round(it.maxU * (it.c.pwMinFrac || 1 / it.maxU)));
+      if (!it.poolOff && units >= minimum) s.regen += (it.c.regen || 0) * units / it.maxU * qnSpv(units, it.c.pranges);
       // 실효 탱킹용: 흡수율(absorption) + 재생 지연 수집.
       // absorption[t] = 피격 피해 중 실드가 흡수(경감)하는 비율.
       // 남은 (1-avg) 는 실드를 관통해 선체로 들어간다(탄도 관통 특성).
@@ -826,46 +841,35 @@ function fitStats() {
   } // end for (FY slots)
   if (weaponPooled) {
     perGroup.weapon.maxUnits = weaponCap;
-    perGroup.weapon.units = pwr.grpOff.weapon ? 0 : (grpLeft.weapon || 0);
+    perGroup.weapon.units = weaponSelected;
+    perGroup.weapon.power = Math.min(weaponRawPower, weaponSelected);
+    s.power += perGroup.weapon.power;
   }
   // (QD 집계용 코드는 제거됨 — QD 스펙은 슬롯 수집 단계에서 s.qd/s.qdspeed로 직접 수집)
   // ---- 2차 패스: Erkul Ln() 무기 풀 (2026-11-01) ----
   // poolSize = 함선 PowerPools.WeaponGun.Size (-1=무제한, null=정보없음→풀없음).
   // consumption = Σ장착 에너지무기 pw(계통핍 배분 후 실소모).
   // selected = poolSel(사용자 선택, 기본 poolSize) → poolRatio=min(1,selected/consumption).
-  // 에너지 sustain에만 × poolRatio. 탄도는 이미 1차에서 burst 그대로 합산됨.
+  // Energy capacitor cycles use the shared pool; ballistic sustain is item-derived.
   {
-    const ship = (DB.ships || []).find(x => (x.slug === curShip || x.class === curShip)) || {};
-    const poolSize = ship.wpool;
-    let consumption = 0;
-    for (const p of poolItems) consumption += (p.c.pw != null ? p.c.pw : (p.c.power || 0)) * p.ratio;
-    const unlimited = poolSize === -1;
-    const hasPool = poolSize != null && (unlimited || poolSize > 0);
-    const selected = hasPool
-      ? (unlimited ? consumption : Math.min(poolSize, pwr.poolSel != null ? pwr.poolSel : poolSize))
-      : consumption;
-    const poolRatio = !hasPool ? 1 : (consumption > 0 ? Math.min(1, selected / consumption) : 1);
-    s.pool = hasPool
-      ? { size: unlimited ? -1 : poolSize, selected, consumption, ratio: poolRatio }
-      : null;
+    // Ballistic standby consumption also shares the weapon power pool.
+    const consumption = weaponRawPower;
+    const hasPool = weaponItems.length > 0;
+    const selected = weaponSelected;
+    const poolRatio = consumption > 0 ? Math.min(1, selected / consumption) : (selected > 0 ? 1 : 0);
+    s.pool = hasPool ? { size: weaponCap, selected, consumption, ratio: poolRatio } : null;
+    s.weaponCycles = [];
     for (const p of poolItems) {
       const c = p.c;
-      let sus = p.sus;
-      // sustain 게임값이 없으면 En() 재계산 (capAmmo 경로).
-      if (sus == null && (c.capAmmo || 0) > 0 && (c.capRegen || 0) > 0 && (c.rpm || 0) > 0) {
-        const pr = hasPool ? poolRatio : 1;
-        const ammo = Math.round((c.capAmmo || 0) * pr);
-        const regen = (c.capRegen || 0) * pr;
-        const cd = c.capCooldown || 0;
-        const rateHz = (c.rpm || 0) / 60;
-        if (ammo > 0 && regen > 0 && rateHz > 0) {
-          sus = ammo * (c.alpha || 0) / ((cd + ammo / regen) + ammo / rateHz);
-        }
+      let scaled = 0;
+      const cycle = capacitorCycle(c, poolRatio);
+      if (cycle) {
+        scaled = cycle.dps;
+        s.weaponCycles.push({ name: c.name, ...cycle });
+      } else {
+        scaled = ((p.sus != null ? p.sus : c.dps) || 0) * poolRatio;
+        s.dpsApprox = true;
       }
-      const base = sus != null ? sus : (c.dps || 0);
-      // 1차에서 계통핍 ratio 이미 반영 → 풀은 poolRatio만 곱한다.
-      // sustain 게임값은 풀 100% 기준이므로 En()처럼 poolRatio 스케일 적용.
-      const scaled = hasPool ? base * (sus != null ? poolRatio : 1) : base;
       s.dps += scaled * p.ratio;
       // 에너지 sustain도 파일럿/터렛 분리 합산.
       if (p.src === 'turret') s.turretDps = (s.turretDps || 0) + scaled * p.ratio;
@@ -1029,6 +1033,7 @@ function renderPwrBlocks() {
         if (!isNaN(pk)) {
           const cur = Math.round(pool.selected);
           pwr.poolSel = (cur === pk) ? Math.max(0, pk - 1) : pk;
+          pwr.segOff.weapon = 0;
         }
         updateStats();
         return;
@@ -1057,6 +1062,7 @@ function setGroupUnits(grp, k) {
   if (!maxU) return;
   let next = Math.max(0, Math.min(maxU, k));
   if (!wasOff && pg.units === next) next = Math.max(0, next - 1);
+  if (grp === 'weapon') pwr.poolSel = null;
   pwr.segOff[grp] = maxU - next; // segOff = 꺼진 핍 수 (그룹 총량 기준)
 }
 
@@ -1149,12 +1155,11 @@ function updateStats() {
   // 가용 = 발전핍(스로틀 없음). 부족분 있으면 경고.
   const pct = f.avail > 0 ? Math.min(100, f.power / f.avail * 100) : 0;
   const pcls = f.short > 0 ? 'bad' : pct > 85 ? 'warn' : 'ok';
-  const hpct = f.cooling > 0 ? Math.min(100, f.heat / f.cooling * 100) : 0;
-  const hcls = f.cooling === 0 ? '' : hpct > 100 ? 'bad' : hpct > 85 ? 'warn' : 'ok';
+  // Legacy thermal-energy draw and current coolant units are not comparable.
   $('stats').innerHTML = `
-    <div class="stat"><div class="v">${fmt(f.dps)}</div><div class="k">${f.hasSustain ? '지속 DPS · 버스트 ' + fmt(f.dpsBurst || 0) : '총 DPS'} · α ${fmt(f.alpha)} (${f.guns.length}문)</div><div class="k" style="margin-top:2px">${typeLine}</div></div>
+    <div class="stat"><div class="v">${fmt(f.dps)}</div><div class="k">${f.hasSustain ? '지속 DPS (주기 모델) · 버스트 ' + fmt(f.dpsBurst || 0) : '총 DPS'} · α ${fmt(f.alpha)} (${f.guns.length}문)</div><div class="k" style="margin-top:2px">${typeLine}</div></div>
     <div class="stat"><div class="v">${fmt(f.power)} / ${fmt(f.avail)}</div><div class="k">전력 소모 / 가용 핍 (발전 ${fmt(f.output)}핍)</div></div>
-    <div class="stat"><div class="v">${fmt(f.heat)} / ${fmt(f.cooling)}</div><div class="k">열 부하 / 냉각</div></div>
+    <div class="stat"><div class="v">${fmt(f.cooling)}</div><div class="k">냉각 자원 출력 (과열 판정 아님)</div></div>
     <div class="stat"><div class="v">${fmt(f.hp)}</div><div class="k">실드 HP 합계</div></div>
     <div class="stat"><div class="v">${fmt(f.regen)}/s</div><div class="k">실드 재생/s</div></div>
     <div class="stat"><div class="v">${f.qdspeed ? (f.qdspeed / 299792458 * 100).toFixed(1) + '% c' : '—'}</div><div class="k">양자항행 속도</div></div>
@@ -1162,9 +1167,8 @@ function updateStats() {
   $('powerBar').innerHTML = (f.avail > 0
     ? `<div style="font-size:12px" class="${pcls}">전력 사용률 ${pct.toFixed(0)}%${f.short > 0 ? ` ⚠️ ${fmt(f.short)}핍 부족 — 핍 블럭을 끄세요` : ''}</div><div class="bar"><i style="width:${Math.min(100, pct)}%;background:${f.short > 0 ? 'var(--bad)' : pct > 85 ? 'var(--warn)' : 'var(--ok)'}"></i></div>`
     : '<div style="font-size:12px;color:var(--dim)">파워플랜트를 장착하세요</div>')
-    + (f.cooling > 0
-    ? `<div style="font-size:12px;margin-top:6px" class="${hcls}">열 부하율 ${hpct.toFixed(0)}% ${hpct > 100 ? '⚠️ 과열! 쿨러 부족' : ''}</div><div class="bar"><i style="width:${Math.min(100, hpct)}%;background:${hpct > 100 ? 'var(--bad)' : hpct > 85 ? 'var(--warn)' : 'var(--ok)'}"></i></div>`
-    : '<div style="font-size:12px;color:var(--dim);margin-top:6px">쿨러를 장착하세요</div>');
+    + '<div style="font-size:12px;color:var(--dim);margin-top:6px">열 부하율 미검증: 구 열 데이터와 현 냉각 자원은 단위가 달라 비교하지 않습니다.</div>';
+
 }
 
 function renderSig() {
@@ -1198,9 +1202,8 @@ function renderSig() {
 }
 
 function renderStockCheck(f) {
-  // P3: 스톡 DPS 정답지 대조. 순정 빌드(교체 없음)일 때만 게임 산출값과 비교.
-  //   버스트 gap>5% = 터렛 합산 누락(원천 FixedWeapons에 터렛 없음) 또는 DB 미지원 무기.
-  //   지속 gap = 풀 스케일 적용 여부 차이 (sim은 poolRatio 적용, 정답지는 게임 스케일).
+  // External extractor aggregates are references, not measured in-game truth.
+  // Its sustained sum has no shared-pool limit, so the conditions differ.
   let el = $('stockCheck');
   if (!el) {
     const host = $('sigPanel');
@@ -1208,14 +1211,14 @@ function renderStockCheck(f) {
     el = document.createElement('div');
     el.className = 'stats'; el.id = 'stockCheck';
     const h = document.createElement('div');
-    h.className = 'sec-h'; h.textContent = '🎯 스톡 DPS 대조 (순정 빌드 기준)';
+    h.className = 'sec-h'; h.textContent = '🎯 덤프 기준값 대조 (인게임 실측 아님)';
     host.parentNode.insertBefore(h, host.nextSibling);
     host.parentNode.insertBefore(el, h.nextSibling);
   }
   const ship = (DB.ships || []).find(x => (x.slug === curShip || x.class === curShip)) || {};
-  const changed = Object.keys(build).some(k => build[k]);
+  const changed = Object.keys(build).length > 0 || Object.values(pwr.grpOff).some(Boolean) || Object.values(pwr.segOff).some(Boolean) || Object.values(pwr.coolerOff).some(Boolean) || Object.keys(pwr.coolerSegs).length > 0 || pwr.poolSel != null;
   if (ship.stockDps == null) { el.innerHTML = '<div style="font-size:12px;color:var(--dim)">스톡 DPS 데이터 없음</div>'; return; }
-  if (changed) { el.innerHTML = '<div style="font-size:12px;color:var(--dim)">부품 교체됨 — 순정 복원(초기화) 후 대조 가능</div>'; return; }
+  if (changed) { el.innerHTML = '<div style="font-size:12px;color:var(--dim)">부품 또는 전력 배분 변경됨 · 초기화 후 순정값 대조 가능</div>'; return; }
   const rows = [];
   // 파일럿/터렛 분리 합산 (P4): 정답지가 둘로 나뉘어 있으므로 각각 대조.
   const pb = f.pilotBurst || 0, tb = f.turretBurst || 0;
@@ -1230,15 +1233,15 @@ function renderStockCheck(f) {
     rows.push(`<div class="stat"><div class="v">${fmt(tb)} <span style="font-size:11px;color:var(--dim)">/ ${fmt(ship.turretDps)}</span></div><div class="k">터렛 버스트/스톡 <span style="color:${bdCls}">gap ${gd.toFixed(1)}%</span></div></div>`);
   }
   if (!rows.length)
-    rows.push(`<div class="stat"><div class="v">${fmt(f.dpsBurst)}</div><div class="k">총 버스트 (정답지 없음)</div></div>`);
+    rows.push(`<div class="stat"><div class="v">${fmt(f.dpsBurst)}</div><div class="k">총 버스트 (덤프 기준 없음)</div></div>`);
   const ps = f.pilotDps || 0, ts = f.turretDps || 0;
   if (ship.stockSus != null) {
     const gs = ship.stockSus > 0 ? Math.abs(ps - ship.stockSus) / ship.stockSus * 100 : 0;
-    rows.push(`<div class="stat"><div class="v">${fmt(ps)} <span style="font-size:11px;color:var(--dim)">/ ${fmt(ship.stockSus)}</span></div><div class="k">파일럿 지속/스톡 <span style="color:var(--warn)">gap ${gs.toFixed(1)}% (풀 스케일)</span></div></div>`);
+    rows.push(`<div class="stat"><div class="v">${fmt(ps)} <span style="font-size:11px;color:var(--dim)">/ ${fmt(ship.stockSus)}</span></div><div class="k">파일럿 지속/풀 제한 없는 덤프 합계 <span style="color:var(--warn)">gap ${gs.toFixed(1)}% (동일 조건 아님)</span></div></div>`);
   }
   if (ship.turretSus != null) {
     const gs = ship.turretSus > 0 ? Math.abs(ts - ship.turretSus) / ship.turretSus * 100 : 0;
-    rows.push(`<div class="stat"><div class="v">${fmt(ts)} <span style="font-size:11px;color:var(--dim)">/ ${fmt(ship.turretSus)}</span></div><div class="k">터렛 지속/스톡 <span style="color:var(--warn)">gap ${gs.toFixed(1)}% (풀 스케일)</span></div></div>`);
+    rows.push(`<div class="stat"><div class="v">${fmt(ts)} <span style="font-size:11px;color:var(--dim)">/ ${fmt(ship.turretSus)}</span></div><div class="k">터렛 지속/풀 제한 없는 덤프 합계 <span style="color:var(--warn)">gap ${gs.toFixed(1)}% (동일 조건 아님)</span></div></div>`);
   }
   const pa = f.pilotAlpha || 0;
   if (ship.stockAlpha != null)

@@ -9,7 +9,7 @@
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:-apple-system,system-ui,"Noto Sans KR",sans-serif;font-size:14px}
 header{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 header h1{font-size:17px;margin:0}header small{color:var(--dim)}
-main{display:grid;grid-template-columns:340px 1fr;gap:12px;padding:12px;max-width:1280px;margin:0 auto}
+main{display:grid;grid-template-columns:340px minmax(0,1fr);gap:12px;padding:12px;max-width:1280px;margin:0 auto}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px}
 .panel h2{font-size:13px;margin:0 0 8px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
 select,input{width:100%;background:#0e141c;color:var(--txt);border:1px solid var(--line);border-radius:6px;padding:6px 7px;font-size:12px}
@@ -52,7 +52,9 @@ button.on:hover{background:#134d2e}
 .pwr-col.off .pwr-ico{filter:grayscale(1)}
 .pwr-w{font-size:10px;color:var(--dim);white-space:nowrap}
 #status{font-size:12px;color:var(--dim);margin-top:6px}
-@media(max-width:860px){main{grid-template-columns:1fr}}
+@media(max-width:600px){.slot .meta{flex-basis:105px}}
+main>*{min-width:0}.stat{min-width:0;overflow-wrap:anywhere}
+@media(max-width:860px){main{grid-template-columns:minmax(0,1fr)}}
 .ship-btn{width:100%;font-size:14px;padding:9px}
 .ship-cur{margin-top:8px;font-size:12px;color:var(--txt);background:#0e141c;border:1px solid var(--line);border-radius:8px;padding:8px 10px;line-height:1.5}
 .modal-ov{position:fixed;inset:0;background:rgba(4,8,13,.72);backdrop-filter:blur(3px);z-index:50;display:flex;align-items:center;justify-content:center;padding:16px}
@@ -177,7 +179,7 @@ button.on:hover{background:#134d2e}
 </div>
 </main>
 <div id="modalRoot"></div>
-<script src="app.js?v=146"></script>
-<script src="fit.js?v=8"></script>
+<script src="app.js?v=147"></script>
+<script src="fit.js?v=9"></script>
 </body>
 </html>

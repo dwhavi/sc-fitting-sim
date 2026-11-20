@@ -56,12 +56,10 @@
         const raw = (h.id in build) ? build[h.id] : matchDefault(kind, h.component || {});
         let selObj = raw ? ((DB.turrets || []).find(c => c.class === raw) || null) : findTurret((h.component || {}).scKey, (h.component || {}).name);
         if ((h.id in build) && !build[h.id]) selObj = null;
-        let sizes = [];
-        if (selObj && (selObj.guns || isGimbalCard(selObj))) sizes = cardGuns(selObj);
-        else if (h.childGuns && h.childGuns.length) sizes = h.childGuns.filter(g => g.max > 0).map(g => g.max);
+        const sizes = weaponLayout(h, selObj);
         sizes.forEach((gs, i) => {
           const sid = h.id + ':w' + i;
-          mk(sid, 'weapon', gs, `${pretty(shortName(h.name))} ↳ 무기 ${i + 1} S${gs}`, kind === 'turret' ? 'turret' : 'pilot', stockGunFor(sid));
+          mk(sid, 'weapon', gs, `${pretty(shortName(h.name))} ↳ 무기 ${i + 1} S${gs}`, h.weaponControl || (kind === 'turret' ? 'turret' : 'pilot'), stockGunFor(sid));
         });
       }
     }

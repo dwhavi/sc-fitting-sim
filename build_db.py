@@ -44,11 +44,12 @@ DAMAGE_TYPES = ('Physical', 'Energy', 'Distortion', 'Thermal', 'Biochemical', 'S
 SHORT = {'Physical': 'Phys', 'Energy': 'Ener', 'Distortion': 'Dist',
          'Thermal': 'Therm', 'Biochemical': 'Bioc', 'Stun': 'Stun'}
 FROZEN = ('heat', 'power', 'powerBase')
+STOCK_CLASSES = set()
 
 
 def is_test(cn):
     cn = (cn or '').lower()
-    return 'test_' in cn or cn.startswith('test') or 'placeholder' in cn or 'vanduul' in cn
+    return cn not in STOCK_CLASSES and ('test_' in cn or cn.startswith('test') or 'placeholder' in cn or 'vanduul' in cn)
 
 
 def mfr(si):
@@ -212,6 +213,16 @@ def main():
     if smeta.get('ships_failed') or smeta.get('bulk_failed'):
         raise SystemExit('원본 다운로드 실패 기록이 있습니다. DB 생성 중단')
 
+    STOCK_CLASSES.clear()
+    # Shipped stock equipment can have internal names containing Placeholder.
+    def collect_stock(entries):
+        for entry in entries or []:
+            STOCK_CLASSES.add((entry.get('ClassName') or '').lower())
+            collect_stock(entry.get('Loadout'))
+    for fname in smeta.get('class_to_file', {}).values():
+        with open(os.path.join(RAW, 'ships', fname), encoding='utf-8') as f:
+            collect_stock(json.load(f).get('Loadout'))
+
     frozen = {}
     if not a.no_freeze and os.path.exists(a.freeze_from):
         old = json.load(io.open(a.freeze_from, encoding='utf-8'))
@@ -252,7 +263,7 @@ def main():
             dpsRaw = {t: m.get('Dps' + t) for t in DAMAGE_TYPES if m.get('Dps' + t)}
             alphaRaw = {t: m.get('Alpha' + t) for t in DAMAGE_TYPES if m.get('Alpha' + t)}
             d = m.get('DamagePerSecond') or m.get('Dps') or 0
-            al = m.get('DamagePerShot') or m.get('Alpha') or 0
+            al = first_nonnull(m.get('Alpha'), m.get('DamagePerShot'), 0)
             md = {'name': m.get('Name'), 'rpm': m.get('RoundsPerMinute'),
                   'alpha': round(al, 1), 'alphaBy': by_type(alphaRaw),
                   'dps': round(d, 1), 'dpsBy': by_type(dpsRaw),
@@ -281,6 +292,8 @@ def main():
             #   capAmmo/capRegen/capCooldown: Capacitor.{MaxAmmoLoad,MaxRegenPerSec,
             #     Cooldown} for En() recompute under poolRatio (117/191).
             'sustain': dmg.get('Sustained'),
+            'mass': si.get('Mass'),
+            'cycleAlpha': sum((dmg.get('Alpha') or {}).values()),
             'capAmmo': cap.get('MaxAmmoLoad'),
             'capRegen': cap.get('MaxRegenPerSec'),
             'capCooldown': cap.get('Cooldown'),
@@ -487,7 +500,7 @@ def main():
         _eg = _em.get('EmGroupsShields') or {}
         _wp = s.get('Weaponry') or {}
         _fw = _wp.get('FixedWeapons') or {}
-        # P3: 스톡 DPS 정답지 (스톡 장착 기준 게임 산출값).
+        # P3: external extractor stock aggregates, not measured in-game results.
         #   stockDps/stockSus/stockAlpha = PilotDps/PilotSustainedDps/PilotAlpha
         #   turretDps/turretSus/turretAlpha = 터렛 합산 (있을 때만)
         #   mslDmg = TotalMissiles

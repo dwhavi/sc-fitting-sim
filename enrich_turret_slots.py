@@ -64,104 +64,47 @@ def norm_name(n):
 
 
 def extract(fn):
-    """port-name -> {turretClass, childGuns} for turret-ish parents.
-
-    Editable-chain: mounts/gimbals/PDC (player-swappable) carry their own
-    stock gun child directly. For FIXED turret bodies (Editable=False,
-    e.g. Hammerhead S5 shell with 4x non-editable S4 gimbals) the game file
-    still carries the full stock chain underneath — that chain is what the
-    player actually arms, so record it as this port's gun layout.
-    """
+    """Flatten stock weapon leaves without dropping mixed direct/gimbal children."""
     d = json.load(io.open(os.path.join(RAW_SHIPS, fn), encoding='utf-8'))
     info = {}
-
-    def entry_guns(e):
-        kids = children_of(e)
-        return [k for k in kids
-                if (k['type'].split('.')[0] in GUN_CHILDREN
-                    or k['type'].split('.')[0] in GUN_TYPES)]
-
-    def walk(es):
-        for e in es:
-            t = e.get('Type') or ''
-            head = t.split('.')[0]
-            if head not in ('TurretBase', 'Turret', 'UtilityTurret'):
-                walk(e.get('Loadout') or [])
-                continue
-            guns = entry_guns(e)
-            # 짐벌 자식(Turret.GunTurret)은 무기가 아니라 카드 — guns 취급 금지.
-            # 2단계 체인(짐벌→실제 무기)이 있으면 stock까지 전개한다.
-            gimbal_kids = [k for k in (e.get('Loadout') or [])
-                           if (k.get('Type') or '').split('.')[0] == 'Turret'
-                           and (k.get('Loadout') or [])]
-            if gimbal_kids:
-                flat = []
-                for k in gimbal_kids:
-                    deep = [gc for gc in (k.get('Loadout') or [])
-                            if (gc.get('Type') or '').split('.')[0] in GUN_CHILDREN
-                            or (gc.get('Type') or '').split('.')[0] in GUN_TYPES]
-                    if deep:
-                        flat.append({
-                            'hardpoint': k.get('HardpointName'),
-                            'class': k.get('ClassName'),
-                            'name': k.get('Name'),
-                            'type': k.get('Type'),
-                            'min': k.get('MinSize'),
-                            'max': k.get('MaxSize'),
-                            'editable': bool(k.get('Editable')),
-                            'stock': deep[0].get('ClassName'),
-                            'via': k.get('HardpointName'),
-                        })
-                if flat:
-                    guns = flat
-            if not guns:
-                # 고정 껍데기: stock 짐벌 자식 각각의 실제 무기까지 2단계 전개.
-                # childGuns[].stock = 실제 무기 ClassName (sim 순정값 해결용).
-                flat = []
-                for k in (e.get('Loadout') or []):
-                    kl = k.get('Loadout') or []
-                    # 짐벌 자식: 그 하위 실제 무기 1건을 stock으로 기록
-                    deep = []
-                    for gc in kl:
-                        gt = (gc.get('Type') or '').split('.')[0]
-                        if gt in GUN_CHILDREN or gt in GUN_TYPES:
-                            deep.append(gc)
-                    if deep:
-                        flat.append({
-                            'hardpoint': k.get('HardpointName'),
-                            'class': k.get('ClassName'),
-                            'name': k.get('Name'),
-                            'type': k.get('Type'),
-                            'min': k.get('MinSize'),
-                            'max': k.get('MaxSize'),
-                            'editable': bool(k.get('Editable')),
-                            'stock': deep[0].get('ClassName'),
-                            'via': k.get('HardpointName'),
-                        })
-                        continue
-                    for gc in kl:
-                        gt = (gc.get('Type') or '').split('.')[0]
-                        if gt in GUN_CHILDREN or gt in GUN_TYPES:
-                            flat.append({
-                                'hardpoint': gc.get('HardpointName'),
-                                'class': gc.get('ClassName'),
-                                'name': gc.get('Name'),
-                                'type': gc.get('Type'),
-                                'min': gc.get('MinSize'),
-                                'max': gc.get('MaxSize'),
-                                'editable': bool(gc.get('Editable')),
-                                'via': k.get('HardpointName'),
-                            })
-                guns = flat
-            if e.get('HardpointName'):
+    def leaves(entries):
+        out = []
+        for child in entries or []:
+            head = (child.get('Type') or '').split('.')[0]
+            if head in GUN_TYPES:
+                out.append({'hardpoint': child.get('HardpointName'),
+                            'class': child.get('ClassName'), 'name': child.get('Name'),
+                            'type': child.get('Type'), 'min': child.get('MinSize'),
+                            'max': child.get('MaxSize'), 'editable': bool(child.get('Editable')),
+                            'stock': child.get('ClassName')})
+            else:
+                out.extend(leaves(child.get('Loadout')))
+        return out
+    def walk(entries):
+        for e in entries or []:
+            head = (e.get('Type') or '').split('.')[0]
+            if head in ('TurretBase', 'Turret', 'UtilityTurret', 'WeaponMount'):
                 info[e.get('HardpointName')] = {
                     'turretClass': e.get('ClassName'),
-                    'childGuns': guns,
-                }
-            walk(e.get('Loadout') or [])
-
-    walk(d.get('Loadout') or [])
+                    'weaponControl': 'turret' if head in ('TurretBase', 'WeaponMount') else 'pilot',
+                    'childGuns': leaves(e.get('Loadout'))}
+            walk(e.get('Loadout'))
+    walk(d.get('Loadout'))
     return info
+
+
+def match_info(port, info):
+    name = port.get('name') or ''
+    if name in info:
+        return info[name]
+    key = norm_name(name)
+    exact = [v for k, v in info.items() if norm_name(k) == key]
+    if len(exact) == 1:
+        return exact[0]
+    if port.get('category') not in ('weapon_mounts', 'turret'):
+        return None
+    suffix = [v for k, v in info.items() if key.endswith(norm_name(k))]
+    return suffix[0] if len(suffix) == 1 else None
 
 
 def main():
@@ -184,28 +127,21 @@ def main():
     print(f'ships with turret info: {len(per_ship)}')
 
     n_hit = n_miss = n_gun = 0
-    norm_index = {}
     for s in slots['slots']:
         p = s['port']
-        info = (per_ship.get(s.get('class')) or {}).get(p.get('name'))
-        if not info:
-            # normalized fallback (naming drift between sources)
-            key = (s.get('class'), norm_name(p.get('name')))
-            if key not in norm_index:
-                norm_index[key] = None
-                for pn, pi in (per_ship.get(s.get('class')) or {}).items():
-                    if norm_name(pn) == key[1]:
-                        norm_index[key] = pi
-                        break
-            info = norm_index[key]
+        info = match_info(p, per_ship.get(s.get('class')) or {})
         if not info:
             continue
+        p['weaponControl'] = info.get('weaponControl')
         if info.get('turretClass'):
             p['turretClass'] = info['turretClass']
             n_hit += 1
         else:
             n_miss += 1
         if info.get('childGuns'):
+            if p.get('category') not in ('turret', 'weapon_mounts'):
+                p['category'] = 'weapon_mounts'
+                p['group'] = 'weapon'
             p['childGuns'] = info['childGuns']
             n_gun += 1
     bak = SLOTS + '.bak'

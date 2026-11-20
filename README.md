@@ -90,3 +90,8 @@ cd public && python3 -m http.server 8811     # 로컬 서버
 - `sync_data.py`는 LIVE 버전과 전체 다운로드를 검증한 새 스냅샷만 교체한다. 기존 원본은 최초 1회 다시 동기화해야 한다.
 - [분석·검증·남은 계산 제약](docs/PATCH_2026-11-20.md)
 - 오프라인 회귀 테스트: `python3 -m unittest discover -s tests -v`, `node tests/test_power.cjs`
+
+
+## 계산 검증 (2026-11-21)
+
+[계산식·회귀 테스트·남은 제약](docs/CALCULATIONS_2026-11-21.md)을 참고하세요. 인게임 실측과 외부 덤프 일치를 구분합니다. 원본 갱신 뒤에는 `build_db.py`, `reconcile_slots.py`, `enrich_turret_slots.py` 순서로 실행하고 `node tests/test_power.cjs`를 통과시켜야 합니다.
