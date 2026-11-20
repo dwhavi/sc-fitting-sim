@@ -1,5 +1,6 @@
 // SC Fitting Sim MVP — db.json + FleetYards live hardpoints
 let DB = null, FY = [];
+let SHIP_STATUS = null; // public/ship_status.json — 인게임 구현 감사 결과 (2026-11-21)
 let curShip = '';
 let build = {}; // slotId -> component class
 // PWR state: Erkul-style — per-group pip blocks + weapon pool + ON/OFF
@@ -51,6 +52,7 @@ async function init() {
   const r = await fetch('db.json?v=147', {cache:'no-store'});
   if (!r.ok) throw new Error('DB HTTP ' + r.status);
   DB = await r.json();
+  try { const rs = await fetch('ship_status.json?v=1', {cache:'no-store'}); if (rs.ok) SHIP_STATUS = await rs.json(); } catch (e) { /* 감사 파일 없으면 뱃지만 생략 */ }
   loadPatchStatus();
   const ships = DB.ships;
   renderShipList(ships);
@@ -96,12 +98,14 @@ const CAREER_ICON = {'Combat':'⚔️','Ground':'🛞','Industrial':'⛏️','Co
 function shipSuper(career){ if(career==='Combat'||career==='Ground') return {t:'군사',i:'⚔️'}; if(career==='Industrial') return {t:'산업',i:'⛏️'}; if(career==='Competition') return {t:'경기',i:'🏁'}; return {t:'민간',i:'🛸'}; }
 function shipBadge(s){ const sp=shipSuper(s.career||''); const ic=CAREER_ICON[s.career]||sp.i; return `<span class="badge">${sp.i} ${sp.t}</span><span class="badge">${ic} ${s.career||'?'}</span><span class="badge">S${s.size}</span>`; }
 function closeModal(){ $('modalRoot').innerHTML=''; }
-function shipCurHTML(s){ const sp=shipSuper(s.career||''); const ic=CAREER_ICON[s.career]||sp.i; return `${ic} <b>${s.name}</b><br><span style="color:var(--dim)">${sp.t} · ${s.career||''}${s.role?' · '+s.role:''} · S${s.size} · 👥 ${s.crew??'—'} · 📦 ${s.cargo??'—'}</span>`; }
+function shipStatusOf(s){ return (SHIP_STATUS && SHIP_STATUS.ships && SHIP_STATUS.ships[s.class]) || null; }
+function shipWarnHTML(s){ const st = shipStatusOf(s); return (st && st.st === 'special') ? `<span style="color:var(--warn)">⚠ ${st.note || '구현됐으나 획득 경로가 제한된 특수 함선'}</span>` : ''; }
+function shipCurHTML(s){ const sp=shipSuper(s.career||''); const ic=CAREER_ICON[s.career]||sp.i; const warn=shipWarnHTML(s); return `${ic} <b>${s.name}</b>${warn?' <span class="badge" style="color:var(--warn)">⚠ 특수</span>':''}<br><span style="color:var(--dim)">${sp.t} · ${s.career||''}${s.role?' · '+s.role:''} · S${s.size} · 👥 ${s.crew??'—'} · 📦 ${s.cargo??'—'}</span>${warn?'<br>'+warn:''}`; }
 let shipFGroup='ALL', shipFQ='';
 function openShipModal(){
   shipFGroup='ALL'; shipFQ='';
   $('modalRoot').innerHTML=`<div class="modal-ov" id="mov"><div class="modal">
-    <div class="modal-h"><b>🚀 함선 선택</b><span class="sub">${DB.ships.length}종 · 분류 뱃지</span><button class="modal-x" id="mx">✕</button></div>
+    <div class="modal-h"><b>🚀 함선 선택</b><span class="sub">${DB.ships.length}종 · 분류 뱃지${SHIP_STATUS&&SHIP_STATUS.meta?' · LIVE 구현 확인 '+SHIP_STATUS.meta.checkedAt:''}</span><button class="modal-x" id="mx">✕</button></div>
     <div class="modal-search"><input id="mShipQ" placeholder="함선 검색 (예: avenger, cutlass…)"></div>
     <div class="chips" id="mShipChips"></div>
     <div class="modal-list" id="mShipList"></div></div></div>`;
@@ -122,8 +126,8 @@ function renderShipModalList(){
     if(shipFQ&&!(s.name+' '+s.class+' '+(s.role||'')).toLowerCase().includes(shipFQ)) return false;
     return true;
   });
-  $('mShipList').innerHTML=(list.length?list.map(s=>{ const sp=shipSuper(s.career||''); const ic=CAREER_ICON[s.career]||sp.i;
-    return `<button class="ship-card${s.slug===curShip?' sel':''}" data-slug="${s.slug}"><span class="ic">${ic}</span><span><span class="nm">${s.name}</span><div class="mt">${sp.t} · ${s.career||''}${s.role?' · '+s.role:''} · S${s.size} · 👥 ${s.crew??'—'} · 📦 ${s.cargo??'—'}</div></span></button>`; }).join(''):'<p style="color:var(--dim)">검색 결과 없음</p>');
+  $('mShipList').innerHTML=(list.length?list.map(s=>{ const sp=shipSuper(s.career||''); const ic=CAREER_ICON[s.career]||sp.i; const st=shipStatusOf(s); const special=st&&st.st==='special';
+    return `<button class="ship-card${s.slug===curShip?' sel':''}" data-slug="${s.slug}"><span class="ic">${ic}</span><span><span class="nm">${s.name}</span>${special?' <span class="badge" style="color:var(--warn)">⚠ 특수</span>':''}<div class="mt">${sp.t} · ${s.career||''}${s.role?' · '+s.role:''} · S${s.size} · 👥 ${s.crew??'—'} · 📦 ${s.cargo??'—'}</div>${special?`<div class="mt" style="color:var(--warn)">⚠ ${st.note}</div>`:''}</span></button>`; }).join(''):'<p style="color:var(--dim)">검색 결과 없음</p>');
   document.querySelectorAll('#mShipList .ship-card').forEach(b=>b.onclick=()=>{ closeModal(); selectShip(b.dataset.slug); });
 }
 function emFmt(c){ return c.em!=null?` · EM ${fmt(c.em)}`:''; }

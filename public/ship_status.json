@@ -1,0 +1,849 @@
+{
+ "meta": {
+  "checkedAt": "2026-11-21",
+  "liveVersion": "4.10.3-LIVE.13165946",
+  "summary": "선택 가능한 전체 함선의 인게임 구현 여부를 외부 소스와 대조. live=구현 확인, special=구현됐으나 획득·사용 제한 또는 미확인 사항 있음",
+  "sources": [
+   "https://api.fleetyards.net/v1/models (productionStatus/inGame, 2026-11-21 조회)",
+   "https://starcitizen.tools/ (변형별 Flight ready / 구현 메모, 2026-11-21 조회)"
+  ]
+ },
+ "ships": {
+  "AEGS_Avenger_Stalker": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "AEGS_Avenger_Titan": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "AEGS_Avenger_Titan_Renegade": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "AEGS_Avenger_Warlock": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "AEGS_Eclipse": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "AEGS_Gladius": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "AEGS_Gladius_Valiant": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "AEGS_Hammerhead": {
+   "st": "live",
+   "src": "fleetyards(alias)"
+  },
+  "AEGS_Idris": {
+   "st": "live",
+   "src": "fleetyards(alias)"
+  },
+  "AEGS_Idris_P": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "AEGS_Javelin": {
+   "st": "special",
+   "src": "fleetyards",
+   "note": "구현 확인 · 수량 한정 판매. 위키 주석: 일부 플레이스홀더 부품·미구현 하드포인트 포함"
+  },
+  "AEGS_Reclaimer": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "AEGS_Redeemer": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "AEGS_Retaliator": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "AEGS_Sabre": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "AEGS_Sabre_Comet": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "AEGS_Sabre_Firebird": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "AEGS_Sabre_Peregrine": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "AEGS_Sabre_Raven": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "AEGS_Sabre_Raven_EX": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "AEGS_Tiburon": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "AEGS_Vanguard_Harbinger": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "AEGS_Vanguard_Hoplite": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "AEGS_Vanguard_Sentinel": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "AEGS_Vanguard": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_Arrow": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_Asgard": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_C8_Pisces": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_C8R_Pisces": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_C8X_Pisces_Expedition": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_Carrack": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_Carrack_Expedition": {
+   "st": "live",
+   "src": "wiki",
+   "wiki": "https://starcitizen.tools/Carrack_Expedition"
+  },
+  "ANVL_Hornet_F7A": {
+   "st": "live",
+   "src": "fleetyards(alias)"
+  },
+  "ANVL_Hornet_F7A_Mk2": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_Hornet_F7C": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_Hornet_F7C_Mk2": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_Hornet_F7C_Wildfire": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_Hornet_F7CM_Heartseeker": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_Hornet_F7CM_Mk2_Heartseeker": {
+   "st": "special",
+   "src": "wiki",
+   "note": "구현 확인 · 기간 한정 판매. 위키 주석: 독립 함선이 아닌 Mk II 호넷용 업그레이드 킷 변형",
+   "wiki": "https://starcitizen.tools/F7C-M_Hornet_Heartseeker_Mk_II"
+  },
+  "ANVL_Hornet_F7CM": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_Hornet_F7CM_Mk2": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_Hornet_F7CR": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_Hornet_F7CR_Mk2": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_Hornet_F7CS": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_Hornet_F7CS_Mk2": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_Lightning_F8": {
+   "st": "special",
+   "src": "wiki",
+   "note": "구현은 확인됨(위키: 현재 게임에 존재). 판매되지 않으며 플레이어 획득 경로는 미확인",
+   "wiki": "https://starcitizen.tools/F8A_Lightning"
+  },
+  "ANVL_Lightning_F8C": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_Gladiator": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_Ballista": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_Centurion": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_Spartan": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_Hawk": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_Hurricane": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_Liberator": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_Paladin": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_Terrapin": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_Terrapin_Medic": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ANVL_Valkyrie": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "XIAN_Scout": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "XIAN_Nox": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "XIAN_Nox_Kue": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "XNAA_SanTokYai": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ARGO_MOLE": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ARGO_MOTH": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ARGO_MPUV": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ARGO_MPUV_Transport": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ARGO_MPUV_1T": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ARGO_RAFT": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ARGO_SRV": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "BANU_Defender": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "CNOU_HoverQuad": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "CNOU_Mustang_Alpha": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "CNOU_Mustang_Beta": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "CNOU_Mustang_Delta": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "CNOU_Mustang_Gamma": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "CNOU_Mustang_Omega": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "CNOU_Nomad": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "CRUS_Spirit_A1": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "CRUS_Starlifter_A2": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "CRUS_Starfighter_Inferno": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "CRUS_Starfighter_Ion": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "CRUS_Spirit_C1": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "CRUS_Starlifter_C2": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "CRUS_Intrepid": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "CRUS_Starlifter_M2": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "CRUS_Star_Runner": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "DRAK_Buccaneer": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "DRAK_Caterpillar": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "DRAK_Clipper": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "DRAK_Command_Module": {
+   "st": "live",
+   "src": "wiki",
+   "wiki": "https://starcitizen.tools/Command_Module"
+  },
+  "DRAK_Corsair": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "DRAK_Cutlass_Black": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "DRAK_Cutlass_Blue": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "DRAK_Cutlass_Red": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "DRAK_Cutlass_Steel": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "DRAK_Cutter": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "DRAK_Cutter_Rambler": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "DRAK_Cutter_Scout": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "DRAK_Dragonfly": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "DRAK_Golem": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "DRAK_Golem_OX": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "DRAK_Herald": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "DRAK_Ironclad": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "DRAK_Ironclad_Assault": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "DRAK_Marauder": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "DRAK_Mule": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "DRAK_Pitbull": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "DRAK_Vulture": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "VNCL_Blade": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "VNCL_Glaive": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ESPR_Prowler": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ESPR_Prowler_Utility": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ESPR_Talon": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ESPR_Talon_Shrike": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "GAMA_Railen": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "GAMA_Syulen": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "GAMA_Tyilui": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "GLSN_Basher": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "GLSN_Shiv": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "GRIN_PTV": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "GRIN_ROC": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "GRIN_ROC_DS": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "GRIN_STV": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "KRIG_L21_Wolf": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "KRIG_L22_AlphaWolf": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "KRIG_P52_Merlin": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "KRIG_P72_Archimedes": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "KRIG_S65_Stingray": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "MISC_Fortune": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "MISC_Freelancer": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "MISC_Freelancer_DUR": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "MISC_Freelancer_MAX": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "MISC_Freelancer_MIS": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "MISC_Hull_A": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "MISC_Hull_B": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "MISC_Hull_C": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "MISC_Prospector": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "MISC_Reliant": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "MISC_Reliant_Mako": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "MISC_Reliant_Sen": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "MISC_Reliant_Tana": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "MISC_Starfarer": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "MISC_Starfarer_Gemini": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "MISC_Starlancer_Max": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "MISC_Starlancer_TAC": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "MISC_Starlite": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "MISC_Fury": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "MISC_Fury_LX": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "MISC_Fury_Miru": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "MRAI_Guardian": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "MRAI_Guardian_MX": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "MRAI_Guardian_QI": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "MRAI_Pulse": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "MISC_Razor": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "MISC_Razor_EX": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "MISC_Razor_LX": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ORIG_100i": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ORIG_125a": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ORIG_135c": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ORIG_300i": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ORIG_315p": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ORIG_325a": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ORIG_350r": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ORIG_400i": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ORIG_600i": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ORIG_600i_Executive_Edition": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ORIG_600i_Touring": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ORIG_85X": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ORIG_890Jump": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ORIG_m50": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ORIG_m80": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "ORIG_X1": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "RSI_Apollo_Medivac": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "RSI_Apollo_Triage": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "RSI_Aurora_LX": {
+   "st": "live",
+   "src": "fleetyards(alias)"
+  },
+  "RSI_Aurora_CL": {
+   "st": "live",
+   "src": "fleetyards(alias)"
+  },
+  "RSI_Aurora_ES": {
+   "st": "live",
+   "src": "fleetyards(alias)"
+  },
+  "RSI_Aurora_LN": {
+   "st": "live",
+   "src": "fleetyards(alias)"
+  },
+  "RSI_Aurora_MR": {
+   "st": "live",
+   "src": "fleetyards(alias)"
+  },
+  "RSI_Aurora_GS_SE": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "RSI_Aurora_Mk2": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "RSI_Constellation_Andromeda": {
+   "st": "live",
+   "src": "fleetyards(alias)"
+  },
+  "RSI_Constellation_Aquila": {
+   "st": "live",
+   "src": "fleetyards(alias)"
+  },
+  "RSI_Constellation_Phoenix": {
+   "st": "live",
+   "src": "fleetyards(alias)"
+  },
+  "RSI_Constellation_Taurus": {
+   "st": "live",
+   "src": "fleetyards(alias)"
+  },
+  "RSI_Constellation_Mk5_Centaurus": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "RSI_Galaxy": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "RSI_Hermes": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "RSI_Mantis": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "RSI_Meteor": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "RSI_Perseus": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "RSI_Polaris": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "RSI_Salvation": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "RSI_Scorpius": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "RSI_Scorpius_Antares": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "RSI_Skylark": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "RSI_Ursa_Rover": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "RSI_Zeus_CL": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "RSI_Zeus_ES": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "TMBL_Cyclone": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "TMBL_Cyclone_AA": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "TMBL_Cyclone_MT": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "TMBL_Cyclone_RC": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "TMBL_Cyclone_RN": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "TMBL_Cyclone_TR": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "TMBL_Nova": {
+   "st": "live",
+   "src": "fleetyards"
+  },
+  "VNCL_Scythe": {
+   "st": "special",
+   "src": "fleetyards",
+   "note": "NPC 적 기체로 구현. 포획 기체로 비행 가능(위키). 판매되지 않음"
+  }
+ }
+}
