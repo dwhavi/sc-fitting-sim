@@ -1170,7 +1170,7 @@ function updateStats() {
   const pcls = f.short > 0 ? 'bad' : pct > 85 ? 'warn' : 'ok';
   // Legacy thermal-energy draw and current coolant units are not comparable.
   $('stats').innerHTML = `
-    <div class="stat"><div class="v">${fmt(f.dps)}</div><div class="k">${f.hasSustain ? '지속 DPS (주기 모델) · 버스트 ' + fmt(f.dpsBurst || 0) : '총 DPS'} · α ${fmt(f.alpha)} (${f.guns.length}문)</div><div class="k" style="margin-top:2px">${typeLine}</div></div>
+    <div class="stat"><div class="v">${fmt(f.dps)}</div><div class="k">${f.hasSustain ? '지속 DPS (주기 모델) · 버스트 ' + fmt(f.dpsBurst || 0) : '총 DPS'} · α ${fmt(f.alpha)} (${f.guns.length}문)</div><div class="k" style="margin-top:2px">${typeLine}</div>${FY.some(h => h.category === 'special_weapon') ? '<div class="k" style="color:var(--warn)">특수 빔 제외 · 무장 슬롯의 안내 확인</div>' : ''}</div>
     <div class="stat"><div class="v">${fmt(f.power)} / ${fmt(f.avail)}</div><div class="k">전력 소모 / 가용 핍 (발전 ${fmt(f.output)}핍)</div></div>
     <div class="stat"><div class="v">${fmt(f.cooling)}</div><div class="k">냉각 자원 출력 (과열 판정 아님)</div></div>
     <div class="stat"><div class="v">${fmt(f.hp)}</div><div class="k">실드 HP 합계</div></div>

@@ -334,17 +334,17 @@
   {
    "class": "VNCL_Mauler",
    "wiki": "https://starcitizen.tools/Mauler",
-   "reason": "wiki status not found; LIVE availability unverified"
+   "reason": "Vanduul capital hull, not available for sale on community wiki; selectable player LIVE fitting status unverified"
   },
   {
    "class": "VNCL_Stinger",
    "wiki": "https://starcitizen.tools/Stinger",
-   "reason": "wiki status not found; LIVE availability unverified"
+   "reason": "Vanduul original, distinct from human-flyable replica; selectable player LIVE fitting status unverified"
   },
   {
    "class": "GAMA_Hyun",
    "wiki": "https://starcitizen.tools/Hyun",
-   "reason": "wiki status not found; LIVE availability unverified"
+   "reason": "Community wiki describes an unconfirmed leaked ship, no LIVE release evidence verified (checked 2026-11-21)"
   }
  ]
 }
