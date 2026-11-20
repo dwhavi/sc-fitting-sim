@@ -181,7 +181,7 @@
         : !satisfied ? `⚠️ 최상위 탐지 조건 미충족: ${r.fixed ? '레이더 잠금 유지' : '구매 지역/구매 가능 조건 충돌'}.`
         : `최상위 탐지군 ${r.top.length}종 중 선택${r.top.length > 1 ? (vectors.size > 1 ? ' (항목별 우열이 달라 단일 1위 없음)' : ' (탐지 성능 동률, 기존 효율·저EM 기준 유지)') : ''}.`;
       const d = c && c.detection;
-      return `<div class="fit-note">📡 <b>전투 레이더 S${r.s.size}: ${esc(c ? c.name : '미장착')}</b><br>${status}${d ? `<br>원본 감도 IR/CS/EM/RS: ${['IR','CS','EM','RS'].map(k => esc(d.Sensitivity[k])).join('/')} · 갱신 대기 ${esc(d.Cooldown)}s` : ''}<br>감도·관통·탐지 허용·갱신 대기 원본값 비교. 등급/가격/조준 보조 거리는 탐지 거리로 환산하지 않음. 실제 게임 탐지 거리 실측 아님.</div>`;
+      return `<div class="fit-note">📡 <b>전투 레이더 S${r.s.size}: ${esc(c ? c.name : '미장착')}</b><br>${status}${d ? `<br>원본 감도 IR/CS/EM/RS: ${['IR','CS','EM','RS'].map(k => esc(d.Sensitivity[k])).join('/')} · 원본 Cooldown ${esc(d.Cooldown)}s` : ''}<br>감도·관통·탐지 허용·원본 Cooldown 원본값 비교. 등급/가격/조준 보조 거리는 탐지 거리로 환산하지 않음. 실제 게임 탐지 거리 실측 아님.</div>`;
     }).join('');
   }
 
@@ -508,7 +508,7 @@
       <div class="chips" style="padding:0 0 8px">${tabs}</div>
       ${headline}
       ${sel === 'combat' ? radarNoteHTML(slots, r.asg, RES.baseAsg) : ''}
-      ${opt.budget && r.cost.sum > opt.budget ? '<div class="fit-note warn">⚠️ 예산 조건 미충족. 최상위 레이더를 낮은 탐지군으로 바꾸지 않았습니다. 예산 또는 잠금 조건을 바꾼 뒤 다시 만드세요.</div>' : ''}
+      ${sel === 'combat' && opt.budget && r.cost.sum > opt.budget ? '<div class="fit-note warn">⚠️ 예산 조건 미충족. 최상위 레이더를 낮은 탐지군으로 바꾸지 않았습니다. 예산 또는 잠금 조건을 바꾼 뒤 다시 만드세요.</div>' : ''}
       <table class="fit-cmp"><tr><th></th><th>현재</th><th>${PRESETS[sel].ico} ${PRESETS[sel].t} 추천</th></tr>${cmp}</table>
       ${base0.short > 0.5 ? `<div class="fit-dim warn" style="margin:4px 0 0">현재 빌드는 전력이 ${(Math.round(base0.short * 10) / 10)}핍 부족해요(전 계통 100% 가동 기준). 그래서 DPS 증가율이 크게 나올 수 있어요.</div>` : ''}
       <div class="fit-dim" style="margin:4px 0 0">EM·IR 지표는 장착 부품 정격값의 합(상대 비교용, 게임 내 실제 탐지 거리가 아님). ★ 최적화 기준 DPS: 파일럿 무기 + 터렛 절반 가중, 선택한 교전 거리보다 사거리가 짧은 무기는 깎아서 계산.</div>
@@ -519,7 +519,7 @@
       <div class="fit-note">${shopNote()}${opt.budget && r.plan.minTotal > opt.budget ? '<br><span class="warn">⚠️ 묶음 구매 합계가 예산을 넘을 수 있어요 (최적화는 품목별 최저가 기준).</span>' : ''}</div>
       <div class="fit-foot"><button id="fitApply" class="fit-go">✅ 이 빌드 적용</button><button id="fitCopy">📋 쇼핑 리스트 복사</button><button id="fitTpl">💾 템플릿 저장</button></div>`;
     el.querySelectorAll('[data-t]').forEach(b => b.onclick = () => { RES.sel = b.dataset.t; opt.preset = b.dataset.t; saveOpt(); drawResult(); document.querySelectorAll('.fit-card').forEach(x => x.classList.toggle('on', x.dataset.p === opt.preset)); });
-    $q('fitApply').disabled = !!(opt.budget && r.cost.sum > opt.budget);
+    $q('fitApply').disabled = !!(sel === 'combat' && opt.budget && r.cost.sum > opt.budget);
     $q('fitApply').onclick = () => applyFit(r);
     $q('fitCopy').onclick = () => copyList(r);
     $q('fitTpl').onclick = () => {
