@@ -105,7 +105,7 @@ let shipFGroup='ALL', shipFQ='';
 function openShipModal(){
   shipFGroup='ALL'; shipFQ='';
   $('modalRoot').innerHTML=`<div class="modal-ov" id="mov"><div class="modal">
-    <div class="modal-h"><b>🚀 함선 선택</b><span class="sub">${DB.ships.length}종 · 분류 뱃지${SHIP_STATUS&&SHIP_STATUS.meta?' · LIVE 구현 확인 '+SHIP_STATUS.meta.checkedAt:''}</span><button class="modal-x" id="mx">✕</button></div>
+    <div class="modal-h"><b>🚀 함선 선택</b><span class="sub">${DB.ships.length}종 · 분류 뱃지${SHIP_STATUS&&SHIP_STATUS.meta?' · <a href="validation.html" target="_blank" rel="noopener" style="color:var(--dim);text-decoration:underline">커뮤니티 소스 구현 검토 '+SHIP_STATUS.meta.checkedAt+'</a>(이용 가능 여부와 별개)':''}</span><button class="modal-x" id="mx">✕</button></div>
     <div class="modal-search"><input id="mShipQ" placeholder="함선 검색 (예: avenger, cutlass…)"></div>
     <div class="chips" id="mShipChips"></div>
     <div class="modal-list" id="mShipList"></div></div></div>`;

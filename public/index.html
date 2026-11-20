@@ -59,8 +59,8 @@ main>*{min-width:0}.stat{min-width:0;overflow-wrap:anywhere}
 .ship-cur{margin-top:8px;font-size:12px;color:var(--txt);background:#0e141c;border:1px solid var(--line);border-radius:8px;padding:8px 10px;line-height:1.5}
 .modal-ov{position:fixed;inset:0;background:rgba(4,8,13,.72);backdrop-filter:blur(3px);z-index:50;display:flex;align-items:center;justify-content:center;padding:16px}
 .modal{width:720px;max-width:96vw;max-height:84vh;display:flex;flex-direction:column;background:var(--panel);border:1px solid #2e4258;border-radius:14px;box-shadow:0 18px 60px rgba(0,0,0,.6)}
-.modal-h{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line)}
-.modal-h b{font-size:14px}.modal-h .sub{font-size:11px;color:var(--dim)}
+.modal-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 14px;border-bottom:1px solid var(--line)}
+.modal-h b{font-size:14px;white-space:nowrap}.modal-h .sub{font-size:11px;color:var(--dim);flex-basis:100%;order:3}.modal-h .modal-x{order:2}
 .modal-x{margin-left:auto;background:#0e141c;border:1px solid var(--line);color:var(--dim);border-radius:6px;padding:4px 9px;font-size:13px}
 .modal-x:hover{color:var(--txt);background:#1a2534}
 .modal-search{padding:10px 14px 0;display:flex;gap:6px}.modal-search input{flex:1;min-width:0}
