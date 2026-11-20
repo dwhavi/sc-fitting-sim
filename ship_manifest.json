@@ -299,13 +299,6 @@
    "note": "slots rebuilt from game files (slots_from_game_files.py) because FleetYards data is wrong or missing"
   },
   {
-   "class": "AEGS_Tiburon",
-   "wiki": "https://starcitizen.tools/Tiburon",
-   "flightReady": "Alpha 4.8.0",
-   "slots": "game_files",
-   "note": "slots rebuilt from game files (slots_from_game_files.py) because FleetYards data is wrong or missing"
-  },
-  {
    "class": "RSI_Zeus_CL",
    "wiki": "https://starcitizen.tools/Zeus_Mk_II_CL",
    "flightReady": "Alpha 3.24.2",
@@ -341,6 +334,11 @@
    "wiki": "https://starcitizen.tools/Starlancer_TAC",
    "flightReady": "Alpha 4.1.1",
    "reason": "wiki says flight ready; slots rebuilt from game files, but turret DPS is about 3 percent below the game-file aggregate (4909.6 vs 5312.8) and I could not explain the gap, so it is held back."
+  },
+  {
+   "class": "AEGS_Tiburon",
+   "wiki": "https://starcitizen.tools/Tiburon",
+   "reason": "held back: hardware-locked S10 Supremacy beam (18000 DPS) was counted in normal DPS; LIVE usability and labeling unverified"
   }
  ]
 }
