@@ -386,6 +386,8 @@
 
   // ---------- 추천 모달 ----------
   let RES = null; // {slots, baseAsg, baseBuild, base0, results:{preset:{asg,m,cost,plan,changes}}, sel}
+  const fitContextKey = () => JSON.stringify({ ship: curShip, build, sys: opt.sys, budget: opt.budget, range: opt.range, onlyBuy: opt.onlyBuy, lock: opt.lock, pins: pinsOf() });
+  const combatResultStale = () => !!RES && RES.contextKey !== fitContextKey();
   function updateFitBtn() {
     const b = $q('fitBtn'); if (!b) return;
     b.disabled = !curShip;
@@ -434,7 +436,7 @@
     body.querySelectorAll('[data-lk]').forEach(b => b.onclick = () => { const a = opt.lock = opt.lock || []; const i = a.indexOf(b.dataset.lk); if (i >= 0) a.splice(i, 1); else a.push(b.dataset.lk); saveOpt(); drawFitForm(); });
     body.querySelectorAll('[data-r]').forEach(b => b.onclick = () => { opt.range = b.dataset.r; saveOpt(); drawFitForm(); });
     $q('fitBud').onchange = e => { opt.budget = Math.max(0, +e.target.value || 0); saveOpt(); drawFitForm(); };
-    $q('fitBuy').onchange = e => { opt.onlyBuy = e.target.checked; saveOpt(); };
+    $q('fitBuy').onchange = e => { opt.onlyBuy = e.target.checked; saveOpt(); if (RES) drawResult(); };
     $q('fitGo').onclick = runFit;
     if (RES && RES.ship === curShip) drawResult();
   }
@@ -443,6 +445,7 @@
     await loadShops();
     await new Promise(r => setTimeout(r, 30));
     if (!SHOPS) { $q('fitRes').innerHTML = '<div class="fit-dim">구매처 데이터를 불러오지 못해 구매 조건 없이 계산합니다.</div>'; opt.onlyBuy = false; }
+    const contextKey = fitContextKey();
     const slots = enumSlots();
     const baseBuild = Object.assign({}, build);
     const baseAsg = {}; for (const s of slots) baseAsg[s.id] = (s.id in build) ? build[s.id] : s.stock;
@@ -468,7 +471,7 @@
       const changes = slots.filter(s => curOf(s, asg) !== curOf(s, baseAsg)).map(s => ({ s, from: curOf(s, baseAsg), to: curOf(s, asg) }));
       results[k] = { asg, m, plan, changes, cost: costOf(slots, asg) };
     }
-    RES = { ship: curShip, slots, baseAsg, baseBuild, base0, results, sel: opt.preset, ms: performance.now() - t0 };
+    RES = { ship: curShip, contextKey, slots, baseAsg, baseBuild, base0, results, sel: opt.preset, ms: performance.now() - t0 };
     go.disabled = false; go.textContent = '🎯 다시 만들기';
     drawResult();
   }
@@ -485,6 +488,7 @@
     const el = $q('fitRes'); if (!el || !RES) return;
     const { slots, base0, results, sel } = RES;
     const r = results[sel];
+    const stale = sel === 'combat' && combatResultStale();
     const rows = [
       ['지속 DPS (시뮬 합계)', 'dps', m => m.dps, nf], ['거리 보정 DPS ★', 'dpsEff', m => m.dpsEff, nf], ['실드 HP', 'hp', m => m.hp, nf], ['실드 재생/s', 'regen', m => m.regen, nf],
       ['EM 지표', 'em', m => m.em, nf], ['IR 지표', 'ir', m => m.ir, nf],
@@ -507,6 +511,7 @@
       <div class="sec-h" style="margin-top:16px">3. 결과 <span class="fit-dim">(${Object.keys(PRESETS).length}개 취향 계산 ${Math.round(RES.ms)}ms)</span></div>
       <div class="chips" style="padding:0 0 8px">${tabs}</div>
       ${headline}
+      ${stale ? '<div class="fit-note warn">⚠️ 장착/잠금/구매 조건이 바뀌었습니다. 이전 전투 결과는 적용하거나 저장할 수 없습니다. 추천을 다시 만드세요.</div>' : ''}
       ${sel === 'combat' ? radarNoteHTML(slots, r.asg, RES.baseAsg) : ''}
       ${sel === 'combat' && opt.budget && r.cost.sum > opt.budget ? '<div class="fit-note warn">⚠️ 예산 조건 미충족. 최상위 레이더를 낮은 탐지군으로 바꾸지 않았습니다. 예산 또는 잠금 조건을 바꾼 뒤 다시 만드세요.</div>' : ''}
       <table class="fit-cmp"><tr><th></th><th>현재</th><th>${PRESETS[sel].ico} ${PRESETS[sel].t} 추천</th></tr>${cmp}</table>
@@ -519,7 +524,9 @@
       <div class="fit-note">${shopNote()}${opt.budget && r.plan.minTotal > opt.budget ? '<br><span class="warn">⚠️ 묶음 구매 합계가 예산을 넘을 수 있어요 (최적화는 품목별 최저가 기준).</span>' : ''}</div>
       <div class="fit-foot"><button id="fitApply" class="fit-go">✅ 이 빌드 적용</button><button id="fitCopy">📋 쇼핑 리스트 복사</button><button id="fitTpl">💾 템플릿 저장</button></div>`;
     el.querySelectorAll('[data-t]').forEach(b => b.onclick = () => { RES.sel = b.dataset.t; opt.preset = b.dataset.t; saveOpt(); drawResult(); document.querySelectorAll('.fit-card').forEach(x => x.classList.toggle('on', x.dataset.p === opt.preset)); });
-    $q('fitApply').disabled = !!(sel === 'combat' && opt.budget && r.cost.sum > opt.budget);
+    $q('fitApply').disabled = stale || !!(sel === 'combat' && opt.budget && r.cost.sum > opt.budget);
+    $q('fitTpl').disabled = stale;
+    $q('fitCopy').disabled = stale;
     $q('fitApply').onclick = () => applyFit(r);
     $q('fitCopy').onclick = () => copyList(r);
     $q('fitTpl').onclick = () => {
@@ -528,6 +535,7 @@
     };
   }
   function applyFit(r) {
+    if (RES.sel === 'combat' && (combatResultStale() || (opt.budget && r.cost.sum > opt.budget))) return;
     window._fitUndo = { ship: curShip, build: Object.assign({}, build), pwr: JSON.parse(JSON.stringify(pwr)) };
     build = Object.assign({}, RES.baseBuild, r.asg);
     pwr = freshPwr();
@@ -586,6 +594,6 @@
     loadShops().then(() => { renderShopPanel(); });
     updateFitBtn();
   }
-  window.SCFIT = { enumSlots, evalAsg, optimize, radarVector, topRadars, combatRadarRules, radarNoteHTML, PRESETS, opt, loadShops, offers, buildPlan, openFitModal, get RES() { return RES; } };
+  window.SCFIT = { enumSlots, evalAsg, optimize, fitContextKey, radarVector, topRadars, combatRadarRules, radarNoteHTML, PRESETS, opt, loadShops, offers, buildPlan, openFitModal, get RES() { return RES; } };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();

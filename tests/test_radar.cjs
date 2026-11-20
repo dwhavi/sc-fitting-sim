@@ -17,6 +17,7 @@ const ctx = vm.createContext({console, window:{}, document:{getElementById:()=>n
 vm.runInContext(fs.readFileSync(path.join(root,'public/fit.js'),'utf8'),ctx);
 const fit = ctx.window.SCFIT;
 fit.opt.onlyBuy = false;
+const keyBefore = fit.fitContextKey(); fit.opt.lock=['radar']; assert.notEqual(fit.fitContextKey(),keyBefore); fit.opt.lock=[];
 const ordinary = db.radars.filter(c=>c.size===1 && c.cls && !c.radarStockOnly && !/PLACEHOLDER/.test(c.name));
 const stock = ordinary.find(c=>c.name==='Observer-Lite');
 let slots = [{id:'r',kind:'radar',size:1,key:'radar|1|pilot',stock:stock.class,opts:ordinary}];
