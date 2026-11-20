@@ -1,0 +1,1654 @@
+{
+  "sourceCommit": "f182b7f111279c9193df81927c9b4dbc8c4f3291",
+  "version": "4.10.3-LIVE.13165946",
+  "ships": {
+    "AEGS_Avenger_Stalker": {
+      "file": "aegs_avenger_stalker.json",
+      "pilotBurst": 2359.6,
+      "turretBurst": 0,
+      "hp": 4488,
+      "regen": 852,
+      "cooling": 68
+    },
+    "AEGS_Avenger_Titan": {
+      "file": "aegs_avenger_titan.json",
+      "pilotBurst": 2359.6,
+      "turretBurst": 0,
+      "hp": 4320,
+      "regen": 820,
+      "cooling": 68
+    },
+    "AEGS_Avenger_Titan_Renegade": {
+      "file": "aegs_avenger_titan_renegade.json",
+      "pilotBurst": 1548.9,
+      "turretBurst": 0,
+      "hp": 4320,
+      "regen": 820,
+      "cooling": 68
+    },
+    "AEGS_Avenger_Warlock": {
+      "file": "aegs_avenger_warlock.json",
+      "pilotBurst": 2359.6,
+      "turretBurst": 0,
+      "hp": 4488,
+      "regen": 852,
+      "cooling": 68
+    },
+    "AEGS_Eclipse": {
+      "file": "aegs_eclipse.json",
+      "pilotBurst": 656.2,
+      "turretBurst": 0,
+      "hp": 4488,
+      "regen": 898,
+      "cooling": 44
+    },
+    "AEGS_Gladius": {
+      "file": "aegs_gladius.json",
+      "pilotBurst": 1944.5,
+      "turretBurst": 0,
+      "hp": 6336,
+      "regen": 1204,
+      "cooling": 68
+    },
+    "AEGS_Gladius_Valiant": {
+      "file": "aegs_gladius_valiant.json",
+      "pilotBurst": 1639.2,
+      "turretBurst": 0,
+      "hp": 6336,
+      "regen": 1204,
+      "cooling": 68
+    },
+    "AEGS_Hammerhead": {
+      "file": "aegs_hammerhead_gs.json",
+      "pilotBurst": 0,
+      "turretBurst": 19629.6,
+      "hp": 211200,
+      "regen": 40128,
+      "cooling": 112
+    },
+    "AEGS_Idris": {
+      "file": "aegs_idris_m.json",
+      "pilotBurst": 19738.7,
+      "turretBurst": 23481.5,
+      "hp": 2112000,
+      "regen": 154880,
+      "cooling": 204
+    },
+    "AEGS_Idris_P": {
+      "file": "aegs_idris_p.json",
+      "pilotBurst": 10128,
+      "turretBurst": 22089.9,
+      "hp": 2112000,
+      "regen": 154880,
+      "cooling": 204
+    },
+    "AEGS_Javelin": {
+      "file": "aegs_javelin.json",
+      "pilotBurst": 62272.8,
+      "turretBurst": 48433,
+      "hp": 4224000,
+      "regen": 154880,
+      "cooling": 296
+    },
+    "AEGS_Reclaimer": {
+      "file": "aegs_reclaimer.json",
+      "pilotBurst": 6547.2,
+      "turretBurst": 3621.7,
+      "hp": 194400,
+      "regen": 14256,
+      "cooling": 69
+    },
+    "AEGS_Redeemer": {
+      "file": "aegs_redeemer.json",
+      "pilotBurst": 4359.4,
+      "turretBurst": 5064,
+      "hp": 21120,
+      "regen": 1337.33,
+      "cooling": 60
+    },
+    "AEGS_Retaliator": {
+      "file": "aegs_retaliator.json",
+      "pilotBurst": 0,
+      "turretBurst": 5456,
+      "hp": 21120,
+      "regen": 1337.33,
+      "cooling": 92
+    },
+    "AEGS_Sabre": {
+      "file": "aegs_sabre.json",
+      "pilotBurst": 2182.4,
+      "turretBurst": 0,
+      "hp": 4488,
+      "regen": 852,
+      "cooling": 68
+    },
+    "AEGS_Sabre_Comet": {
+      "file": "aegs_sabre_comet.json",
+      "pilotBurst": 2017.6,
+      "turretBurst": 0,
+      "hp": 4488,
+      "regen": 852,
+      "cooling": 68
+    },
+    "AEGS_Sabre_Firebird": {
+      "file": "aegs_sabre_firebird.json",
+      "pilotBurst": 1706.6,
+      "turretBurst": 0,
+      "hp": 4488,
+      "regen": 852,
+      "cooling": 68
+    },
+    "AEGS_Sabre_Peregrine": {
+      "file": "aegs_sabre_peregrine.json",
+      "pilotBurst": 0,
+      "turretBurst": 0,
+      "hp": 4488,
+      "regen": 852,
+      "cooling": 68
+    },
+    "AEGS_Sabre_Raven": {
+      "file": "aegs_sabre_raven.json",
+      "pilotBurst": 1093.6,
+      "turretBurst": 0,
+      "hp": 4488,
+      "regen": 852,
+      "cooling": 68
+    },
+    "AEGS_Sabre_Raven_EX": {
+      "file": "aegs_sabre_raven_ex.json",
+      "pilotBurst": 2184.8,
+      "turretBurst": 0,
+      "hp": 6336,
+      "regen": 1204,
+      "cooling": 68
+    },
+    "AEGS_Vanguard_Harbinger": {
+      "file": "aegs_vanguard_harbinger.json",
+      "pilotBurst": 3203.3,
+      "turretBurst": 300,
+      "hp": 21120,
+      "regen": 3802,
+      "cooling": 92
+    },
+    "AEGS_Vanguard_Hoplite": {
+      "file": "aegs_vanguard_hoplite.json",
+      "pilotBurst": 3383.3,
+      "turretBurst": 750,
+      "hp": 21120,
+      "regen": 4012,
+      "cooling": 92
+    },
+    "AEGS_Vanguard_Sentinel": {
+      "file": "aegs_vanguard_sentinel.json",
+      "pilotBurst": 1775,
+      "turretBurst": 608.4,
+      "hp": 14960,
+      "regen": 2992,
+      "cooling": 64
+    },
+    "AEGS_Vanguard": {
+      "file": "aegs_vanguard.json",
+      "pilotBurst": 3403.3,
+      "turretBurst": 750,
+      "hp": 21120,
+      "regen": 4012,
+      "cooling": 92
+    },
+    "ANVL_Arrow": {
+      "file": "anvl_arrow.json",
+      "pilotBurst": 1494.4,
+      "turretBurst": 0,
+      "hp": 3168,
+      "regen": 602,
+      "cooling": 68
+    },
+    "ANVL_Asgard": {
+      "file": "anvl_asgard.json",
+      "pilotBurst": 3273.6,
+      "turretBurst": 2039,
+      "hp": 21120,
+      "regen": 2006,
+      "cooling": 138
+    },
+    "ANVL_C8_Pisces": {
+      "file": "anvl_c8_pisces.json",
+      "pilotBurst": 437.4,
+      "turretBurst": 0,
+      "hp": 2244,
+      "regen": 426,
+      "cooling": 34
+    },
+    "ANVL_C8R_Pisces": {
+      "file": "anvl_c8r_pisces.json",
+      "pilotBurst": 437.4,
+      "turretBurst": 0,
+      "hp": 2244,
+      "regen": 426,
+      "cooling": 34
+    },
+    "ANVL_C8X_Pisces_Expedition": {
+      "file": "anvl_c8x_pisces_expedition.json",
+      "pilotBurst": 847.8,
+      "turretBurst": 0,
+      "hp": 2244,
+      "regen": 426,
+      "cooling": 34
+    },
+    "ANVL_Carrack": {
+      "file": "anvl_carrack.json",
+      "pilotBurst": 1635.8,
+      "turretBurst": 4907.4,
+      "hp": 144000,
+      "regen": 28800,
+      "cooling": 104
+    },
+    "ANVL_Carrack_Expedition": {
+      "file": "anvl_carrack_expedition.json",
+      "pilotBurst": 1635.8,
+      "turretBurst": 4907.4,
+      "hp": 144000,
+      "regen": 28800,
+      "cooling": 104
+    },
+    "ANVL_Hornet_F7A": {
+      "file": "anvl_hornet_f7a_mk1.json",
+      "pilotBurst": 4279.4,
+      "turretBurst": 0,
+      "hp": 4320,
+      "regen": 820,
+      "cooling": 52
+    },
+    "ANVL_Hornet_F7A_Mk2": {
+      "file": "anvl_hornet_f7a_mk2.json",
+      "pilotBurst": 4719.2,
+      "turretBurst": 0,
+      "hp": 6336,
+      "regen": 1204,
+      "cooling": 68
+    },
+    "ANVL_Hornet_F7C": {
+      "file": "anvl_hornet_f7c.json",
+      "pilotBurst": 1091.2,
+      "turretBurst": 0,
+      "hp": 4320,
+      "regen": 820,
+      "cooling": 52
+    },
+    "ANVL_Hornet_F7C_Mk2": {
+      "file": "anvl_hornet_f7c_mk2.json",
+      "pilotBurst": 2532,
+      "turretBurst": 0,
+      "hp": 6336,
+      "regen": 1204,
+      "cooling": 68
+    },
+    "ANVL_Hornet_F7C_Wildfire": {
+      "file": "anvl_hornet_f7c_wildfire.json",
+      "pilotBurst": 2176.8,
+      "turretBurst": 0,
+      "hp": 4320,
+      "regen": 820,
+      "cooling": 52
+    },
+    "ANVL_Hornet_F7CM_Heartseeker": {
+      "file": "anvl_hornet_f7cm_heartseeker.json",
+      "pilotBurst": 3169.5,
+      "turretBurst": 0,
+      "hp": 6336,
+      "regen": 1268,
+      "cooling": 68
+    },
+    "ANVL_Hornet_F7CM_Mk2_Heartseeker": {
+      "file": "anvl_hornet_f7cm_mk2_heartseeker.json",
+      "pilotBurst": 5467.8,
+      "turretBurst": 0,
+      "hp": 6336,
+      "regen": 802.67,
+      "cooling": 68
+    },
+    "ANVL_Hornet_F7CM": {
+      "file": "anvl_hornet_f7cm.json",
+      "pilotBurst": 2800.2,
+      "turretBurst": 0,
+      "hp": 6336,
+      "regen": 1204,
+      "cooling": 68
+    },
+    "ANVL_Hornet_F7CM_Mk2": {
+      "file": "anvl_hornet_f7cm_mk2.json",
+      "pilotBurst": 4714.4,
+      "turretBurst": 0,
+      "hp": 6336,
+      "regen": 802.67,
+      "cooling": 68
+    },
+    "ANVL_Hornet_F7CR": {
+      "file": "anvl_hornet_f7cr.json",
+      "pilotBurst": 1091.2,
+      "turretBurst": 0,
+      "hp": 3840,
+      "regen": 730,
+      "cooling": 68
+    },
+    "ANVL_Hornet_F7CR_Mk2": {
+      "file": "anvl_hornet_f7cr_mk2.json",
+      "pilotBurst": 2532,
+      "turretBurst": 0,
+      "hp": 6336,
+      "regen": 1204,
+      "cooling": 68
+    },
+    "ANVL_Hornet_F7CS": {
+      "file": "anvl_hornet_f7cs.json",
+      "pilotBurst": 1093.6,
+      "turretBurst": 0,
+      "hp": 4488,
+      "regen": 852,
+      "cooling": 44
+    },
+    "ANVL_Hornet_F7CS_Mk2": {
+      "file": "anvl_hornet_f7cs_mk2.json",
+      "pilotBurst": 2532,
+      "turretBurst": 0,
+      "hp": 4488,
+      "regen": 852,
+      "cooling": 44
+    },
+    "ANVL_Lightning_F8": {
+      "file": "anvl_lightning_f8.json",
+      "pilotBurst": 5876.6,
+      "turretBurst": 0,
+      "hp": 14960,
+      "regen": 2992,
+      "cooling": 68
+    },
+    "ANVL_Lightning_F8C": {
+      "file": "anvl_lightning_f8c.json",
+      "pilotBurst": 3266.6,
+      "turretBurst": 0,
+      "hp": 14960,
+      "regen": 2992,
+      "cooling": 68
+    },
+    "ANVL_Gladiator": {
+      "file": "anvl_gladiator.json",
+      "pilotBurst": 1635.8,
+      "turretBurst": 1091.2,
+      "hp": 10560,
+      "regen": 2006,
+      "cooling": 68
+    },
+    "ANVL_Ballista": {
+      "file": "anvl_ballista.json",
+      "pilotBurst": 677.4,
+      "turretBurst": 0,
+      "hp": 1440,
+      "regen": 456,
+      "cooling": 16
+    },
+    "ANVL_Centurion": {
+      "file": "anvl_centurion.json",
+      "pilotBurst": 3773.3,
+      "turretBurst": 0,
+      "hp": 1440,
+      "regen": 456,
+      "cooling": 68
+    },
+    "ANVL_Spartan": {
+      "file": "anvl_spartan.json",
+      "pilotBurst": 677.4,
+      "turretBurst": 0,
+      "hp": 1440,
+      "regen": 456,
+      "cooling": 16
+    },
+    "ANVL_Hawk": {
+      "file": "anvl_hawk.json",
+      "pilotBurst": 1582.4,
+      "turretBurst": 0,
+      "hp": 6336,
+      "regen": 1204,
+      "cooling": 68
+    },
+    "ANVL_Hurricane": {
+      "file": "anvl_hurricane.json",
+      "pilotBurst": 1635.8,
+      "turretBurst": 2182.4,
+      "hp": 10560,
+      "regen": 2006,
+      "cooling": 68
+    },
+    "ANVL_Liberator": {
+      "file": "anvl_liberator.json",
+      "pilotBurst": 2515.8,
+      "turretBurst": 2454.8,
+      "hp": 211200,
+      "regen": 40128,
+      "cooling": 112
+    },
+    "ANVL_Paladin": {
+      "file": "anvl_paladin.json",
+      "pilotBurst": 0,
+      "turretBurst": 8181.2,
+      "hp": 72000,
+      "regen": 13680,
+      "cooling": 92
+    },
+    "ANVL_Terrapin": {
+      "file": "anvl_terrapin.json",
+      "pilotBurst": 656.2,
+      "turretBurst": 0,
+      "hp": 20000,
+      "regen": 3800,
+      "cooling": 68
+    },
+    "ANVL_Terrapin_Medic": {
+      "file": "anvl_terrapin_medic.json",
+      "pilotBurst": 656.2,
+      "turretBurst": 0,
+      "hp": 20000,
+      "regen": 3800,
+      "cooling": 68
+    },
+    "ANVL_Valkyrie": {
+      "file": "anvl_valkyrie.json",
+      "pilotBurst": 2727,
+      "turretBurst": 2585.6,
+      "hp": 21120,
+      "regen": 2006,
+      "cooling": 92
+    },
+    "XIAN_Scout": {
+      "file": "xian_scout.json",
+      "pilotBurst": 1635.8,
+      "turretBurst": 0,
+      "hp": 6336,
+      "regen": 1268,
+      "cooling": 68
+    },
+    "XIAN_Nox": {
+      "file": "xian_nox.json",
+      "pilotBurst": 437.4,
+      "turretBurst": 0,
+      "hp": 0,
+      "regen": 0,
+      "cooling": 16
+    },
+    "XIAN_Nox_Kue": {
+      "file": "xian_nox_kue.json",
+      "pilotBurst": 0,
+      "turretBurst": 0,
+      "hp": 0,
+      "regen": 0,
+      "cooling": 16
+    },
+    "XNAA_SanTokYai": {
+      "file": "xnaa_santokyai.json",
+      "pilotBurst": 2050,
+      "turretBurst": 0,
+      "hp": 10560,
+      "regen": 2006,
+      "cooling": 68
+    },
+    "ARGO_MOLE": {
+      "file": "argo_mole.json",
+      "pilotBurst": 656.2,
+      "turretBurst": 0,
+      "hp": 100000,
+      "regen": 19000,
+      "cooling": 52
+    },
+    "ARGO_MOTH": {
+      "file": "argo_moth.json",
+      "pilotBurst": 656.2,
+      "turretBurst": 0,
+      "hp": 100000,
+      "regen": 19000,
+      "cooling": 52
+    },
+    "ARGO_MPUV": {
+      "file": "argo_mpuv.json",
+      "pilotBurst": 0,
+      "turretBurst": 0,
+      "hp": 2160,
+      "regen": 410,
+      "cooling": 32
+    },
+    "ARGO_MPUV_Transport": {
+      "file": "argo_mpuv_transport.json",
+      "pilotBurst": 0,
+      "turretBurst": 0,
+      "hp": 2160,
+      "regen": 410,
+      "cooling": 32
+    },
+    "ARGO_MPUV_1T": {
+      "file": "argo_mpuv_1t.json",
+      "pilotBurst": 0,
+      "turretBurst": 0,
+      "hp": 2160,
+      "regen": 410,
+      "cooling": 16
+    },
+    "ARGO_RAFT": {
+      "file": "argo_raft.json",
+      "pilotBurst": 1367.2,
+      "turretBurst": 0,
+      "hp": 14400,
+      "regen": 1824,
+      "cooling": 82
+    },
+    "ARGO_SRV": {
+      "file": "argo_srv.json",
+      "pilotBurst": 0,
+      "turretBurst": 0,
+      "hp": 10000,
+      "regen": 1900,
+      "cooling": 41
+    },
+    "BANU_Defender": {
+      "file": "banu_defender.json",
+      "pilotBurst": 1620,
+      "turretBurst": 0,
+      "hp": 7680,
+      "regen": 1459,
+      "cooling": 68
+    },
+    "CNOU_HoverQuad": {
+      "file": "cnou_hoverquad.json",
+      "pilotBurst": 0,
+      "turretBurst": 0,
+      "hp": 0,
+      "regen": 0,
+      "cooling": 16
+    },
+    "CNOU_Mustang_Alpha": {
+      "file": "cnou_mustang_alpha.json",
+      "pilotBurst": 656.2,
+      "turretBurst": 0,
+      "hp": 4320,
+      "regen": 778,
+      "cooling": 46
+    },
+    "CNOU_Mustang_Beta": {
+      "file": "cnou_mustang_beta.json",
+      "pilotBurst": 656.2,
+      "turretBurst": 0,
+      "hp": 4320,
+      "regen": 778,
+      "cooling": 58
+    },
+    "CNOU_Mustang_Delta": {
+      "file": "cnou_mustang_delta.json",
+      "pilotBurst": 1612.4,
+      "turretBurst": 0,
+      "hp": 6336,
+      "regen": 1140,
+      "cooling": 46
+    },
+    "CNOU_Mustang_Gamma": {
+      "file": "cnou_mustang_gamma.json",
+      "pilotBurst": 437.4,
+      "turretBurst": 0,
+      "hp": 3840,
+      "regen": 692,
+      "cooling": 64
+    },
+    "CNOU_Mustang_Omega": {
+      "file": "cnou_mustang_omega.json",
+      "pilotBurst": 437.4,
+      "turretBurst": 0,
+      "hp": 3840,
+      "regen": 692,
+      "cooling": 64
+    },
+    "CNOU_Nomad": {
+      "file": "cnou_nomad.json",
+      "pilotBurst": 1636.8,
+      "turretBurst": 0,
+      "hp": 4320,
+      "regen": 546.67,
+      "cooling": 68
+    },
+    "CRUS_Spirit_A1": {
+      "file": "crus_spirit_a1.json",
+      "pilotBurst": 3390.6,
+      "turretBurst": 0,
+      "hp": 10560,
+      "regen": 2006,
+      "cooling": 41
+    },
+    "CRUS_Starlifter_A2": {
+      "file": "crus_starlifter_a2.json",
+      "pilotBurst": 14747.6,
+      "turretBurst": 2051,
+      "hp": 211200,
+      "regen": 28160,
+      "cooling": 112
+    },
+    "CRUS_Starfighter_Inferno": {
+      "file": "crus_starfighter_inferno.json",
+      "pilotBurst": 4320,
+      "turretBurst": 0,
+      "hp": 21120,
+      "regen": 4012,
+      "cooling": 138
+    },
+    "CRUS_Starfighter_Ion": {
+      "file": "crus_starfighter_ion.json",
+      "pilotBurst": 4720.8,
+      "turretBurst": 0,
+      "hp": 21120,
+      "regen": 4012,
+      "cooling": 138
+    },
+    "CRUS_Spirit_C1": {
+      "file": "crus_spirit_c1.json",
+      "pilotBurst": 2734.4,
+      "turretBurst": 0,
+      "hp": 10560,
+      "regen": 2006,
+      "cooling": 41
+    },
+    "CRUS_Starlifter_C2": {
+      "file": "crus_starlifter_c2.json",
+      "pilotBurst": 6759.4,
+      "turretBurst": 0,
+      "hp": 144000,
+      "regen": 27360,
+      "cooling": 104
+    },
+    "CRUS_Intrepid": {
+      "file": "crus_intrepid.json",
+      "pilotBurst": 817.9,
+      "turretBurst": 0,
+      "hp": 2160,
+      "regen": 432,
+      "cooling": 23
+    },
+    "CRUS_Starlifter_M2": {
+      "file": "crus_starlifter_m2.json",
+      "pilotBurst": 6759.4,
+      "turretBurst": 2051,
+      "hp": 211200,
+      "regen": 42240,
+      "cooling": 112
+    },
+    "CRUS_Star_Runner": {
+      "file": "crus_star_runner.json",
+      "pilotBurst": 1091.2,
+      "turretBurst": 2182.4,
+      "hp": 72000,
+      "regen": 13680,
+      "cooling": 82
+    },
+    "DRAK_Buccaneer": {
+      "file": "drak_buccaneer.json",
+      "pilotBurst": 2760.4,
+      "turretBurst": 0,
+      "hp": 2160,
+      "regen": 410,
+      "cooling": 68
+    },
+    "DRAK_Caterpillar": {
+      "file": "drak_caterpillar.json",
+      "pilotBurst": 0,
+      "turretBurst": 3271.6,
+      "hp": 144000,
+      "regen": 18240,
+      "cooling": 104
+    },
+    "DRAK_Clipper": {
+      "file": "drak_clipper.json",
+      "pilotBurst": 2800.2,
+      "turretBurst": 0,
+      "hp": 4320,
+      "regen": 778,
+      "cooling": 23
+    },
+    "DRAK_Command_Module": {
+      "file": "drak_command_module.json",
+      "pilotBurst": 2458.4,
+      "turretBurst": 0,
+      "hp": 2160,
+      "regen": 475,
+      "cooling": 32
+    },
+    "DRAK_Corsair": {
+      "file": "drak_corsair.json",
+      "pilotBurst": 7830.8,
+      "turretBurst": 1312.4,
+      "hp": 100000,
+      "regen": 19000,
+      "cooling": 68
+    },
+    "DRAK_Cutlass_Black": {
+      "file": "drak_cutlass_black.json",
+      "pilotBurst": 2797.8,
+      "turretBurst": 1091.2,
+      "hp": 7200,
+      "regen": 1368,
+      "cooling": 68
+    },
+    "DRAK_Cutlass_Blue": {
+      "file": "drak_cutlass_blue.json",
+      "pilotBurst": 2478.6,
+      "turretBurst": 1091.2,
+      "hp": 7200,
+      "regen": 1368,
+      "cooling": 68
+    },
+    "DRAK_Cutlass_Red": {
+      "file": "drak_cutlass_red.json",
+      "pilotBurst": 2797.8,
+      "turretBurst": 0,
+      "hp": 7200,
+      "regen": 1368,
+      "cooling": 82
+    },
+    "DRAK_Cutlass_Steel": {
+      "file": "drak_cutlass_steel.json",
+      "pilotBurst": 3454,
+      "turretBurst": 2099.2,
+      "hp": 10560,
+      "regen": 2006,
+      "cooling": 92
+    },
+    "DRAK_Cutter": {
+      "file": "drak_cutter.json",
+      "pilotBurst": 656.2,
+      "turretBurst": 0,
+      "hp": 2160,
+      "regen": 432,
+      "cooling": 23
+    },
+    "DRAK_Cutter_Rambler": {
+      "file": "drak_cutter_rambler.json",
+      "pilotBurst": 656.2,
+      "turretBurst": 0,
+      "hp": 2160,
+      "regen": 432,
+      "cooling": 23
+    },
+    "DRAK_Cutter_Scout": {
+      "file": "drak_cutter_scout.json",
+      "pilotBurst": 656.2,
+      "turretBurst": 0,
+      "hp": 2160,
+      "regen": 432,
+      "cooling": 41
+    },
+    "DRAK_Dragonfly": {
+      "file": "drak_dragonfly.json",
+      "pilotBurst": 748.8,
+      "turretBurst": 0,
+      "hp": 0,
+      "regen": 0,
+      "cooling": 16
+    },
+    "DRAK_Golem": {
+      "file": "drak_golem.json",
+      "pilotBurst": 437.4,
+      "turretBurst": 0,
+      "hp": 2160,
+      "regen": 410,
+      "cooling": 32
+    },
+    "DRAK_Golem_OX": {
+      "file": "drak_golem_ox.json",
+      "pilotBurst": 437.4,
+      "turretBurst": 0,
+      "hp": 2160,
+      "regen": 410,
+      "cooling": 32
+    },
+    "DRAK_Herald": {
+      "file": "drak_herald.json",
+      "pilotBurst": 1509.5,
+      "turretBurst": 0,
+      "hp": 4488,
+      "regen": 852,
+      "cooling": 44
+    },
+    "DRAK_Ironclad": {
+      "file": "drak_ironclad.json",
+      "pilotBurst": 2177.4,
+      "turretBurst": 3825,
+      "hp": 144000,
+      "regen": 13680,
+      "cooling": 156
+    },
+    "DRAK_Ironclad_Assault": {
+      "file": "drak_ironclad_assault.json",
+      "pilotBurst": 5177.4,
+      "turretBurst": 7650,
+      "hp": 144000,
+      "regen": 13680,
+      "cooling": 156
+    },
+    "DRAK_Marauder": {
+      "file": "drak_marauder.json",
+      "pilotBurst": 3819.2,
+      "turretBurst": 0,
+      "hp": 6000,
+      "regen": 1140,
+      "cooling": 52
+    },
+    "DRAK_Mule": {
+      "file": "drak_mule.json",
+      "pilotBurst": 0,
+      "turretBurst": 0,
+      "hp": 0,
+      "regen": 0,
+      "cooling": 14
+    },
+    "DRAK_Pitbull": {
+      "file": "drak_pitbull.json",
+      "pilotBurst": 1531,
+      "turretBurst": 0,
+      "hp": 2160,
+      "regen": 410,
+      "cooling": 26
+    },
+    "DRAK_Vulture": {
+      "file": "drak_vulture.json",
+      "pilotBurst": 437.4,
+      "turretBurst": 0,
+      "hp": 4320,
+      "regen": 546.67,
+      "cooling": 64
+    },
+    "VNCL_Blade": {
+      "file": "vncl_blade.json",
+      "pilotBurst": 2665.4,
+      "turretBurst": 0,
+      "hp": 6336,
+      "regen": 1204,
+      "cooling": 68
+    },
+    "VNCL_Glaive": {
+      "file": "vncl_glaive.json",
+      "pilotBurst": 2200,
+      "turretBurst": 0,
+      "hp": 6336,
+      "regen": 1204,
+      "cooling": 68
+    },
+    "ESPR_Prowler": {
+      "file": "espr_prowler.json",
+      "pilotBurst": 4090,
+      "turretBurst": 0,
+      "hp": 14960,
+      "regen": 1421,
+      "cooling": 64
+    },
+    "ESPR_Prowler_Utility": {
+      "file": "espr_prowler_utility.json",
+      "pilotBurst": 2136.6,
+      "turretBurst": 0,
+      "hp": 14960,
+      "regen": 1421,
+      "cooling": 64
+    },
+    "ESPR_Talon": {
+      "file": "espr_talon.json",
+      "pilotBurst": 1385.2,
+      "turretBurst": 0,
+      "hp": 4488,
+      "regen": 852,
+      "cooling": 44
+    },
+    "ESPR_Talon_Shrike": {
+      "file": "espr_talon_shrike.json",
+      "pilotBurst": 617,
+      "turretBurst": 0,
+      "hp": 4488,
+      "regen": 852,
+      "cooling": 44
+    },
+    "GAMA_Railen": {
+      "file": "gama_railen.json",
+      "pilotBurst": 3271.6,
+      "turretBurst": 3271.6,
+      "hp": 144000,
+      "regen": 27360,
+      "cooling": 104
+    },
+    "GAMA_Syulen": {
+      "file": "gama_syulen.json",
+      "pilotBurst": 1636.8,
+      "turretBurst": 0,
+      "hp": 4320,
+      "regen": 864,
+      "cooling": 23
+    },
+    "GAMA_Tyilui": {
+      "file": "gama_tyilui.json",
+      "pilotBurst": 5454,
+      "turretBurst": 3271.6,
+      "hp": 144000,
+      "regen": 27360,
+      "cooling": 104
+    },
+    "GLSN_Basher": {
+      "file": "glsn_basher.json",
+      "pilotBurst": 2146.6,
+      "turretBurst": 0,
+      "hp": 2160,
+      "regen": 410,
+      "cooling": 52
+    },
+    "GLSN_Shiv": {
+      "file": "glsn_shiv.json",
+      "pilotBurst": 3881.8,
+      "turretBurst": 0,
+      "hp": 7200,
+      "regen": 1368,
+      "cooling": 68
+    },
+    "GRIN_PTV": {
+      "file": "grin_ptv.json",
+      "pilotBurst": 0,
+      "turretBurst": 0,
+      "hp": 0,
+      "regen": 0,
+      "cooling": 16
+    },
+    "GRIN_ROC": {
+      "file": "grin_roc.json",
+      "pilotBurst": 0,
+      "turretBurst": 0,
+      "hp": 0,
+      "regen": 0,
+      "cooling": 16
+    },
+    "GRIN_ROC_DS": {
+      "file": "grin_roc_ds.json",
+      "pilotBurst": 0,
+      "turretBurst": 0,
+      "hp": 0,
+      "regen": 0,
+      "cooling": 16
+    },
+    "GRIN_STV": {
+      "file": "grin_stv.json",
+      "pilotBurst": 0,
+      "turretBurst": 0,
+      "hp": 0,
+      "regen": 0,
+      "cooling": 16
+    },
+    "KRIG_L21_Wolf": {
+      "file": "krig_l21_wolf.json",
+      "pilotBurst": 1995,
+      "turretBurst": 0,
+      "hp": 4320,
+      "regen": 864,
+      "cooling": 46
+    },
+    "KRIG_L22_AlphaWolf": {
+      "file": "krig_l22_alphawolf.json",
+      "pilotBurst": 2125,
+      "turretBurst": 0,
+      "hp": 4320,
+      "regen": 864,
+      "cooling": 46
+    },
+    "KRIG_P52_Merlin": {
+      "file": "krig_p52_merlin.json",
+      "pilotBurst": 887.4,
+      "turretBurst": 0,
+      "hp": 3168,
+      "regen": 570,
+      "cooling": 52
+    },
+    "KRIG_P72_Archimedes": {
+      "file": "krig_p72_archimedes.json",
+      "pilotBurst": 874.8,
+      "turretBurst": 0,
+      "hp": 1920,
+      "regen": 365,
+      "cooling": 68
+    },
+    "KRIG_S65_Stingray": {
+      "file": "krig_s65_stingray.json",
+      "pilotBurst": 2485,
+      "turretBurst": 0,
+      "hp": 4320,
+      "regen": 820,
+      "cooling": 52
+    },
+    "MISC_Fortune": {
+      "file": "misc_fortune.json",
+      "pilotBurst": 437.4,
+      "turretBurst": 0,
+      "hp": 4320,
+      "regen": 546.67,
+      "cooling": 41
+    },
+    "MISC_Freelancer": {
+      "file": "misc_freelancer.json",
+      "pilotBurst": 2734.4,
+      "turretBurst": 1091.2,
+      "hp": 20000,
+      "regen": 2533.33,
+      "cooling": 68
+    },
+    "MISC_Freelancer_DUR": {
+      "file": "misc_freelancer_dur.json",
+      "pilotBurst": 2006.8,
+      "turretBurst": 1091.2,
+      "hp": 20000,
+      "regen": 2533.33,
+      "cooling": 68
+    },
+    "MISC_Freelancer_MAX": {
+      "file": "misc_freelancer_max.json",
+      "pilotBurst": 2187.2,
+      "turretBurst": 1091.2,
+      "hp": 20000,
+      "regen": 2533.33,
+      "cooling": 68
+    },
+    "MISC_Freelancer_MIS": {
+      "file": "misc_freelancer_mis.json",
+      "pilotBurst": 2734.4,
+      "turretBurst": 1091.2,
+      "hp": 21120,
+      "regen": 2674.67,
+      "cooling": 92
+    },
+    "MISC_Hull_A": {
+      "file": "misc_hull_a.json",
+      "pilotBurst": 437.4,
+      "turretBurst": 0,
+      "hp": 7200,
+      "regen": 1296,
+      "cooling": 52
+    },
+    "MISC_Hull_B": {
+      "file": "misc_hull_b.json",
+      "pilotBurst": 2182.4,
+      "turretBurst": 0,
+      "hp": 14400,
+      "regen": 1440,
+      "cooling": 82
+    },
+    "MISC_Hull_C": {
+      "file": "misc_hull_c.json",
+      "pilotBurst": 3273.6,
+      "turretBurst": 0,
+      "hp": 144000,
+      "regen": 13680,
+      "cooling": 120
+    },
+    "MISC_Prospector": {
+      "file": "misc_prospector.json",
+      "pilotBurst": 437.4,
+      "turretBurst": 0,
+      "hp": 4320,
+      "regen": 546.67,
+      "cooling": 41
+    },
+    "MISC_Reliant": {
+      "file": "misc_reliant.json",
+      "pilotBurst": 1312.4,
+      "turretBurst": 0,
+      "hp": 4320,
+      "regen": 820,
+      "cooling": 52
+    },
+    "MISC_Reliant_Mako": {
+      "file": "misc_reliant_mako.json",
+      "pilotBurst": 656.2,
+      "turretBurst": 0,
+      "hp": 4488,
+      "regen": 852,
+      "cooling": 44
+    },
+    "MISC_Reliant_Sen": {
+      "file": "misc_reliant_sen.json",
+      "pilotBurst": 656.2,
+      "turretBurst": 0,
+      "hp": 4320,
+      "regen": 820,
+      "cooling": 64
+    },
+    "MISC_Reliant_Tana": {
+      "file": "misc_reliant_tana.json",
+      "pilotBurst": 1747.4,
+      "turretBurst": 0,
+      "hp": 6336,
+      "regen": 1204,
+      "cooling": 68
+    },
+    "MISC_Starfarer": {
+      "file": "misc_starfarer.json",
+      "pilotBurst": 4102,
+      "turretBurst": 3818.2,
+      "hp": 144000,
+      "regen": 18240,
+      "cooling": 104
+    },
+    "MISC_Starfarer_Gemini": {
+      "file": "misc_starfarer_gemini.json",
+      "pilotBurst": 4102,
+      "turretBurst": 4637.2,
+      "hp": 144000,
+      "regen": 18240,
+      "cooling": 112
+    },
+    "MISC_Starlancer_Max": {
+      "file": "misc_starlancer_max.json",
+      "pilotBurst": 7373.6,
+      "turretBurst": 0,
+      "hp": 72000,
+      "regen": 13680,
+      "cooling": 92
+    },
+    "MISC_Starlite": {
+      "file": "misc_starlite.json",
+      "pilotBurst": 1312.4,
+      "turretBurst": 0,
+      "hp": 4320,
+      "regen": 820,
+      "cooling": 64
+    },
+    "MISC_Fury": {
+      "file": "misc_fury.json",
+      "pilotBurst": 1312.4,
+      "turretBurst": 0,
+      "hp": 2244,
+      "regen": 404,
+      "cooling": 58
+    },
+    "MISC_Fury_LX": {
+      "file": "misc_fury_lx.json",
+      "pilotBurst": 0,
+      "turretBurst": 0,
+      "hp": 1920,
+      "regen": 346,
+      "cooling": 68
+    },
+    "MISC_Fury_Miru": {
+      "file": "misc_fury_miru.json",
+      "pilotBurst": 0,
+      "turretBurst": 0,
+      "hp": 2244,
+      "regen": 404,
+      "cooling": 58
+    },
+    "MRAI_Guardian": {
+      "file": "mrai_guardian.json",
+      "pilotBurst": 3072.6,
+      "turretBurst": 0,
+      "hp": 10560,
+      "regen": 2006,
+      "cooling": 46
+    },
+    "MRAI_Guardian_MX": {
+      "file": "mrai_guardian_mx.json",
+      "pilotBurst": 3271.6,
+      "turretBurst": 0,
+      "hp": 21120,
+      "regen": 4012,
+      "cooling": 80
+    },
+    "MRAI_Guardian_QI": {
+      "file": "mrai_guardian_qi.json",
+      "pilotBurst": 3072.6,
+      "turretBurst": 0,
+      "hp": 10560,
+      "regen": 2006,
+      "cooling": 46
+    },
+    "MRAI_Pulse": {
+      "file": "mrai_pulse.json",
+      "pilotBurst": 313.5,
+      "turretBurst": 0,
+      "hp": 0,
+      "regen": 0,
+      "cooling": 16
+    },
+    "MISC_Razor": {
+      "file": "misc_razor.json",
+      "pilotBurst": 656.2,
+      "turretBurst": 0,
+      "hp": 1920,
+      "regen": 365,
+      "cooling": 68
+    },
+    "MISC_Razor_EX": {
+      "file": "misc_razor_ex.json",
+      "pilotBurst": 1120,
+      "turretBurst": 0,
+      "hp": 1920,
+      "regen": 365,
+      "cooling": 68
+    },
+    "MISC_Razor_LX": {
+      "file": "misc_razor_lx.json",
+      "pilotBurst": 656.2,
+      "turretBurst": 0,
+      "hp": 1920,
+      "regen": 365,
+      "cooling": 68
+    },
+    "ORIG_100i": {
+      "file": "orig_100i.json",
+      "pilotBurst": 1091.2,
+      "turretBurst": 0,
+      "hp": 2160,
+      "regen": 410,
+      "cooling": 52
+    },
+    "ORIG_125a": {
+      "file": "orig_125a.json",
+      "pilotBurst": 1091.2,
+      "turretBurst": 0,
+      "hp": 3168,
+      "regen": 602,
+      "cooling": 68
+    },
+    "ORIG_135c": {
+      "file": "orig_135c.json",
+      "pilotBurst": 1091.2,
+      "turretBurst": 0,
+      "hp": 2160,
+      "regen": 410,
+      "cooling": 64
+    },
+    "ORIG_300i": {
+      "file": "orig_300i.json",
+      "pilotBurst": 1433.6,
+      "turretBurst": 0,
+      "hp": 4320,
+      "regen": 820,
+      "cooling": 52
+    },
+    "ORIG_315p": {
+      "file": "orig_315p.json",
+      "pilotBurst": 750,
+      "turretBurst": 0,
+      "hp": 4488,
+      "regen": 852,
+      "cooling": 44
+    },
+    "ORIG_325a": {
+      "file": "orig_325a.json",
+      "pilotBurst": 1775.5,
+      "turretBurst": 0,
+      "hp": 6336,
+      "regen": 1204,
+      "cooling": 68
+    },
+    "ORIG_350r": {
+      "file": "orig_350r.json",
+      "pilotBurst": 1774.8,
+      "turretBurst": 0,
+      "hp": 3840,
+      "regen": 730,
+      "cooling": 64
+    },
+    "ORIG_400i": {
+      "file": "orig_400i.json",
+      "pilotBurst": 3818.2,
+      "turretBurst": 0,
+      "hp": 72000,
+      "regen": 13680,
+      "cooling": 82
+    },
+    "ORIG_600i": {
+      "file": "orig_600i.json",
+      "pilotBurst": 6791.3,
+      "turretBurst": 0,
+      "hp": 144000,
+      "regen": 27360,
+      "cooling": 90
+    },
+    "ORIG_600i_Executive_Edition": {
+      "file": "orig_600i_executive_edition.json",
+      "pilotBurst": 6791.3,
+      "turretBurst": 0,
+      "hp": 144000,
+      "regen": 27360,
+      "cooling": 90
+    },
+    "ORIG_600i_Touring": {
+      "file": "orig_600i_touring.json",
+      "pilotBurst": 6791.3,
+      "turretBurst": 0,
+      "hp": 144000,
+      "regen": 27360,
+      "cooling": 90
+    },
+    "ORIG_85X": {
+      "file": "orig_85x.json",
+      "pilotBurst": 1093.6,
+      "turretBurst": 0,
+      "hp": 1920,
+      "regen": 365,
+      "cooling": 68
+    },
+    "ORIG_890Jump": {
+      "file": "orig_890jump.json",
+      "pilotBurst": 2182.4,
+      "turretBurst": 5268.9,
+      "hp": 720000,
+      "regen": 52800,
+      "cooling": 130
+    },
+    "ORIG_m50": {
+      "file": "orig_m50.json",
+      "pilotBurst": 656.2,
+      "turretBurst": 0,
+      "hp": 1920,
+      "regen": 365,
+      "cooling": 68
+    },
+    "ORIG_m80": {
+      "file": "orig_m80.json",
+      "pilotBurst": 4090.6,
+      "turretBurst": 0,
+      "hp": 20000,
+      "regen": 3800,
+      "cooling": 34
+    },
+    "ORIG_X1": {
+      "file": "orig_x1.json",
+      "pilotBurst": 303.8,
+      "turretBurst": 0,
+      "hp": 0,
+      "regen": 0,
+      "cooling": 16
+    },
+    "RSI_Apollo_Medivac": {
+      "file": "rsi_apollo_medivac.json",
+      "pilotBurst": 3342.4,
+      "turretBurst": 0,
+      "hp": 14400,
+      "regen": 1368,
+      "cooling": 68
+    },
+    "RSI_Apollo_Triage": {
+      "file": "rsi_apollo_triage.json",
+      "pilotBurst": 3003,
+      "turretBurst": 0,
+      "hp": 14400,
+      "regen": 1368,
+      "cooling": 68
+    },
+    "RSI_Aurora_LX": {
+      "file": "rsi_aurora_gs_lx.json",
+      "pilotBurst": 437.4,
+      "turretBurst": 0,
+      "hp": 3840,
+      "regen": 730,
+      "cooling": 64
+    },
+    "RSI_Aurora_CL": {
+      "file": "rsi_aurora_gs_cl.json",
+      "pilotBurst": 437.4,
+      "turretBurst": 0,
+      "hp": 4320,
+      "regen": 820,
+      "cooling": 58
+    },
+    "RSI_Aurora_ES": {
+      "file": "rsi_aurora_gs_es.json",
+      "pilotBurst": 405,
+      "turretBurst": 0,
+      "hp": 4320,
+      "regen": 778,
+      "cooling": 46
+    },
+    "RSI_Aurora_LN": {
+      "file": "rsi_aurora_gs_ln.json",
+      "pilotBurst": 874.8,
+      "turretBurst": 0,
+      "hp": 6336,
+      "regen": 1140,
+      "cooling": 68
+    },
+    "RSI_Aurora_MR": {
+      "file": "rsi_aurora_gs_mr.json",
+      "pilotBurst": 437.4,
+      "turretBurst": 0,
+      "hp": 4320,
+      "regen": 820,
+      "cooling": 58
+    },
+    "RSI_Aurora_GS_SE": {
+      "file": "rsi_aurora_gs_se.json",
+      "pilotBurst": 874.8,
+      "turretBurst": 0,
+      "hp": 6336,
+      "regen": 1140,
+      "cooling": 68
+    },
+    "RSI_Aurora_Mk2": {
+      "file": "rsi_aurora_mk2.json",
+      "pilotBurst": 1312.4,
+      "turretBurst": 0,
+      "hp": 6000,
+      "regen": 1140,
+      "cooling": 52
+    },
+    "RSI_Constellation_Andromeda": {
+      "file": "rsi_constellation_andromeda_gs.json",
+      "pilotBurst": 4909.6,
+      "turretBurst": 2182.4,
+      "hp": 100000,
+      "regen": 19000,
+      "cooling": 68
+    },
+    "RSI_Constellation_Aquila": {
+      "file": "rsi_constellation_aquila_gs.json",
+      "pilotBurst": 6145.2,
+      "turretBurst": 1091.2,
+      "hp": 100000,
+      "regen": 19000,
+      "cooling": 68
+    },
+    "RSI_Constellation_Phoenix": {
+      "file": "rsi_constellation_phoenix.json",
+      "pilotBurst": 4921.6,
+      "turretBurst": 2349.1,
+      "hp": 100000,
+      "regen": 19000,
+      "cooling": 68
+    },
+    "RSI_Constellation_Taurus": {
+      "file": "rsi_constellation_taurus.json",
+      "pilotBurst": 4909.6,
+      "turretBurst": 1091.2,
+      "hp": 72000,
+      "regen": 13680,
+      "cooling": 82
+    },
+    "RSI_Constellation_Mk5_Centaurus": {
+      "file": "rsi_constellation_mk5_centaurus.json",
+      "pilotBurst": 9274.4,
+      "turretBurst": 0,
+      "hp": 200000,
+      "regen": 38000,
+      "cooling": 82
+    },
+    "RSI_Galaxy": {
+      "file": "rsi_galaxy.json",
+      "pilotBurst": 7364.4,
+      "turretBurst": 0,
+      "hp": 200000,
+      "regen": 38000,
+      "cooling": 90
+    },
+    "RSI_Hermes": {
+      "file": "rsi_hermes.json",
+      "pilotBurst": 3271.6,
+      "turretBurst": 0,
+      "hp": 14400,
+      "regen": 1368,
+      "cooling": 68
+    },
+    "RSI_Mantis": {
+      "file": "rsi_mantis.json",
+      "pilotBurst": 923.4,
+      "turretBurst": 0,
+      "hp": 6336,
+      "regen": 1204,
+      "cooling": 68
+    },
+    "RSI_Meteor": {
+      "file": "rsi_meteor.json",
+      "pilotBurst": 4513.4,
+      "turretBurst": 0,
+      "hp": 6336,
+      "regen": 1204,
+      "cooling": 68
+    },
+    "RSI_Perseus": {
+      "file": "rsi_perseus.json",
+      "pilotBurst": 3413.2,
+      "turretBurst": 22413.4,
+      "hp": 211200,
+      "regen": 40128,
+      "cooling": 112
+    },
+    "RSI_Polaris": {
+      "file": "rsi_polaris.json",
+      "pilotBurst": 2182.4,
+      "turretBurst": 17755.9,
+      "hp": 648000,
+      "regen": 47520,
+      "cooling": 65
+    },
+    "RSI_Salvation": {
+      "file": "rsi_salvation.json",
+      "pilotBurst": 437.4,
+      "turretBurst": 0,
+      "hp": 4320,
+      "regen": 820,
+      "cooling": 32
+    },
+    "RSI_Scorpius": {
+      "file": "rsi_scorpius.json",
+      "pilotBurst": 4364.8,
+      "turretBurst": 0,
+      "hp": 10560,
+      "regen": 2006,
+      "cooling": 68
+    },
+    "RSI_Scorpius_Antares": {
+      "file": "rsi_scorpius_antares.json",
+      "pilotBurst": 2182.4,
+      "turretBurst": 0,
+      "hp": 10560,
+      "regen": 2006,
+      "cooling": 68
+    },
+    "RSI_Skylark": {
+      "file": "rsi_skylark.json",
+      "pilotBurst": 984.3,
+      "turretBurst": 0,
+      "hp": 6000,
+      "regen": 1140,
+      "cooling": 52
+    },
+    "RSI_Ursa_Rover": {
+      "file": "rsi_ursa_rover.json",
+      "pilotBurst": 437.4,
+      "turretBurst": 0,
+      "hp": 720,
+      "regen": 228,
+      "cooling": 16
+    },
+    "RSI_Zeus_CL": {
+      "file": "rsi_zeus_cl.json",
+      "pilotBurst": 2730.6,
+      "turretBurst": 0,
+      "hp": 14400,
+      "regen": 1824,
+      "cooling": 82
+    },
+    "RSI_Zeus_ES": {
+      "file": "rsi_zeus_es.json",
+      "pilotBurst": 2730.6,
+      "turretBurst": 0,
+      "hp": 20000,
+      "regen": 1900,
+      "cooling": 68
+    },
+    "TMBL_Cyclone": {
+      "file": "tmbl_cyclone.json",
+      "pilotBurst": 0,
+      "turretBurst": 0,
+      "hp": 720,
+      "regen": 228,
+      "cooling": 16
+    },
+    "TMBL_Cyclone_AA": {
+      "file": "tmbl_cyclone_aa.json",
+      "pilotBurst": 0,
+      "turretBurst": 0,
+      "hp": 720,
+      "regen": 228,
+      "cooling": 16
+    },
+    "TMBL_Cyclone_MT": {
+      "file": "tmbl_cyclone_mt.json",
+      "pilotBurst": 0,
+      "turretBurst": 202.5,
+      "hp": 720,
+      "regen": 228,
+      "cooling": 16
+    },
+    "TMBL_Cyclone_RC": {
+      "file": "tmbl_cyclone_rc.json",
+      "pilotBurst": 0,
+      "turretBurst": 0,
+      "hp": 720,
+      "regen": 228,
+      "cooling": 16
+    },
+    "TMBL_Cyclone_RN": {
+      "file": "tmbl_cyclone_rn.json",
+      "pilotBurst": 0,
+      "turretBurst": 0,
+      "hp": 720,
+      "regen": 228,
+      "cooling": 16
+    },
+    "TMBL_Cyclone_TR": {
+      "file": "tmbl_cyclone_tr.json",
+      "pilotBurst": 0,
+      "turretBurst": 201.6,
+      "hp": 720,
+      "regen": 228,
+      "cooling": 16
+    },
+    "TMBL_Nova": {
+      "file": "tmbl_nova.json",
+      "pilotBurst": 7056.2,
+      "turretBurst": 0,
+      "hp": 2160,
+      "regen": 684,
+      "cooling": 32
+    },
+    "VNCL_Scythe": {
+      "file": "vncl_scythe.json",
+      "pilotBurst": 3281.7,
+      "turretBurst": 0,
+      "hp": 6336,
+      "regen": 1204,
+      "cooling": 68
+    },
+    "MISC_Starlancer_TAC": {
+      "file": "misc_starlancer_tac.json",
+      "pilotBurst": 7373.6,
+      "turretBurst": 5312.8,
+      "hp": 144000,
+      "regen": 27360,
+      "cooling": 60
+    }
+  }
+}

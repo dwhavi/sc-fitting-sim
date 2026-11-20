@@ -311,6 +311,13 @@
    "flightReady": "Alpha 3.24.2",
    "slots": "game_files",
    "note": "slots rebuilt from game files (slots_from_game_files.py) because FleetYards data is wrong or missing"
+  },
+  {
+   "class": "MISC_Starlancer_TAC",
+   "wiki": "https://starcitizen.tools/Starlancer_TAC",
+   "flightReady": "Alpha 4.1.1",
+   "slots": "game_files",
+   "note": "WeaponMount door guns and nested missile racks preserved from LIVE source"
   }
  ],
  "pending": [
@@ -328,12 +335,6 @@
    "class": "GAMA_Hyun",
    "wiki": "https://starcitizen.tools/Hyun",
    "reason": "wiki status not found; LIVE availability unverified"
-  },
-  {
-   "class": "MISC_Starlancer_TAC",
-   "wiki": "https://starcitizen.tools/Starlancer_TAC",
-   "flightReady": "Alpha 4.1.1",
-   "reason": "wiki says flight ready; slots rebuilt from game files, but turret DPS is about 3 percent below the game-file aggregate (4909.6 vs 5312.8) and I could not explain the gap, so it is held back."
   },
   {
    "class": "AEGS_Tiburon",

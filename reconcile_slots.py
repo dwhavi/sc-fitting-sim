@@ -36,9 +36,13 @@ def main():
         if p.get('source') != 'game_files' or slot['class'] not in ix:
             continue
         # Do not rewrite unrelated rooms, seats, doors, fuel or control objects.
-        if p.get('category') not in ('weapon_mounts', 'weapons', 'turret',
+        if p.get('category') not in ('weapon_mounts', 'weapons', 'turret', 'missile_racks',
                                     'shieldgenerator', 'powerplant', 'cooler',
                                     'quantumdrive', 'radar', 'lifesupport'):
+            continue
+        # Existing rack defaults are intentionally preserved (missile estimates
+        # have separate semantics); fill only missing rack component defaults.
+        if p.get('category') == 'missile_racks' and p.get('component'):
             continue
         paths, names = ix[slot['class']]
         key = norm_name(p.get('name'))
@@ -51,6 +55,11 @@ def main():
             continue
         cls = e.get('ClassName')
         if not cls:
+            continue
+        # WeaponMount.WeaponControl is a fixed control object, not a selectable
+        # item card. Its stock gun leaves are supplied by enrich_turret_slots.
+        if (e.get('Type') or '').split('.')[0] == 'WeaponMount':
+            p.pop('component', None)
             continue
         old = (p.get('component') or {}).get('scKey', '').lower()
         if old != cls.lower():

@@ -1,8 +1,8 @@
 {
-  "generated": "2026-11-20T16:13:25Z",
+  "generated": "2026-11-20T16:22:39Z",
   "source": "FleetYards /v1/models/{slug}/hardpoints (game_files only), trimmed",
-  "note": "필드 축약: id,name,category,group,source,maxSize,component{name,scKey}; F8A/Heartseeker Mk II는 FY 미지원으로 이전 스냅샷 유지 | MISC Hull C: rear module power/shield/cooler/QD slots were missing in FleetYards and added from game files (2026-11-21). | Slots rebuilt from game files (FleetYards data wrong or missing): AEGS_Tiburon, RSI_Zeus_CL, RSI_Zeus_ES, DRAK_Command_Module",
-  "ships": 206,
+  "note": "필드 축약: id,name,category,group,source,maxSize,component{name,scKey}; F8A/Heartseeker Mk II는 FY 미지원으로 이전 스냅샷 유지 | MISC Hull C: rear module power/shield/cooler/QD slots were missing in FleetYards and added from game files (2026-11-21). | Slots rebuilt from game files (FleetYards data wrong or missing): AEGS_Tiburon, RSI_Zeus_CL, RSI_Zeus_ES, DRAK_Command_Module | Slots rebuilt from game files (FleetYards data wrong or missing): MISC_Starlancer_TAC",
+  "ships": 207,
   "slots": [
     {
       "slug": "aegs-avenger-stalker",
@@ -34724,11 +34724,7 @@
             "editable": false,
             "stock": "GATS_BallisticGatling_Mounted_S1_DRAK_Cutlass_Steel"
           }
-        ],
-        "component": {
-          "scKey": "weaponmount_gun_s1_anvl_asgard_door_left",
-          "name": "Turret"
-        }
+        ]
       }
     },
     {
@@ -34755,11 +34751,7 @@
             "editable": false,
             "stock": "GATS_BallisticGatling_Mounted_S1_DRAK_Cutlass_Steel"
           }
-        ],
-        "component": {
-          "scKey": "weaponmount_gun_s1_anvl_asgard_door_right",
-          "name": "Turret"
-        }
+        ]
       }
     },
     {
@@ -167360,6 +167352,527 @@
       }
     },
     {
+      "slug": "misc-starlancer-tac",
+      "class": "MISC_Starlancer_TAC",
+      "name": "MISC Starlancer TAC",
+      "port": {
+        "id": "72b3f92d-4f85-5f7b-85b5-48639279d9a6",
+        "name": "hardpoint_cooler",
+        "category": "cooler",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 3,
+        "component": {
+          "scKey": "cool_aegs_s03_blizzard_scitem",
+          "name": "Blizzard"
+        }
+      }
+    },
+    {
+      "slug": "misc-starlancer-tac",
+      "class": "MISC_Starlancer_TAC",
+      "name": "MISC Starlancer TAC",
+      "port": {
+        "id": "f4bb1c45-b6c3-53a6-bb8a-6fbddfc8b408",
+        "name": "hardpoint_lifesupport",
+        "category": "lifesupport",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 2,
+        "component": {
+          "scKey": "lfsp_tydt_s02_comfortairplus",
+          "name": "ComfortAir Plus"
+        }
+      }
+    },
+    {
+      "slug": "misc-starlancer-tac",
+      "class": "MISC_Starlancer_TAC",
+      "name": "MISC Starlancer TAC",
+      "port": {
+        "id": "14d5b42d-31c9-5022-8b05-462ecad23808",
+        "name": "hardpoint_missile_rack_left",
+        "category": "missile_racks",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 4,
+        "component": {
+          "scKey": "mrck_s04_misc_starlancer",
+          "name": "MSD-543 Missile Rack"
+        }
+      }
+    },
+    {
+      "slug": "misc-starlancer-tac",
+      "class": "MISC_Starlancer_TAC",
+      "name": "MISC Starlancer TAC",
+      "port": {
+        "id": "efeefe6e-fab8-570f-b71b-90edf820a4fa",
+        "name": "hardpoint_missile_rack_neck",
+        "category": "missile_racks",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 4,
+        "component": {
+          "scKey": "mrck_s04_misc_starlancer",
+          "name": "MSD-543 Missile Rack"
+        }
+      }
+    },
+    {
+      "slug": "misc-starlancer-tac",
+      "class": "MISC_Starlancer_TAC",
+      "name": "MISC Starlancer TAC",
+      "port": {
+        "id": "69c388f3-ab4e-5c53-952d-8278e75f5da3",
+        "name": "hardpoint_missile_rack_nose",
+        "category": "missile_racks",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 4,
+        "component": {
+          "scKey": "mrck_s04_misc_starlancer",
+          "name": "MSD-543 Missile Rack"
+        }
+      }
+    },
+    {
+      "slug": "misc-starlancer-tac",
+      "class": "MISC_Starlancer_TAC",
+      "name": "MISC Starlancer TAC",
+      "port": {
+        "id": "86976453-8d83-5842-8c5b-b592993fbe0f",
+        "name": "hardpoint_missile_rack_right",
+        "category": "missile_racks",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 4,
+        "component": {
+          "scKey": "mrck_s04_misc_starlancer",
+          "name": "MSD-543 Missile Rack"
+        }
+      }
+    },
+    {
+      "slug": "misc-starlancer-tac",
+      "class": "MISC_Starlancer_TAC",
+      "name": "MISC Starlancer TAC",
+      "port": {
+        "id": "dfd7124a-6b2f-5cb2-8520-d19a3db5b991",
+        "name": "hardpoint_missile_turret_leftturret_missile_rack",
+        "category": "missile_racks",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 4,
+        "component": {
+          "scKey": "mrck_s04_misc_starlancer_tac_turret",
+          "name": "MSD-616 Missile Rack"
+        }
+      }
+    },
+    {
+      "slug": "misc-starlancer-tac",
+      "class": "MISC_Starlancer_TAC",
+      "name": "MISC Starlancer TAC",
+      "port": {
+        "id": "49ab9b70-9adb-5d6d-9d1f-ee7da7984c0b",
+        "name": "hardpoint_missile_turret_rightturret_missile_rack",
+        "category": "missile_racks",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 4,
+        "component": {
+          "scKey": "mrck_s04_misc_starlancer_tac_turret",
+          "name": "MSD-616 Missile Rack"
+        }
+      }
+    },
+    {
+      "slug": "misc-starlancer-tac",
+      "class": "MISC_Starlancer_TAC",
+      "name": "MISC Starlancer TAC",
+      "port": {
+        "id": "0b98bf16-25b0-5261-bd7d-9375e8d3602c",
+        "name": "hardpoint_mountedgun_left",
+        "category": "weapon_mounts",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 1,
+        "weaponControl": "turret",
+        "turretClass": "WeaponMount_Gun_S1_MISC_Starlancer_TAC_Left",
+        "childGuns": [
+          {
+            "hardpoint": "weapon",
+            "class": "GATS_BallisticGatling_Mounted_S1_DRAK_Cutlass_Steel",
+            "name": "YellowJacket GT-210 Gatling",
+            "type": "WeaponGun.Gun",
+            "min": 1,
+            "max": 1,
+            "editable": false,
+            "stock": "GATS_BallisticGatling_Mounted_S1_DRAK_Cutlass_Steel"
+          }
+        ]
+      }
+    },
+    {
+      "slug": "misc-starlancer-tac",
+      "class": "MISC_Starlancer_TAC",
+      "name": "MISC Starlancer TAC",
+      "port": {
+        "id": "8ee02fbf-3b22-580e-be88-94cde08966a2",
+        "name": "hardpoint_mountedgun_right",
+        "category": "weapon_mounts",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 1,
+        "weaponControl": "turret",
+        "turretClass": "WeaponMount_Gun_S1_MISC_Starlancer_TAC_Right",
+        "childGuns": [
+          {
+            "hardpoint": "weapon",
+            "class": "GATS_BallisticGatling_Mounted_S1_DRAK_Cutlass_Steel",
+            "name": "YellowJacket GT-210 Gatling",
+            "type": "WeaponGun.Gun",
+            "min": 1,
+            "max": 1,
+            "editable": false,
+            "stock": "GATS_BallisticGatling_Mounted_S1_DRAK_Cutlass_Steel"
+          }
+        ]
+      }
+    },
+    {
+      "slug": "misc-starlancer-tac",
+      "class": "MISC_Starlancer_TAC",
+      "name": "MISC Starlancer TAC",
+      "port": {
+        "id": "ea88c20e-5e17-5e4e-8fe1-846612ce62a7",
+        "name": "hardpoint_power_plant",
+        "category": "powerplant",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 3,
+        "component": {
+          "scKey": "powr_aegs_s03_centurion_scitem",
+          "name": "Centurion"
+        }
+      }
+    },
+    {
+      "slug": "misc-starlancer-tac",
+      "class": "MISC_Starlancer_TAC",
+      "name": "MISC Starlancer TAC",
+      "port": {
+        "id": "a340277d-a13f-5e40-aab4-d151c268f41a",
+        "name": "hardpoint_quantum_drive",
+        "category": "quantumdrive",
+        "group": "propulsion",
+        "source": "game_files",
+        "maxSize": 2,
+        "component": {
+          "scKey": "qdrv_acas_s02_sparkfire_scitem",
+          "name": "SparkFire"
+        }
+      }
+    },
+    {
+      "slug": "misc-starlancer-tac",
+      "class": "MISC_Starlancer_TAC",
+      "name": "MISC Starlancer TAC",
+      "port": {
+        "id": "a766c137-2ef2-550e-9ce7-1702a27f04af",
+        "name": "hardpoint_radar",
+        "category": "radar",
+        "group": "avionic",
+        "source": "game_files",
+        "maxSize": 3,
+        "component": {
+          "scKey": "radr_chco_s03_surveyormax",
+          "name": "Surveyor-Max"
+        }
+      }
+    },
+    {
+      "slug": "misc-starlancer-tac",
+      "class": "MISC_Starlancer_TAC",
+      "name": "MISC Starlancer TAC",
+      "port": {
+        "id": "c923e19a-6777-59f9-b1c4-dae0e153ddee",
+        "name": "hardpoint_shield_generator_left",
+        "category": "shieldgenerator",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 3,
+        "component": {
+          "scKey": "shld_basl_s03_stronghold_scitem",
+          "name": "Stronghold"
+        }
+      }
+    },
+    {
+      "slug": "misc-starlancer-tac",
+      "class": "MISC_Starlancer_TAC",
+      "name": "MISC Starlancer TAC",
+      "port": {
+        "id": "25788fd5-afb0-5225-b748-cc9735300562",
+        "name": "hardpoint_shield_generator_right",
+        "category": "shieldgenerator",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 3,
+        "component": {
+          "scKey": "shld_basl_s03_stronghold_scitem",
+          "name": "Stronghold"
+        }
+      }
+    },
+    {
+      "slug": "misc-starlancer-tac",
+      "class": "MISC_Starlancer_TAC",
+      "name": "MISC Starlancer TAC",
+      "port": {
+        "id": "7999aac0-046d-5a65-ae26-edb2b6faecb2",
+        "name": "hardpoint_turret_front",
+        "category": "turret",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 4,
+        "component": {
+          "scKey": "misc_starlancer_remote_turret",
+          "name": "Remote Turret"
+        },
+        "weaponControl": "pilot",
+        "turretClass": "MISC_Starlancer_Remote_Turret",
+        "childGuns": [
+          {
+            "hardpoint": "hardpoint_class_2",
+            "class": "KLWE_LaserRepeater_S4",
+            "name": "CF-447 Rhino Repeater",
+            "type": "WeaponGun.Gun",
+            "min": 4,
+            "max": 4,
+            "editable": true,
+            "stock": "KLWE_LaserRepeater_S4"
+          },
+          {
+            "hardpoint": "hardpoint_class_2",
+            "class": "KLWE_LaserRepeater_S4",
+            "name": "CF-447 Rhino Repeater",
+            "type": "WeaponGun.Gun",
+            "min": 4,
+            "max": 4,
+            "editable": true,
+            "stock": "KLWE_LaserRepeater_S4"
+          }
+        ]
+      }
+    },
+    {
+      "slug": "misc-starlancer-tac",
+      "class": "MISC_Starlancer_TAC",
+      "name": "MISC Starlancer TAC",
+      "port": {
+        "id": "4f9e96bd-4424-586d-981d-149456c724a3",
+        "name": "hardpoint_turret_left",
+        "category": "turret",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 5,
+        "component": {
+          "scKey": "misc_starlancer_tac_side_turret_left",
+          "name": "Manned Turret"
+        },
+        "weaponControl": "turret",
+        "turretClass": "MISC_Starlancer_TAC_Side_Turret_Left",
+        "childGuns": [
+          {
+            "hardpoint": "hardpoint_class_2",
+            "class": "KLWE_LaserRepeater_S5",
+            "name": "CF-557 Galdereen Repeater",
+            "type": "WeaponGun.Gun",
+            "min": 5,
+            "max": 5,
+            "editable": true,
+            "stock": "KLWE_LaserRepeater_S5"
+          },
+          {
+            "hardpoint": "hardpoint_class_2",
+            "class": "KLWE_LaserRepeater_S5",
+            "name": "CF-557 Galdereen Repeater",
+            "type": "WeaponGun.Gun",
+            "min": 5,
+            "max": 5,
+            "editable": true,
+            "stock": "KLWE_LaserRepeater_S5"
+          }
+        ]
+      }
+    },
+    {
+      "slug": "misc-starlancer-tac",
+      "class": "MISC_Starlancer_TAC",
+      "name": "MISC Starlancer TAC",
+      "port": {
+        "id": "56af2bb0-a848-57eb-a040-b0144842d2f7",
+        "name": "hardpoint_turret_rear",
+        "category": "turret",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 10,
+        "component": {
+          "scKey": "misc_starlancer_remote_turret_rear",
+          "name": "Remote Turret"
+        },
+        "weaponControl": "pilot",
+        "turretClass": "MISC_Starlancer_Remote_Turret_Rear",
+        "childGuns": [
+          {
+            "hardpoint": "hardpoint_class_2",
+            "class": "KLWE_LaserRepeater_S4",
+            "name": "CF-447 Rhino Repeater",
+            "type": "WeaponGun.Gun",
+            "min": 4,
+            "max": 4,
+            "editable": true,
+            "stock": "KLWE_LaserRepeater_S4"
+          },
+          {
+            "hardpoint": "hardpoint_class_2",
+            "class": "KLWE_LaserRepeater_S4",
+            "name": "CF-447 Rhino Repeater",
+            "type": "WeaponGun.Gun",
+            "min": 4,
+            "max": 4,
+            "editable": true,
+            "stock": "KLWE_LaserRepeater_S4"
+          }
+        ]
+      }
+    },
+    {
+      "slug": "misc-starlancer-tac",
+      "class": "MISC_Starlancer_TAC",
+      "name": "MISC Starlancer TAC",
+      "port": {
+        "id": "e9d436c9-91f3-5aca-b832-7719152128b9",
+        "name": "hardpoint_turret_right",
+        "category": "turret",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 5,
+        "component": {
+          "scKey": "misc_starlancer_tac_side_turret",
+          "name": "Manned Turret"
+        },
+        "weaponControl": "turret",
+        "turretClass": "MISC_Starlancer_TAC_Side_Turret",
+        "childGuns": [
+          {
+            "hardpoint": "hardpoint_class_2",
+            "class": "KLWE_LaserRepeater_S5",
+            "name": "CF-557 Galdereen Repeater",
+            "type": "WeaponGun.Gun",
+            "min": 5,
+            "max": 5,
+            "editable": true,
+            "stock": "KLWE_LaserRepeater_S5"
+          },
+          {
+            "hardpoint": "hardpoint_class_2",
+            "class": "KLWE_LaserRepeater_S5",
+            "name": "CF-557 Galdereen Repeater",
+            "type": "WeaponGun.Gun",
+            "min": 5,
+            "max": 5,
+            "editable": true,
+            "stock": "KLWE_LaserRepeater_S5"
+          }
+        ]
+      }
+    },
+    {
+      "slug": "misc-starlancer-tac",
+      "class": "MISC_Starlancer_TAC",
+      "name": "MISC Starlancer TAC",
+      "port": {
+        "id": "074bc2f5-a968-5685-97fc-7a9c34df7dfd",
+        "name": "hardpoint_weapon_left",
+        "category": "weapon_mounts",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 6,
+        "component": {
+          "scKey": "misc_starlancer_dual_gimbal",
+          "name": "PC2 Dual S4 Mount"
+        },
+        "weaponControl": "pilot",
+        "turretClass": "MISC_Starlancer_Dual_Gimbal",
+        "childGuns": [
+          {
+            "hardpoint": "hardpoint_weapon_01",
+            "class": "BEHR_LaserCannon_S4",
+            "name": "M6A Cannon",
+            "type": "WeaponGun.Gun",
+            "min": 4,
+            "max": 4,
+            "editable": true,
+            "stock": "BEHR_LaserCannon_S4"
+          },
+          {
+            "hardpoint": "hardpoint_weapon_02",
+            "class": "BEHR_LaserCannon_S4",
+            "name": "M6A Cannon",
+            "type": "WeaponGun.Gun",
+            "min": 4,
+            "max": 4,
+            "editable": true,
+            "stock": "BEHR_LaserCannon_S4"
+          }
+        ]
+      }
+    },
+    {
+      "slug": "misc-starlancer-tac",
+      "class": "MISC_Starlancer_TAC",
+      "name": "MISC Starlancer TAC",
+      "port": {
+        "id": "5da591f6-cae4-5590-8cff-9b50b7139105",
+        "name": "hardpoint_weapon_right",
+        "category": "weapon_mounts",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 6,
+        "component": {
+          "scKey": "misc_starlancer_dual_gimbal",
+          "name": "PC2 Dual S4 Mount"
+        },
+        "weaponControl": "pilot",
+        "turretClass": "MISC_Starlancer_Dual_Gimbal",
+        "childGuns": [
+          {
+            "hardpoint": "hardpoint_weapon_01",
+            "class": "BEHR_LaserCannon_S4",
+            "name": "M6A Cannon",
+            "type": "WeaponGun.Gun",
+            "min": 4,
+            "max": 4,
+            "editable": true,
+            "stock": "BEHR_LaserCannon_S4"
+          },
+          {
+            "hardpoint": "hardpoint_weapon_02",
+            "class": "BEHR_LaserCannon_S4",
+            "name": "M6A Cannon",
+            "type": "WeaponGun.Gun",
+            "min": 4,
+            "max": 4,
+            "editable": true,
+            "stock": "BEHR_LaserCannon_S4"
+          }
+        ]
+      }
+    },
+    {
       "slug": "misc-starlite",
       "class": "MISC_Starlite",
       "name": "MISC Starlite",
@@ -229061,7 +229574,11 @@
         "category": "missile_racks",
         "group": "weapon",
         "source": "game_files",
-        "maxSize": 4
+        "maxSize": 4,
+        "component": {
+          "scKey": "mrck_s04_rsi_zeus_left",
+          "name": "RSI Zeus Missile Launcher"
+        }
       }
     },
     {
@@ -229074,7 +229591,11 @@
         "category": "missile_racks",
         "group": "weapon",
         "source": "game_files",
-        "maxSize": 4
+        "maxSize": 4,
+        "component": {
+          "scKey": "mrck_s04_rsi_zeus_right",
+          "name": "RSI Zeus Missile Launcher"
+        }
       }
     },
     {
@@ -229360,7 +229881,11 @@
         "category": "missile_racks",
         "group": "weapon",
         "source": "game_files",
-        "maxSize": 4
+        "maxSize": 4,
+        "component": {
+          "scKey": "mrck_s04_rsi_zeus_left",
+          "name": "RSI Zeus Missile Launcher"
+        }
       }
     },
     {
@@ -229373,7 +229898,11 @@
         "category": "missile_racks",
         "group": "weapon",
         "source": "game_files",
-        "maxSize": 4
+        "maxSize": 4,
+        "component": {
+          "scKey": "mrck_s04_rsi_zeus_right",
+          "name": "RSI Zeus Missile Launcher"
+        }
       }
     },
     {

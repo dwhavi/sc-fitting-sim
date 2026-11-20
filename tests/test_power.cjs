@@ -33,10 +33,7 @@ for (const hull of db.ships) {
     assert.equal(hull.spool,-1);
   }
   if(s.output===hull.stockGen)gen++;
-  // Tiburon: its hardware-locked S10 Supremacy beam is a fitted weapon in the app but the game-file
-  // aggregate (and the wiki's Pilot DPS) leaves it out. Expect exactly the beam's DPS on top.
-  const beamExtra=hull.class==='AEGS_Tiburon'?db.weapons.find(w=>w.class==='HRST_LaserBeam_Tiburon').dps:0;
-  near(s.dpsBurst||0,(hull.stockDps||0)+(hull.turretDps||0)+beamExtra,1e-3);burst++;
+  near(s.dpsBurst||0,(hull.stockDps||0)+(hull.turretDps||0),1e-3);burst++;
 }
 const N=db.ships.length;assert.equal(burst,N);assert.equal(matched,N-11); assert.equal(gen,N); assert.equal(residual.length,11);
 const marauder=ship('DRAK_Marauder');
@@ -92,3 +89,20 @@ for(const c of db.weapons.filter(c=>c.capAmmo>0&&c.capRegen>0&&c.rpm>0)){
   }
 }
 console.log(`${db.ships.length} finite fits, ${matched} source power matches, ${gen} generation matches, ${cycles} capacitor cases; partial/OFF, shield regen, slot repairs passed.`);
+
+// Independent pinned extractor aggregates, not copies of db.json fields.
+const sourceStock=JSON.parse(fs.readFileSync(path.join(root,'tests/source_stock.json')));
+assert.equal(db.meta.sourceCommit,sourceStock.sourceCommit);
+const sourceDiff=[];
+for(const hull of db.ships){
+ const expected=sourceStock.ships[hull.class];assert.ok(expected,hull.class);
+ const actual=stats(hull);
+ for(const key of ['pilotBurst','turretBurst','hp','regen','cooling']){
+  if(Math.abs((actual[key]||0)-expected[key])>0.01)sourceDiff.push({ship:hull.class,key,actual:actual[key],expected:expected[key]});
+ }
+}
+const known=JSON.parse(fs.readFileSync(path.join(root,'tests/source_differences.json')));
+assert.deepEqual(JSON.parse(JSON.stringify(sourceDiff)),known.differences,'New or changed source/model difference needs review');
+console.log(`${db.ships.length} pinned source comparisons: total burst and cooling match all; ${known.differences.length} explicitly tracked split-DPS/shield differences, not in-game verified.`);
+const tac=stats(ship('MISC_Starlancer_TAC'));
+near(tac.pilotBurst,7373.6);near(tac.turretBurst,5312.8);assert.equal(tac.guns.length,14);assert.equal(tac.mslCount,28);

@@ -43,7 +43,7 @@ def classify(e):
         return ('missile_racks', 'weapon')
     if head == 'WeaponGun':
         return ('weapons', 'weapon')
-    if head in ('Turret', 'TurretBase', 'NoseMounted'):
+    if head in ('Turret', 'TurretBase', 'NoseMounted', 'WeaponMount'):
         ks = ' '.join(kids_types(e))
         cls = (e.get('ClassName') or '').lower()
         if 'TractorBeam' in ks and 'WeaponGun' not in ks:
@@ -78,8 +78,8 @@ def main():
                 'id': str(uuid.uuid5(uuid.NAMESPACE_URL, 'sc-fitting-sim/%s/%s' % (ship['slug'], name))),
                 'name': name, 'category': k[0], 'group': k[1], 'source': 'game_files',
                 'maxSize': e.get('MaxSize') or e.get('MinSize') or 1}})
-        # simple systems can sit below a body/room parent: walk those too
-        def walk(es):
+        # Systems and missile racks can sit below body or missile-gimbal parents.
+        def walk(es, parents=()):
             for e in es or []:
                 h = (e.get('Type') or '').split('.')[0]
                 if h in SIMPLE and 'Controller' not in (e.get('Type') or '') and e.get('HardpointName') not in {n['port']['name'] for n in new}:
@@ -88,8 +88,13 @@ def main():
                         'id': str(uuid.uuid5(uuid.NAMESPACE_URL, 'sc-fitting-sim/%s/%s' % (ship['slug'], e['HardpointName']))),
                         'name': e['HardpointName'], 'category': k[0], 'group': k[1], 'source': 'game_files',
                         'maxSize': e.get('MaxSize') or e.get('MinSize') or 1}})
-                if h not in ('Turret', 'TurretBase', 'MissileLauncher'):
-                    walk(e.get('Loadout'))
+                if h == 'MissileLauncher' and parents:
+                    name = ''.join(parents + (e['HardpointName'],))
+                    new.append({'slug': ship['slug'], 'class': c, 'name': ship['name'], 'port': {
+                        'id': str(uuid.uuid5(uuid.NAMESPACE_URL, 'sc-fitting-sim/%s/%s' % (ship['slug'], name))),
+                        'name': name, 'category': 'missile_racks', 'group': 'weapon',
+                        'source': 'game_files', 'maxSize': e.get('MaxSize') or 1}})
+                walk(e.get('Loadout'), parents + (e.get('HardpointName') or '',))
         walk(src.get('Loadout'))
         data['slots'] = [s for s in data['slots'] if s['slug'] != ship['slug']] + new
         print(c, len(new), 'slots from game files')

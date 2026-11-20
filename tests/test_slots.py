@@ -34,4 +34,18 @@ class SlotTests(unittest.TestCase):
         self.assertIsNone(m.match_info({'name':'hardpoint_seat_access_turret_rear','category':'unknown'},info))
         self.assertIsNone(m.match_info({'name':'wing_turret_rear','category':'weapon_mounts'},
                                       {'turret_rear':1,'rear':2}))
+    def test_weapon_control_is_a_weapon_mount(self):
+        m=load('slots_from_game_files')
+        entry={'Type':'WeaponMount.WeaponControl','ClassName':'WeaponMount_Gun_S1_Test',
+               'Loadout':[{'Type':'WeaponGun.Gun'}]}
+        self.assertEqual(m.classify(entry),('weapon_mounts','weapon'))
+    def test_pipeline_is_idempotent_on_committed_snapshot(self):
+        import subprocess
+        raw=ROOT/'data/raw/.sync_meta.json'
+        if not raw.exists():self.skipTest('Run sync_data.py for source-dependent idempotence check')
+        target=ROOT/'public/ship_slots.json'
+        before=json.loads(target.read_text())
+        for script in ['reconcile_slots.py','enrich_turret_slots.py']:
+            subprocess.run(['python3',str(ROOT/script)],check=True,capture_output=True)
+        self.assertEqual(before,json.loads(target.read_text()))
 if __name__=='__main__':unittest.main()
