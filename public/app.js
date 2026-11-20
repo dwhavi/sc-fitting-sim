@@ -283,6 +283,7 @@ function slotKind(h) {
   if (cat === 'turret' && grp === 'auxiliary') return 'turretbase';
   if (cat === 'turret' && (grp === 'weapon')) return 'turret';
   if (cat.includes('weapon_mount')) return 'mount';    // 마운트·터렛 카드 (교체 가능, 무기는 하위 선택)
+  if (cat === 'special_weapon') return 'special';
   if (cat === 'weapons') return 'weapon';                    // VariPuck 등 실제 장착 무기
   if (cat.includes('missile') && nm.startsWith('hardpoint_')) return 'missile'; // 하드포인트만 (장착된 랙 중복 제외)
   if (cat.includes('shieldgenerator')) return 'shield';
@@ -310,7 +311,7 @@ function optionsFor(kind, size) {
   }[kind] || (w => 0);
   const byPerf = (a, b) => (perf(b) - perf(a)) || ((a.name || '').localeCompare(b.name || ''));
   const f = {
-    weapon: DB.weapons.filter(w => w.size === size).sort(byPerf),
+    weapon: DB.weapons.filter(w => w.size === size && !w.specialWeapon).sort(byPerf),
     turret: (DB.turrets || []).filter(w => w.size === size),
     turretbase: (DB.turrets || []).filter(w => w.size === size),
     mount: [...(DB.turrets || []).filter(w => w.size === size)].sort(byPerf),
@@ -442,10 +443,17 @@ function renderSlots() {
     + (tbase.length ? '<div class="sec-h">터렛 베이스·특수</div><div class="slots-grid">' + tbase.map(h => slotHTML(h, 'turretbase')).join('') + '</div>' : '')
     + (mslots.length ? '<div class="sec-h">미사일 랙</div><div class="slots-grid">' + mslots.map(h => slotHTML(h, 'missile')).join('') + '</div>' : '')
     || '<p>무장 슬롯 없음</p>';
+  const special = FY.filter(h => h.category === 'special_weapon');
+  const specialNote = special.map(h => {
+    const c = (DB.weapons || []).find(w => w.class === h.specialClass) || {};
+    return `<div style="border:1px solid var(--warn);padding:12px;margin:8px 0;color:var(--warn)"><b>특수 고정 빔: ${c.name || h.specialClass}</b><br>부품 원본 DPS ${fmt(c.dps || 0)}. 발사·충전 주기와 실효 피해 미검증. 일반 DPS·지속 DPS·추천 점수에서 제외합니다. 피해가 0이라는 뜻이 아닙니다. 전용 무장이며 일반 무기로 교체하지 않습니다.</div>`;
+  }).join('');
+  $('weaponSlots').innerHTML = specialNote + $('weaponSlots').innerHTML;
   const engSlots = FY.filter(h => slotKind(h) === 'engine');
   $('sysSlots').innerHTML = `<div class="slots-grid">${sys.map(h => slotHTML(h, slotKind(h))).join('')}</div>`
     + (engSlots.length ? `<div class="sec-h">추진부 (고정 슬롯 · 전력은 PWR 패널 🚀 컬럼 참조)</div><div style="font-size:11px;color:var(--dim)">${engSummary(engSlots)}</div>` : '')
     || '<p>시스템 슬롯 없음</p>';
+  $('sysSlots').innerHTML = '<div style="padding:10px;border:1px solid var(--warn);margin-bottom:10px;font-size:12px">실드 HP·재생 및 파일럿/터렛 분류 일부는 덤프 집계와 차이가 남아 있습니다. <a style="color:var(--warn)" href="validation.html" target="_blank" rel="noopener">함선별 검증 차이 보고서</a>. 인게임 실측 검증은 하지 않았습니다.</div>' + $('sysSlots').innerHTML;
   document.querySelectorAll('button.comp-btn[data-cslot]').forEach(btn => {
     btn.addEventListener('click', () => {
       const slot = btn.dataset.cslot;
@@ -615,6 +623,11 @@ function fitStats() {
   for (const h of (FY || [])) {
     const kind = slotKind(h);
     if (!kind || kind === 'engine' || kind === 'turretbase') continue; // 추진부 고정 슬롯은 전력 집계 제외
+    if (kind === 'special') {
+      pushWeaponSub(h.id, h.specialClass, 'pilot');
+      if (items.length) items[items.length - 1].special = true;
+      continue;
+    }
     if (kind === 'mount' || kind === 'turret') {
       // 카드 구조물 자체는 전력 없음 — 하위 무기만 집계
       const cardCls = effVal(h, kind);
@@ -781,7 +794,7 @@ function fitStats() {
       s.cooling += units >= minimum ? (it.c.rate || 0) * units / it.maxU * qnSpv(units, it.c.pranges) : 0;
       coolerList.push({ slotId, name: it.c.name || '', units, maxUnits: it.maxU, pwRaw: it.pwRaw, off: !!pwr.coolerOff[slotId], pranges: it.c.pranges || null });
     }
-    if (it.kind === 'weapon') {
+    if (it.kind === 'weapon' && !it.special) {
       // Enabled guns keep projectile damage and RPM. Energy sustained DPS is
       // calculated below from the shared-pool capacitor cycle, not scaled twice.
       const c = it.c;
@@ -1248,6 +1261,7 @@ function renderStockCheck(f) {
     rows.push(`<div class="stat"><div class="v">${fmt(pa)} <span style="font-size:11px;color:var(--dim)">/ ${fmt(ship.stockAlpha)}</span></div><div class="k">파일럿 알파/스톡</div></div>`);
   if (ship.turretAlpha != null)
     rows.push(`<div class="stat"><div class="v">${fmt(f.turretAlpha || 0)} <span style="font-size:11px;color:var(--dim)">/ ${fmt(ship.turretAlpha)}</span></div><div class="k">터렛 알파/스톡</div></div>`);
+  rows.unshift('<div style="grid-column:1/-1;color:var(--warn);font-size:12px">검증 범위 주의: 일부 함선의 예비 실드 HP·재생과 파일럿/터렛 분류는 원본 집계와 다릅니다. <a href="validation.html" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">함선별 차이와 특수 빔 검증 보고서</a> (인게임 실측 아님)</div>');
   el.innerHTML = rows.join('');
 }
 

@@ -65,6 +65,8 @@ def main():
     meta = json.load(io.open(os.path.join(RAW, '.sync_meta.json'), encoding='utf-8'))['class_to_file']
     db = {s['class']: s for s in json.load(io.open(os.path.join(ROOT, 'public', 'db.json'), encoding='utf-8'))['ships']}
     data = json.load(io.open(SLOTS, encoding='utf-8'))
+    manifest = json.load(open(os.path.join(ROOT, 'ship_manifest.json')))
+    special = {e['class']: set(e.get('specialWeapons', [])) for e in manifest.get('include', [])}
     for c in classes:
         ship = db[c]
         src = json.load(io.open(os.path.join(RAW, 'ships', meta[c]), encoding='utf-8'))
@@ -74,10 +76,13 @@ def main():
             if not k:
                 continue
             name = e.get('HardpointName')
+            if e.get('ClassName') in special.get(c, set()):
+                k = ('special_weapon', 'weapon')
             new.append({'slug': ship['slug'], 'class': c, 'name': ship['name'], 'port': {
                 'id': str(uuid.uuid5(uuid.NAMESPACE_URL, 'sc-fitting-sim/%s/%s' % (ship['slug'], name))),
                 'name': name, 'category': k[0], 'group': k[1], 'source': 'game_files',
-                'maxSize': e.get('MaxSize') or e.get('MinSize') or 1}})
+                'maxSize': e.get('MaxSize') or e.get('MinSize') or 1,
+                **({'specialClass': e['ClassName']} if k[0] == 'special_weapon' else {})}})
         # Systems and missile racks can sit below body or missile-gimbal parents.
         def walk(es, parents=()):
             for e in es or []:

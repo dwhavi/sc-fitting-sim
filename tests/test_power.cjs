@@ -106,3 +106,8 @@ assert.deepEqual(JSON.parse(JSON.stringify(sourceDiff)),known.differences,'New o
 console.log(`${db.ships.length} pinned source comparisons: total burst and cooling match all; ${known.differences.length} explicitly tracked split-DPS/shield differences, not in-game verified.`);
 const tac=stats(ship('MISC_Starlancer_TAC'));
 near(tac.pilotBurst,7373.6);near(tac.turretBurst,5312.8);assert.equal(tac.guns.length,14);assert.equal(tac.mslCount,28);
+
+const tiburon=stats(ship('AEGS_Tiburon'));
+near(tiburon.dpsBurst,14004.8);assert.ok(tiburon.guns.every(w=>w.class!=='HRST_LaserBeam_Tiburon'));
+assert.equal(slots.filter(s=>s.class==='AEGS_Tiburon'&&s.port.category==='special_weapon').length,1);
+assert.ok(vm.runInContext("optionsFor('weapon',10).every(w=>w.class!=='HRST_LaserBeam_Tiburon')",ctx));

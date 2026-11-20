@@ -241,6 +241,8 @@ def main():
         """frozen 값 병합 + pw 계열 병합."""
         si = x.get('stdItem', {}) or {}
         e.update({k: v for k, v in rn_power(si).items() if v is not None})
+        if e.get('class') == 'HRST_LaserBeam_Tiburon':
+            e['specialWeapon'] = True  # bespoke beam, not a generic optimizer candidate
         for f in FROZEN:
             if f not in e and frozen.get(e['class'], {}).get(f) is not None:
                 e[f] = frozen[e['class']][f]

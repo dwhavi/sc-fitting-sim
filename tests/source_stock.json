@@ -1649,6 +1649,14 @@
       "hp": 144000,
       "regen": 27360,
       "cooling": 60
+    },
+    "AEGS_Tiburon": {
+      "file": "aegs_tiburon.json",
+      "pilotBurst": 10733.2,
+      "turretBurst": 3271.6,
+      "hp": 211200,
+      "regen": 40128,
+      "cooling": 112
     }
   }
 }

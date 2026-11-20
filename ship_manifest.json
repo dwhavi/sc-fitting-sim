@@ -318,6 +318,16 @@
    "flightReady": "Alpha 4.1.1",
    "slots": "game_files",
    "note": "WeaponMount door guns and nested missile racks preserved from LIVE source"
+  },
+  {
+   "class": "AEGS_Tiburon",
+   "wiki": "https://starcitizen.tools/Tiburon",
+   "flightReady": "Alpha 4.8.0",
+   "slots": "game_files",
+   "specialWeapons": [
+    "HRST_LaserBeam_Tiburon"
+   ],
+   "note": "Bespoke beam shown separately; firing cycle unvalidated, excluded from normal DPS and optimizer scoring"
   }
  ],
  "pending": [
@@ -335,11 +345,6 @@
    "class": "GAMA_Hyun",
    "wiki": "https://starcitizen.tools/Hyun",
    "reason": "wiki status not found; LIVE availability unverified"
-  },
-  {
-   "class": "AEGS_Tiburon",
-   "wiki": "https://starcitizen.tools/Tiburon",
-   "reason": "held back: hardware-locked S10 Supremacy beam (18000 DPS) was counted in normal DPS; LIVE usability and labeling unverified"
   }
  ]
 }

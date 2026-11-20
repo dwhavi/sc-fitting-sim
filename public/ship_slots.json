@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-20T16:22:39Z",
+  "generated": "2026-11-20T16:26:11Z",
   "source": "FleetYards /v1/models/{slug}/hardpoints (game_files only), trimmed",
   "note": "필드 축약: id,name,category,group,source,maxSize,component{name,scKey}; F8A/Heartseeker Mk II는 FY 미지원으로 이전 스냅샷 유지 | MISC Hull C: rear module power/shield/cooler/QD slots were missing in FleetYards and added from game files (2026-11-21). | Slots rebuilt from game files (FleetYards data wrong or missing): AEGS_Tiburon, RSI_Zeus_CL, RSI_Zeus_ES, DRAK_Command_Module | Slots rebuilt from game files (FleetYards data wrong or missing): MISC_Starlancer_TAC",
   "ships": 207,
@@ -27758,7 +27758,11 @@
         "category": "missile_racks",
         "group": "weapon",
         "source": "game_files",
-        "maxSize": 5
+        "maxSize": 5,
+        "component": {
+          "scKey": "mrck_s05_behr_quad_s03",
+          "name": "MSD-543 Missile Rack"
+        }
       }
     },
     {
@@ -27771,7 +27775,11 @@
         "category": "missile_racks",
         "group": "weapon",
         "source": "game_files",
-        "maxSize": 5
+        "maxSize": 5,
+        "component": {
+          "scKey": "mrck_s05_behr_quad_s03",
+          "name": "MSD-543 Missile Rack"
+        }
       }
     },
     {
@@ -27784,7 +27792,11 @@
         "category": "missile_racks",
         "group": "weapon",
         "source": "game_files",
-        "maxSize": 5
+        "maxSize": 5,
+        "component": {
+          "scKey": "mrck_s05_behr_quad_s03",
+          "name": "MSD-543 Missile Rack"
+        }
       }
     },
     {
@@ -27797,7 +27809,11 @@
         "category": "missile_racks",
         "group": "weapon",
         "source": "game_files",
-        "maxSize": 5
+        "maxSize": 5,
+        "component": {
+          "scKey": "mrck_s05_behr_quad_s03",
+          "name": "MSD-543 Missile Rack"
+        }
       }
     },
     {
@@ -27810,7 +27826,11 @@
         "category": "missile_racks",
         "group": "weapon",
         "source": "game_files",
-        "maxSize": 5
+        "maxSize": 5,
+        "component": {
+          "scKey": "mrck_s05_behr_quad_s03",
+          "name": "MSD-543 Missile Rack"
+        }
       }
     },
     {
@@ -27823,7 +27843,11 @@
         "category": "missile_racks",
         "group": "weapon",
         "source": "game_files",
-        "maxSize": 5
+        "maxSize": 5,
+        "component": {
+          "scKey": "mrck_s05_behr_quad_s03",
+          "name": "MSD-543 Missile Rack"
+        }
       }
     },
     {
@@ -27836,7 +27860,11 @@
         "category": "missile_racks",
         "group": "weapon",
         "source": "game_files",
-        "maxSize": 5
+        "maxSize": 5,
+        "component": {
+          "scKey": "mrck_s05_behr_quad_s03",
+          "name": "MSD-543 Missile Rack"
+        }
       }
     },
     {
@@ -27849,7 +27877,11 @@
         "category": "missile_racks",
         "group": "weapon",
         "source": "game_files",
-        "maxSize": 5
+        "maxSize": 5,
+        "component": {
+          "scKey": "mrck_s05_behr_quad_s03",
+          "name": "MSD-543 Missile Rack"
+        }
       }
     },
     {
@@ -27965,6 +27997,10 @@
         "group": "weapon",
         "source": "game_files",
         "maxSize": 5,
+        "component": {
+          "scKey": "aegs_tiburon_scitem_remote_turret_front_left",
+          "name": "Remote Turret"
+        },
         "weaponControl": "pilot",
         "turretClass": "AEGS_tiburon_SCItem_Remote_Turret_front_left",
         "childGuns": [
@@ -27978,11 +28014,7 @@
             "editable": false,
             "stock": "BEHR_BallisticCannon_S7_Tiburon"
           }
-        ],
-        "component": {
-          "scKey": "aegs_tiburon_scitem_remote_turret_front_left",
-          "name": "Remote Turret"
-        }
+        ]
       }
     },
     {
@@ -27996,6 +28028,10 @@
         "group": "weapon",
         "source": "game_files",
         "maxSize": 5,
+        "component": {
+          "scKey": "aegs_tiburon_scitem_remote_turret_front_right",
+          "name": "Remote Turret"
+        },
         "weaponControl": "pilot",
         "turretClass": "AEGS_tiburon_SCItem_Remote_Turret_front_right",
         "childGuns": [
@@ -28009,11 +28045,7 @@
             "editable": false,
             "stock": "BEHR_BallisticCannon_S7_Tiburon"
           }
-        ],
-        "component": {
-          "scKey": "aegs_tiburon_scitem_remote_turret_front_right",
-          "name": "Remote Turret"
-        }
+        ]
       }
     },
     {
@@ -28027,6 +28059,10 @@
         "group": "weapon",
         "source": "game_files",
         "maxSize": 5,
+        "component": {
+          "scKey": "aegs_tiburon_scitem_remote_turret_mid_left",
+          "name": "Remote Turret"
+        },
         "weaponControl": "pilot",
         "turretClass": "AEGS_tiburon_SCItem_Remote_Turret_mid_left",
         "childGuns": [
@@ -28040,11 +28076,7 @@
             "editable": false,
             "stock": "BEHR_BallisticCannon_S7_Tiburon"
           }
-        ],
-        "component": {
-          "scKey": "aegs_tiburon_scitem_remote_turret_mid_left",
-          "name": "Remote Turret"
-        }
+        ]
       }
     },
     {
@@ -28058,6 +28090,10 @@
         "group": "weapon",
         "source": "game_files",
         "maxSize": 5,
+        "component": {
+          "scKey": "aegs_tiburon_scitem_remote_turret_mid_right",
+          "name": "Remote Turret"
+        },
         "weaponControl": "pilot",
         "turretClass": "AEGS_tiburon_SCItem_Remote_Turret_mid_right",
         "childGuns": [
@@ -28071,11 +28107,7 @@
             "editable": false,
             "stock": "BEHR_BallisticCannon_S7_Tiburon"
           }
-        ],
-        "component": {
-          "scKey": "aegs_tiburon_scitem_remote_turret_mid_right",
-          "name": "Remote Turret"
-        }
+        ]
       }
     },
     {
@@ -28085,14 +28117,11 @@
       "port": {
         "id": "cc426683-02ad-58c5-a984-5b9b837b8d69",
         "name": "hardpoint_weapon",
-        "category": "weapons",
+        "category": "special_weapon",
         "group": "weapon",
         "source": "game_files",
         "maxSize": 10,
-        "component": {
-          "scKey": "hrst_laserbeam_tiburon",
-          "name": "Supremacy-10T Laser Beam"
-        }
+        "specialClass": "HRST_LaserBeam_Tiburon"
       }
     },
     {
@@ -28106,6 +28135,10 @@
         "group": "weapon",
         "source": "game_files",
         "maxSize": 5,
+        "component": {
+          "scKey": "aegs_hammerhead_gs_scitem_turret_rear",
+          "name": "Manned Turret"
+        },
         "weaponControl": "turret",
         "turretClass": "AEGS_Hammerhead_GS_SCItem_Turret_Rear",
         "childGuns": [
@@ -28149,11 +28182,7 @@
             "editable": true,
             "stock": "KLWE_LaserRepeater_S4"
           }
-        ],
-        "component": {
-          "scKey": "aegs_hammerhead_gs_scitem_turret_rear",
-          "name": "Manned Turret"
-        }
+        ]
       }
     },
     {
