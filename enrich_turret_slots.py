@@ -80,15 +80,19 @@ def extract(fn):
             else:
                 out.extend(leaves(child.get('Loadout')))
         return out
-    def walk(entries):
+    top = {e.get('HardpointName') for e in (d.get('Loadout') or [])}
+    def walk(entries, depth=0):
         for e in entries or []:
             head = (e.get('Type') or '').split('.')[0]
-            if head in ('TurretBase', 'Turret', 'UtilityTurret', 'WeaponMount'):
+            # A nested port that reuses a top-level hardpoint name (e.g. a turret's
+            # hardpoint_weapon_left) must not overwrite the top-level one.
+            if head in ('TurretBase', 'Turret', 'UtilityTurret', 'WeaponMount') and not (
+                    depth > 0 and e.get('HardpointName') in top):
                 info[e.get('HardpointName')] = {
                     'turretClass': e.get('ClassName'),
                     'weaponControl': 'turret' if head in ('TurretBase', 'WeaponMount') else 'pilot',
                     'childGuns': leaves(e.get('Loadout'))}
-            walk(e.get('Loadout'))
+            walk(e.get('Loadout'), depth + 1)
     walk(d.get('Loadout'))
     return info
 

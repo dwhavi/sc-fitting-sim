@@ -290,6 +290,34 @@
    "class": "RSI_Salvation",
    "wiki": "https://starcitizen.tools/Salvation",
    "flightReady": "Alpha 4.4.0"
+  },
+  {
+   "class": "DRAK_Command_Module",
+   "wiki": "https://starcitizen.tools/Command_Module",
+   "flightReady": "Alpha 4.8.0",
+   "slots": "game_files",
+   "note": "slots rebuilt from game files (slots_from_game_files.py) because FleetYards data is wrong or missing"
+  },
+  {
+   "class": "AEGS_Tiburon",
+   "wiki": "https://starcitizen.tools/Tiburon",
+   "flightReady": "Alpha 4.8.0",
+   "slots": "game_files",
+   "note": "slots rebuilt from game files (slots_from_game_files.py) because FleetYards data is wrong or missing"
+  },
+  {
+   "class": "RSI_Zeus_CL",
+   "wiki": "https://starcitizen.tools/Zeus_Mk_II_CL",
+   "flightReady": "Alpha 3.24.2",
+   "slots": "game_files",
+   "note": "slots rebuilt from game files (slots_from_game_files.py) because FleetYards data is wrong or missing"
+  },
+  {
+   "class": "RSI_Zeus_ES",
+   "wiki": "https://starcitizen.tools/Zeus_Mk_II_ES",
+   "flightReady": "Alpha 3.24.2",
+   "slots": "game_files",
+   "note": "slots rebuilt from game files (slots_from_game_files.py) because FleetYards data is wrong or missing"
   }
  ],
  "pending": [
@@ -309,33 +337,10 @@
    "reason": "wiki status not found; LIVE availability unverified"
   },
   {
-   "class": "DRAK_Command_Module",
-   "wiki": "https://starcitizen.tools/Command_Module",
-   "reason": "wiki says flight ready (4.8.0) but FleetYards has no hardpoints for it, so no slot data; add once slots exist"
-  },
-  {
-   "class": "AEGS_Tiburon",
-   "wiki": "https://starcitizen.tools/Tiburon",
-   "flightReady": "Alpha 4.8.0",
-   "reason": "wiki says flight ready, but FleetYards slots include a Hammerhead rear turret and miss the fixed guns, so DPS does not match the game files. Slots must be rebuilt from game files before adding."
-  },
-  {
    "class": "MISC_Starlancer_TAC",
    "wiki": "https://starcitizen.tools/Starlancer_TAC",
    "flightReady": "Alpha 4.1.1",
-   "reason": "wiki says flight ready, but slot DPS does not match the game files (FleetYards fixed-gun/turret data). Slots must be rebuilt from game files before adding."
-  },
-  {
-   "class": "RSI_Zeus_CL",
-   "wiki": "https://starcitizen.tools/Zeus_Mk_II_CL",
-   "flightReady": "Alpha 3.24.2",
-   "reason": "wiki says flight ready, but FleetYards has no weapon slots for it, so DPS and weapon power do not match the game files. Slots must be rebuilt from game files before adding."
-  },
-  {
-   "class": "RSI_Zeus_ES",
-   "wiki": "https://starcitizen.tools/Zeus_Mk_II_ES",
-   "flightReady": "Alpha 3.24.2",
-   "reason": "wiki says flight ready, but FleetYards has no weapon slots for it, so DPS and weapon power do not match the game files. Slots must be rebuilt from game files before adding."
+   "reason": "wiki says flight ready; slots rebuilt from game files, but turret DPS is about 3 percent below the game-file aggregate (4909.6 vs 5312.8) and I could not explain the gap, so it is held back."
   }
  ]
 }

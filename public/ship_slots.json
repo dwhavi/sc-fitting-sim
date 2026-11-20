@@ -1,8 +1,8 @@
 {
-  "generated": "2026-11-20T16:06:54Z",
+  "generated": "2026-11-20T16:13:25Z",
   "source": "FleetYards /v1/models/{slug}/hardpoints (game_files only), trimmed",
-  "note": "필드 축약: id,name,category,group,source,maxSize,component{name,scKey}; F8A/Heartseeker Mk II는 FY 미지원으로 이전 스냅샷 유지 | MISC Hull C: rear module power/shield/cooler/QD slots were missing in FleetYards and added from game files (2026-11-21).",
-  "ships": 202,
+  "note": "필드 축약: id,name,category,group,source,maxSize,component{name,scKey}; F8A/Heartseeker Mk II는 FY 미지원으로 이전 스냅샷 유지 | MISC Hull C: rear module power/shield/cooler/QD slots were missing in FleetYards and added from game files (2026-11-21). | Slots rebuilt from game files (FleetYards data wrong or missing): AEGS_Tiburon, RSI_Zeus_CL, RSI_Zeus_ES, DRAK_Command_Module",
+  "ships": 206,
   "slots": [
     {
       "slug": "aegs-avenger-stalker",
@@ -27695,6 +27695,465 @@
             "stock": "KLWE_LaserRepeater_S3"
           }
         ]
+      }
+    },
+    {
+      "slug": "aegs-tiburon",
+      "class": "AEGS_Tiburon",
+      "name": "Aegis Tiburon",
+      "port": {
+        "id": "412dfba7-6091-5f1c-b056-995ec66e5bff",
+        "name": "hardpoint_cooler_l",
+        "category": "cooler",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 3,
+        "component": {
+          "scKey": "cool_aegs_s03_mercury_scitem",
+          "name": "Mercury"
+        }
+      }
+    },
+    {
+      "slug": "aegs-tiburon",
+      "class": "AEGS_Tiburon",
+      "name": "Aegis Tiburon",
+      "port": {
+        "id": "c5773c02-7503-54fa-8a2a-f634a7252b6a",
+        "name": "hardpoint_cooler_r",
+        "category": "cooler",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 3,
+        "component": {
+          "scKey": "cool_aegs_s03_mercury_scitem",
+          "name": "Mercury"
+        }
+      }
+    },
+    {
+      "slug": "aegs-tiburon",
+      "class": "AEGS_Tiburon",
+      "name": "Aegis Tiburon",
+      "port": {
+        "id": "477ac8e6-656b-5571-8286-e146abb004e4",
+        "name": "hardpoint_life_support",
+        "category": "lifesupport",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 3,
+        "component": {
+          "scKey": "lfsp_tydt_s03_comfortairmax",
+          "name": "ComfortAir Max"
+        }
+      }
+    },
+    {
+      "slug": "aegs-tiburon",
+      "class": "AEGS_Tiburon",
+      "name": "Aegis Tiburon",
+      "port": {
+        "id": "a05ed014-fcc7-5ff1-8f71-b28cc53f1e3d",
+        "name": "hardpoint_missile_bottom_left_01",
+        "category": "missile_racks",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 5
+      }
+    },
+    {
+      "slug": "aegs-tiburon",
+      "class": "AEGS_Tiburon",
+      "name": "Aegis Tiburon",
+      "port": {
+        "id": "cee3ac7a-5f1a-5a67-96ae-50792b1e05e0",
+        "name": "hardpoint_missile_bottom_left_02",
+        "category": "missile_racks",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 5
+      }
+    },
+    {
+      "slug": "aegs-tiburon",
+      "class": "AEGS_Tiburon",
+      "name": "Aegis Tiburon",
+      "port": {
+        "id": "f2570ffc-72f8-5588-b0c1-ed2078231c68",
+        "name": "hardpoint_missile_bottom_right_01",
+        "category": "missile_racks",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 5
+      }
+    },
+    {
+      "slug": "aegs-tiburon",
+      "class": "AEGS_Tiburon",
+      "name": "Aegis Tiburon",
+      "port": {
+        "id": "9f7db1ac-e49a-5654-b50e-7b23c0675305",
+        "name": "hardpoint_missile_bottom_right_02",
+        "category": "missile_racks",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 5
+      }
+    },
+    {
+      "slug": "aegs-tiburon",
+      "class": "AEGS_Tiburon",
+      "name": "Aegis Tiburon",
+      "port": {
+        "id": "f349bf38-a142-5de7-8f01-6061498d9431",
+        "name": "hardpoint_missile_top_left_01",
+        "category": "missile_racks",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 5
+      }
+    },
+    {
+      "slug": "aegs-tiburon",
+      "class": "AEGS_Tiburon",
+      "name": "Aegis Tiburon",
+      "port": {
+        "id": "851c3003-63c0-5ad3-bf96-c75a517f925b",
+        "name": "hardpoint_missile_top_left_02",
+        "category": "missile_racks",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 5
+      }
+    },
+    {
+      "slug": "aegs-tiburon",
+      "class": "AEGS_Tiburon",
+      "name": "Aegis Tiburon",
+      "port": {
+        "id": "30c66fbe-aabc-56d1-8645-bf465d70e783",
+        "name": "hardpoint_missile_top_right_01",
+        "category": "missile_racks",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 5
+      }
+    },
+    {
+      "slug": "aegs-tiburon",
+      "class": "AEGS_Tiburon",
+      "name": "Aegis Tiburon",
+      "port": {
+        "id": "33a8dd0e-8937-5bda-8865-690fce2d2d68",
+        "name": "hardpoint_missile_top_right_02",
+        "category": "missile_racks",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 5
+      }
+    },
+    {
+      "slug": "aegs-tiburon",
+      "class": "AEGS_Tiburon",
+      "name": "Aegis Tiburon",
+      "port": {
+        "id": "10509a0c-27c3-5b9a-a0b3-33906093b80c",
+        "name": "hardpoint_power_plant_l",
+        "category": "powerplant",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 3,
+        "component": {
+          "scKey": "powr_amrs_s03_superdrive_scitem",
+          "name": "SuperDrive"
+        }
+      }
+    },
+    {
+      "slug": "aegs-tiburon",
+      "class": "AEGS_Tiburon",
+      "name": "Aegis Tiburon",
+      "port": {
+        "id": "4dac9de9-28c7-5f4c-95cb-04adc8f090e2",
+        "name": "hardpoint_power_plant_r",
+        "category": "powerplant",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 3,
+        "component": {
+          "scKey": "powr_amrs_s03_superdrive_scitem",
+          "name": "SuperDrive"
+        }
+      }
+    },
+    {
+      "slug": "aegs-tiburon",
+      "class": "AEGS_Tiburon",
+      "name": "Aegis Tiburon",
+      "port": {
+        "id": "30f684d9-4fbc-5c44-8e9b-b09548025c8c",
+        "name": "hardpoint_quantum_drive",
+        "category": "quantumdrive",
+        "group": "propulsion",
+        "source": "game_files",
+        "maxSize": 3,
+        "component": {
+          "scKey": "qdrv_wetk_s03_pontes_scitem",
+          "name": "Pontes"
+        }
+      }
+    },
+    {
+      "slug": "aegs-tiburon",
+      "class": "AEGS_Tiburon",
+      "name": "Aegis Tiburon",
+      "port": {
+        "id": "9fb3da99-3936-5501-bb95-e384ce9616f4",
+        "name": "hardpoint_radar",
+        "category": "radar",
+        "group": "avionic",
+        "source": "game_files",
+        "maxSize": 3,
+        "component": {
+          "scKey": "radr_grnp_s03_resolu",
+          "name": "Resolu"
+        }
+      }
+    },
+    {
+      "slug": "aegs-tiburon",
+      "class": "AEGS_Tiburon",
+      "name": "Aegis Tiburon",
+      "port": {
+        "id": "5b042e90-f4fa-505a-839b-4cfb970534c2",
+        "name": "hardpoint_shield_generator_l",
+        "category": "shieldgenerator",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 3,
+        "component": {
+          "scKey": "shld_godi_s03_surestop_scitem",
+          "name": "SureStop"
+        }
+      }
+    },
+    {
+      "slug": "aegs-tiburon",
+      "class": "AEGS_Tiburon",
+      "name": "Aegis Tiburon",
+      "port": {
+        "id": "0deeba21-ea15-5575-bf0d-f87147dc6d1a",
+        "name": "hardpoint_shield_generator_r",
+        "category": "shieldgenerator",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 3,
+        "component": {
+          "scKey": "shld_godi_s03_surestop_scitem",
+          "name": "SureStop"
+        }
+      }
+    },
+    {
+      "slug": "aegs-tiburon",
+      "class": "AEGS_Tiburon",
+      "name": "Aegis Tiburon",
+      "port": {
+        "id": "3dc9c904-aef3-5c16-b981-ea93e2cd689e",
+        "name": "hardpoint_turret_front_left",
+        "category": "turret",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 5,
+        "weaponControl": "pilot",
+        "turretClass": "AEGS_tiburon_SCItem_Remote_Turret_front_left",
+        "childGuns": [
+          {
+            "hardpoint": "hardpoint_class_2",
+            "class": "BEHR_BallisticCannon_S7_Tiburon",
+            "name": "C-07T Cannon",
+            "type": "WeaponGun.Gun",
+            "min": 7,
+            "max": 7,
+            "editable": false,
+            "stock": "BEHR_BallisticCannon_S7_Tiburon"
+          }
+        ],
+        "component": {
+          "scKey": "aegs_tiburon_scitem_remote_turret_front_left",
+          "name": "Remote Turret"
+        }
+      }
+    },
+    {
+      "slug": "aegs-tiburon",
+      "class": "AEGS_Tiburon",
+      "name": "Aegis Tiburon",
+      "port": {
+        "id": "0a4afadc-f7b8-5f52-a790-e241108e57e2",
+        "name": "hardpoint_turret_front_right",
+        "category": "turret",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 5,
+        "weaponControl": "pilot",
+        "turretClass": "AEGS_tiburon_SCItem_Remote_Turret_front_right",
+        "childGuns": [
+          {
+            "hardpoint": "hardpoint_class_2",
+            "class": "BEHR_BallisticCannon_S7_Tiburon",
+            "name": "C-07T Cannon",
+            "type": "WeaponGun.Gun",
+            "min": 7,
+            "max": 7,
+            "editable": false,
+            "stock": "BEHR_BallisticCannon_S7_Tiburon"
+          }
+        ],
+        "component": {
+          "scKey": "aegs_tiburon_scitem_remote_turret_front_right",
+          "name": "Remote Turret"
+        }
+      }
+    },
+    {
+      "slug": "aegs-tiburon",
+      "class": "AEGS_Tiburon",
+      "name": "Aegis Tiburon",
+      "port": {
+        "id": "b9a3557e-9c54-5bec-ad85-e4d6e637982f",
+        "name": "hardpoint_turret_mid_left",
+        "category": "turret",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 5,
+        "weaponControl": "pilot",
+        "turretClass": "AEGS_tiburon_SCItem_Remote_Turret_mid_left",
+        "childGuns": [
+          {
+            "hardpoint": "hardpoint_class_2",
+            "class": "BEHR_BallisticCannon_S7_Tiburon",
+            "name": "C-07T Cannon",
+            "type": "WeaponGun.Gun",
+            "min": 7,
+            "max": 7,
+            "editable": false,
+            "stock": "BEHR_BallisticCannon_S7_Tiburon"
+          }
+        ],
+        "component": {
+          "scKey": "aegs_tiburon_scitem_remote_turret_mid_left",
+          "name": "Remote Turret"
+        }
+      }
+    },
+    {
+      "slug": "aegs-tiburon",
+      "class": "AEGS_Tiburon",
+      "name": "Aegis Tiburon",
+      "port": {
+        "id": "1fc16e39-d7f9-5a24-b8e0-02bb891b02ce",
+        "name": "hardpoint_turret_mid_right",
+        "category": "turret",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 5,
+        "weaponControl": "pilot",
+        "turretClass": "AEGS_tiburon_SCItem_Remote_Turret_mid_right",
+        "childGuns": [
+          {
+            "hardpoint": "hardpoint_class_2",
+            "class": "BEHR_BallisticCannon_S7_Tiburon",
+            "name": "C-07T Cannon",
+            "type": "WeaponGun.Gun",
+            "min": 7,
+            "max": 7,
+            "editable": false,
+            "stock": "BEHR_BallisticCannon_S7_Tiburon"
+          }
+        ],
+        "component": {
+          "scKey": "aegs_tiburon_scitem_remote_turret_mid_right",
+          "name": "Remote Turret"
+        }
+      }
+    },
+    {
+      "slug": "aegs-tiburon",
+      "class": "AEGS_Tiburon",
+      "name": "Aegis Tiburon",
+      "port": {
+        "id": "cc426683-02ad-58c5-a984-5b9b837b8d69",
+        "name": "hardpoint_weapon",
+        "category": "weapons",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 10,
+        "component": {
+          "scKey": "hrst_laserbeam_tiburon",
+          "name": "Supremacy-10T Laser Beam"
+        }
+      }
+    },
+    {
+      "slug": "aegs-tiburon",
+      "class": "AEGS_Tiburon",
+      "name": "Aegis Tiburon",
+      "port": {
+        "id": "8f9e1337-61ec-5912-ab36-5077310feb21",
+        "name": "turret_rear",
+        "category": "turret",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 5,
+        "weaponControl": "turret",
+        "turretClass": "AEGS_Hammerhead_GS_SCItem_Turret_Rear",
+        "childGuns": [
+          {
+            "hardpoint": "hardpoint_class_2",
+            "class": "KLWE_LaserRepeater_S4",
+            "name": "CF-447 Rhino Repeater",
+            "type": "WeaponGun.Gun",
+            "min": 4,
+            "max": 4,
+            "editable": true,
+            "stock": "KLWE_LaserRepeater_S4"
+          },
+          {
+            "hardpoint": "hardpoint_class_2",
+            "class": "KLWE_LaserRepeater_S4",
+            "name": "CF-447 Rhino Repeater",
+            "type": "WeaponGun.Gun",
+            "min": 4,
+            "max": 4,
+            "editable": true,
+            "stock": "KLWE_LaserRepeater_S4"
+          },
+          {
+            "hardpoint": "hardpoint_class_2",
+            "class": "KLWE_LaserRepeater_S4",
+            "name": "CF-447 Rhino Repeater",
+            "type": "WeaponGun.Gun",
+            "min": 4,
+            "max": 4,
+            "editable": true,
+            "stock": "KLWE_LaserRepeater_S4"
+          },
+          {
+            "hardpoint": "hardpoint_class_2",
+            "class": "KLWE_LaserRepeater_S4",
+            "name": "CF-447 Rhino Repeater",
+            "type": "WeaponGun.Gun",
+            "min": 4,
+            "max": 4,
+            "editable": true,
+            "stock": "KLWE_LaserRepeater_S4"
+          }
+        ],
+        "component": {
+          "scKey": "aegs_hammerhead_gs_scitem_turret_rear",
+          "name": "Manned Turret"
+        }
       }
     },
     {
@@ -65940,11 +66399,7 @@
             "editable": false,
             "stock": "GATS_BallisticGatling_Mounted_S1_DRAK_Cutlass_Steel"
           }
-        ],
-        "component": {
-          "scKey": "weaponmount_gun_s1_anvl_asgard_door_left",
-          "name": "Turret"
-        }
+        ]
       }
     },
     {
@@ -65971,11 +66426,7 @@
             "editable": false,
             "stock": "GATS_BallisticGatling_Mounted_S1_DRAK_Cutlass_Steel"
           }
-        ],
-        "component": {
-          "scKey": "weaponmount_gun_s1_anvl_asgard_door_right",
-          "name": "Turret"
-        }
+        ]
       }
     },
     {
@@ -101702,6 +102153,242 @@
       }
     },
     {
+      "slug": "drak-command-module",
+      "class": "DRAK_Command_Module",
+      "name": "Drake Command Module",
+      "port": {
+        "id": "2305f161-01d9-57c0-9d53-a324ee6498e8",
+        "name": "hardpoint_cooler",
+        "category": "cooler",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 1,
+        "component": {
+          "scKey": "cool_just_s01_thermax_scitem",
+          "name": "Thermax"
+        }
+      }
+    },
+    {
+      "slug": "drak-command-module",
+      "class": "DRAK_Command_Module",
+      "name": "Drake Command Module",
+      "port": {
+        "id": "a71ea5f5-b39f-5718-bfe3-c3751b28287d",
+        "name": "hardpoint_lifesupport",
+        "category": "lifesupport",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 1,
+        "component": {
+          "scKey": "lfsp_tydt_s01_comfortair",
+          "name": "ComfortAir"
+        }
+      }
+    },
+    {
+      "slug": "drak-command-module",
+      "class": "DRAK_Command_Module",
+      "name": "Drake Command Module",
+      "port": {
+        "id": "73449474-69c5-5acb-96ae-4c427894c782",
+        "name": "hardpoint_power_plant",
+        "category": "powerplant",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 1,
+        "component": {
+          "scKey": "powr_just_s01_fortitude_scitem",
+          "name": "Fortitude"
+        }
+      }
+    },
+    {
+      "slug": "drak-command-module",
+      "class": "DRAK_Command_Module",
+      "name": "Drake Command Module",
+      "port": {
+        "id": "1b137ee4-01ab-55ff-9309-aa45f1d6a9f6",
+        "name": "hardpoint_quantum_drive",
+        "category": "quantumdrive",
+        "group": "propulsion",
+        "source": "game_files",
+        "maxSize": 1,
+        "component": {
+          "scKey": "qdrv_just_s01_goliath_scitem",
+          "name": "Goliath"
+        }
+      }
+    },
+    {
+      "slug": "drak-command-module",
+      "class": "DRAK_Command_Module",
+      "name": "Drake Command Module",
+      "port": {
+        "id": "48296362-b9c9-57b8-bfcd-1eaa613989b3",
+        "name": "hardpoint_radar",
+        "category": "radar",
+        "group": "avionic",
+        "source": "game_files",
+        "maxSize": 1,
+        "component": {
+          "scKey": "radr_chco_s01_observerlite",
+          "name": "Observer-Lite"
+        }
+      }
+    },
+    {
+      "slug": "drak-command-module",
+      "class": "DRAK_Command_Module",
+      "name": "Drake Command Module",
+      "port": {
+        "id": "3ac9f9bd-7261-5f1e-a821-b633ccae0727",
+        "name": "hardpoint_remote_turret_top",
+        "category": "turret",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 4,
+        "weaponControl": "pilot",
+        "turretClass": "DRAK_Command_Module_Remote_Turret",
+        "childGuns": [
+          {
+            "hardpoint": "hardpoint_class_2",
+            "class": "KLWE_LaserRepeater_S3",
+            "name": "CF-337 Panther Repeater",
+            "type": "WeaponGun.Gun",
+            "min": 3,
+            "max": 3,
+            "editable": true,
+            "stock": "KLWE_LaserRepeater_S3"
+          },
+          {
+            "hardpoint": "hardpoint_class_2",
+            "class": "KLWE_LaserRepeater_S3",
+            "name": "CF-337 Panther Repeater",
+            "type": "WeaponGun.Gun",
+            "min": 3,
+            "max": 3,
+            "editable": true,
+            "stock": "KLWE_LaserRepeater_S3"
+          }
+        ],
+        "component": {
+          "scKey": "drak_command_module_remote_turret",
+          "name": "Remote Turret"
+        }
+      }
+    },
+    {
+      "slug": "drak-command-module",
+      "class": "DRAK_Command_Module",
+      "name": "Drake Command Module",
+      "port": {
+        "id": "0e1485dc-7c40-5708-9032-4b0e96cf2006",
+        "name": "hardpoint_shield_generator",
+        "category": "shieldgenerator",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 1,
+        "component": {
+          "scKey": "shld_basl_s01_palisade_scitem",
+          "name": "Palisade"
+        }
+      }
+    },
+    {
+      "slug": "drak-command-module",
+      "class": "DRAK_Command_Module",
+      "name": "Drake Command Module",
+      "port": {
+        "id": "671e3c8e-604b-5329-ad07-2f08936df24f",
+        "name": "hardpoint_tractor_beam",
+        "category": "turret",
+        "group": "auxiliary",
+        "source": "game_files",
+        "maxSize": 2,
+        "weaponControl": "pilot",
+        "turretClass": "DRAK_Command_Module_Remote_Turret_Tractor_Beam",
+        "childGuns": [
+          {
+            "hardpoint": "turret_weapon",
+            "class": "GRIN_TractorBeam_S2",
+            "name": "SureGrip S2 Tractor Beam",
+            "type": "TractorBeam.UNDEFINED",
+            "min": 2,
+            "max": 2,
+            "editable": false,
+            "stock": "GRIN_TractorBeam_S2"
+          }
+        ],
+        "component": {
+          "scKey": "drak_command_module_remote_turret_tractor_beam",
+          "name": "Tractor Beam"
+        }
+      }
+    },
+    {
+      "slug": "drak-command-module",
+      "class": "DRAK_Command_Module",
+      "name": "Drake Command Module",
+      "port": {
+        "id": "250f757c-7267-5d70-b5b8-d84df546c7bc",
+        "name": "hardpoint_weapon_left",
+        "category": "weapon_mounts",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 3,
+        "weaponControl": "pilot",
+        "turretClass": "Mount_Gimbal_S3",
+        "childGuns": [
+          {
+            "hardpoint": "hardpoint_class_2",
+            "class": "BEHR_LaserCannon_S3",
+            "name": "M5A Cannon",
+            "type": "WeaponGun.Gun",
+            "min": 3,
+            "max": 3,
+            "editable": true,
+            "stock": "BEHR_LaserCannon_S3"
+          }
+        ],
+        "component": {
+          "scKey": "mount_gimbal_s3",
+          "name": "VariPuck S3 Gimbal Mount"
+        }
+      }
+    },
+    {
+      "slug": "drak-command-module",
+      "class": "DRAK_Command_Module",
+      "name": "Drake Command Module",
+      "port": {
+        "id": "825a4660-6b65-5a2d-a621-ed7f8ce541f1",
+        "name": "hardpoint_weapon_right",
+        "category": "weapon_mounts",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 3,
+        "weaponControl": "pilot",
+        "turretClass": "Mount_Gimbal_S3",
+        "childGuns": [
+          {
+            "hardpoint": "hardpoint_class_2",
+            "class": "BEHR_LaserCannon_S3",
+            "name": "M5A Cannon",
+            "type": "WeaponGun.Gun",
+            "min": 3,
+            "max": 3,
+            "editable": true,
+            "stock": "BEHR_LaserCannon_S3"
+          }
+        ],
+        "component": {
+          "scKey": "mount_gimbal_s3",
+          "name": "VariPuck S3 Gimbal Mount"
+        }
+      }
+    },
+    {
       "slug": "drak-corsair",
       "class": "DRAK_Corsair",
       "name": "Drake Corsair",
@@ -108911,11 +109598,7 @@
             "editable": false,
             "stock": "GATS_BallisticGatling_Mounted_S1_DRAK_Cutlass_Steel"
           }
-        ],
-        "component": {
-          "scKey": "weaponmount_gun_s1_drak_cutlass_steel",
-          "name": "<= PLACEHOLDER =>"
-        }
+        ]
       }
     },
     {
@@ -108942,11 +109625,7 @@
             "editable": false,
             "stock": "GATS_BallisticGatling_Mounted_S1_DRAK_Cutlass_Steel"
           }
-        ],
-        "component": {
-          "scKey": "weaponmount_gun_s1_drak_cutlass_steel_left",
-          "name": "<= PLACEHOLDER =>"
-        }
+        ]
       }
     },
     {
@@ -108973,11 +109652,7 @@
             "editable": false,
             "stock": "GATS_BallisticGatling_Mounted_S1_DRAK_Cutlass_Steel"
           }
-        ],
-        "component": {
-          "scKey": "weaponmount_gun_s1_drak_cutlass_steel_rear",
-          "name": "<= PLACEHOLDER =>"
-        }
+        ]
       }
     },
     {
@@ -109004,11 +109679,7 @@
             "editable": false,
             "stock": "GATS_BallisticGatling_Mounted_S1_DRAK_Cutlass_Steel"
           }
-        ],
-        "component": {
-          "scKey": "weaponmount_gun_s1_drak_cutlass_steel_left",
-          "name": "<= PLACEHOLDER =>"
-        }
+        ]
       }
     },
     {
@@ -109035,11 +109706,7 @@
             "editable": false,
             "stock": "GATS_BallisticGatling_Mounted_S1_DRAK_Cutlass_Steel"
           }
-        ],
-        "component": {
-          "scKey": "weaponmount_gun_s1_drak_cutlass_steel",
-          "name": "<= PLACEHOLDER =>"
-        }
+        ]
       }
     },
     {
@@ -228269,6 +228936,621 @@
         "group": "unknown",
         "source": "game_files",
         "maxSize": 1
+      }
+    },
+    {
+      "slug": "rsi-zeus-cl",
+      "class": "RSI_Zeus_CL",
+      "name": "RSI Zeus Mk II CL",
+      "port": {
+        "id": "140f4742-54a9-5013-b984-446f2fd80cf9",
+        "name": "hardpoint_cooler_left_cl",
+        "category": "cooler",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 2,
+        "component": {
+          "scKey": "cool_just_s02_coolcore_scitem",
+          "name": "CoolCore"
+        }
+      }
+    },
+    {
+      "slug": "rsi-zeus-cl",
+      "class": "RSI_Zeus_CL",
+      "name": "RSI Zeus Mk II CL",
+      "port": {
+        "id": "883147cb-c831-50e1-bbce-2baff1b300e4",
+        "name": "hardpoint_cooler_right_cl",
+        "category": "cooler",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 2,
+        "component": {
+          "scKey": "cool_just_s02_coolcore_scitem",
+          "name": "CoolCore"
+        }
+      }
+    },
+    {
+      "slug": "rsi-zeus-cl",
+      "class": "RSI_Zeus_CL",
+      "name": "RSI Zeus Mk II CL",
+      "port": {
+        "id": "7006d065-0435-5bc8-b3a3-6476fcbf3eeb",
+        "name": "hardpoint_gun_left",
+        "category": "weapon_mounts",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 4,
+        "weaponControl": "pilot",
+        "turretClass": "Mount_Gimbal_S4",
+        "childGuns": [
+          {
+            "hardpoint": "hardpoint_class_2",
+            "class": "AMRS_LaserCannon_S4",
+            "name": "Omnisky XII Cannon",
+            "type": "WeaponGun.Gun",
+            "min": 4,
+            "max": 4,
+            "editable": true,
+            "stock": "AMRS_LaserCannon_S4"
+          }
+        ],
+        "component": {
+          "scKey": "mount_gimbal_s4",
+          "name": "VariPuck S4 Gimbal Mount"
+        }
+      }
+    },
+    {
+      "slug": "rsi-zeus-cl",
+      "class": "RSI_Zeus_CL",
+      "name": "RSI Zeus Mk II CL",
+      "port": {
+        "id": "ed1dd218-9e25-5d43-ac5f-5c9621e57775",
+        "name": "hardpoint_gun_right",
+        "category": "weapon_mounts",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 4,
+        "weaponControl": "pilot",
+        "turretClass": "Mount_Gimbal_S4",
+        "childGuns": [
+          {
+            "hardpoint": "hardpoint_class_2",
+            "class": "AMRS_LaserCannon_S4",
+            "name": "Omnisky XII Cannon",
+            "type": "WeaponGun.Gun",
+            "min": 4,
+            "max": 4,
+            "editable": true,
+            "stock": "AMRS_LaserCannon_S4"
+          }
+        ],
+        "component": {
+          "scKey": "mount_gimbal_s4",
+          "name": "VariPuck S4 Gimbal Mount"
+        }
+      }
+    },
+    {
+      "slug": "rsi-zeus-cl",
+      "class": "RSI_Zeus_CL",
+      "name": "RSI Zeus Mk II CL",
+      "port": {
+        "id": "1349f191-853c-5678-b67f-d2a46f26e4d5",
+        "name": "hardpoint_lifesupport",
+        "category": "lifesupport",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 2,
+        "component": {
+          "scKey": "lfsp_tydt_s02_comfortairplus",
+          "name": "ComfortAir Plus"
+        }
+      }
+    },
+    {
+      "slug": "rsi-zeus-cl",
+      "class": "RSI_Zeus_CL",
+      "name": "RSI Zeus Mk II CL",
+      "port": {
+        "id": "6daff479-e7f5-5820-aed1-60c11b1388cb",
+        "name": "hardpoint_missile_left",
+        "category": "missile_racks",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 4
+      }
+    },
+    {
+      "slug": "rsi-zeus-cl",
+      "class": "RSI_Zeus_CL",
+      "name": "RSI Zeus Mk II CL",
+      "port": {
+        "id": "e302e416-bc57-54a1-8435-a19e7a93d849",
+        "name": "hardpoint_missile_right",
+        "category": "missile_racks",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 4
+      }
+    },
+    {
+      "slug": "rsi-zeus-cl",
+      "class": "RSI_Zeus_CL",
+      "name": "RSI Zeus Mk II CL",
+      "port": {
+        "id": "3313b44d-dc42-587c-9b4b-063f143a4df3",
+        "name": "hardpoint_power_plant_left_cl",
+        "category": "powerplant",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 2,
+        "component": {
+          "scKey": "powr_just_s02_diligence_scitem",
+          "name": "Diligence"
+        }
+      }
+    },
+    {
+      "slug": "rsi-zeus-cl",
+      "class": "RSI_Zeus_CL",
+      "name": "RSI Zeus Mk II CL",
+      "port": {
+        "id": "c7adeabc-5cd4-5c37-b80a-18798c9cac3d",
+        "name": "hardpoint_power_plant_right_cl",
+        "category": "powerplant",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 2,
+        "component": {
+          "scKey": "powr_just_s02_diligence_scitem",
+          "name": "Diligence"
+        }
+      }
+    },
+    {
+      "slug": "rsi-zeus-cl",
+      "class": "RSI_Zeus_CL",
+      "name": "RSI Zeus Mk II CL",
+      "port": {
+        "id": "754474b0-9241-5829-a777-c75bbc99a2e9",
+        "name": "hardpoint_quantum_drive_cl",
+        "category": "quantumdrive",
+        "group": "propulsion",
+        "source": "game_files",
+        "maxSize": 2,
+        "component": {
+          "scKey": "qdrv_rsi_s02_khaos_scitem",
+          "name": "Khaos"
+        }
+      }
+    },
+    {
+      "slug": "rsi-zeus-cl",
+      "class": "RSI_Zeus_CL",
+      "name": "RSI Zeus Mk II CL",
+      "port": {
+        "id": "6c4b536a-725d-5d46-939e-b24e1c89e115",
+        "name": "hardpoint_radar_cl",
+        "category": "radar",
+        "group": "avionic",
+        "source": "game_files",
+        "maxSize": 2,
+        "component": {
+          "scKey": "radr_chco_s02_surveyor",
+          "name": "Surveyor"
+        }
+      }
+    },
+    {
+      "slug": "rsi-zeus-cl",
+      "class": "RSI_Zeus_CL",
+      "name": "RSI Zeus Mk II CL",
+      "port": {
+        "id": "90f89a06-c292-52cd-8da0-f27064f85563",
+        "name": "hardpoint_shield_generator_1",
+        "category": "shieldgenerator",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 2,
+        "component": {
+          "scKey": "shld_basl_s02_aspis_scitem",
+          "name": "Aspis"
+        }
+      }
+    },
+    {
+      "slug": "rsi-zeus-cl",
+      "class": "RSI_Zeus_CL",
+      "name": "RSI Zeus Mk II CL",
+      "port": {
+        "id": "af2b601f-d43d-5baf-aa4c-464a7dd39fcc",
+        "name": "hardpoint_shield_generator_2",
+        "category": "shieldgenerator",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 2,
+        "component": {
+          "scKey": "shld_basl_s02_aspis_scitem",
+          "name": "Aspis"
+        }
+      }
+    },
+    {
+      "slug": "rsi-zeus-cl",
+      "class": "RSI_Zeus_CL",
+      "name": "RSI Zeus Mk II CL",
+      "port": {
+        "id": "6d676f95-92ce-5e7c-840d-9c4ecb13f9b3",
+        "name": "hardpoint_shield_generator_3",
+        "category": "shieldgenerator",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 2,
+        "component": {
+          "scKey": "shld_basl_s02_aspis_scitem",
+          "name": "Aspis"
+        }
+      }
+    },
+    {
+      "slug": "rsi-zeus-cl",
+      "class": "RSI_Zeus_CL",
+      "name": "RSI Zeus Mk II CL",
+      "port": {
+        "id": "9a97c3c5-2cde-523b-a4a6-4f61368fbbbf",
+        "name": "hardpoint_turret_bottom",
+        "category": "turret",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 3,
+        "weaponControl": "pilot",
+        "turretClass": "RSI_Zeus_Remote_Turret_Bottom_S3",
+        "childGuns": [
+          {
+            "hardpoint": "hardpoint_class_2",
+            "class": "KLWE_LaserRepeater_S3",
+            "name": "CF-337 Panther Repeater",
+            "type": "WeaponGun.Gun",
+            "min": 3,
+            "max": 3,
+            "editable": true,
+            "stock": "KLWE_LaserRepeater_S3"
+          },
+          {
+            "hardpoint": "hardpoint_class_2",
+            "class": "KLWE_LaserRepeater_S3",
+            "name": "CF-337 Panther Repeater",
+            "type": "WeaponGun.Gun",
+            "min": 3,
+            "max": 3,
+            "editable": true,
+            "stock": "KLWE_LaserRepeater_S3"
+          }
+        ],
+        "component": {
+          "scKey": "rsi_zeus_remote_turret_bottom_s3",
+          "name": "Remote Turret"
+        }
+      }
+    },
+    {
+      "slug": "rsi-zeus-es",
+      "class": "RSI_Zeus_ES",
+      "name": "RSI Zeus Mk II ES",
+      "port": {
+        "id": "9058ed8f-cf10-51d9-aeca-cf50c6c78a2e",
+        "name": "hardpoint_cooler_left",
+        "category": "cooler",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 2,
+        "component": {
+          "scKey": "cool_lplt_s02_coldsnap_scitem",
+          "name": "ColdSnap"
+        }
+      }
+    },
+    {
+      "slug": "rsi-zeus-es",
+      "class": "RSI_Zeus_ES",
+      "name": "RSI Zeus Mk II ES",
+      "port": {
+        "id": "3b186122-7b01-5912-8501-3d633d94bd79",
+        "name": "hardpoint_cooler_right",
+        "category": "cooler",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 2,
+        "component": {
+          "scKey": "cool_lplt_s02_coldsnap_scitem",
+          "name": "ColdSnap"
+        }
+      }
+    },
+    {
+      "slug": "rsi-zeus-es",
+      "class": "RSI_Zeus_ES",
+      "name": "RSI Zeus Mk II ES",
+      "port": {
+        "id": "e86ad35f-2fb5-5b95-a6d2-8c3978eb1000",
+        "name": "hardpoint_gun_left",
+        "category": "weapon_mounts",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 4,
+        "weaponControl": "pilot",
+        "turretClass": "Mount_Gimbal_S4",
+        "childGuns": [
+          {
+            "hardpoint": "hardpoint_class_2",
+            "class": "AMRS_LaserCannon_S4",
+            "name": "Omnisky XII Cannon",
+            "type": "WeaponGun.Gun",
+            "min": 4,
+            "max": 4,
+            "editable": true,
+            "stock": "AMRS_LaserCannon_S4"
+          }
+        ],
+        "component": {
+          "scKey": "mount_gimbal_s4",
+          "name": "VariPuck S4 Gimbal Mount"
+        }
+      }
+    },
+    {
+      "slug": "rsi-zeus-es",
+      "class": "RSI_Zeus_ES",
+      "name": "RSI Zeus Mk II ES",
+      "port": {
+        "id": "8eee8a3f-3c33-5497-af7c-e757f97a2ab2",
+        "name": "hardpoint_gun_right",
+        "category": "weapon_mounts",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 4,
+        "weaponControl": "pilot",
+        "turretClass": "Mount_Gimbal_S4",
+        "childGuns": [
+          {
+            "hardpoint": "hardpoint_class_2",
+            "class": "AMRS_LaserCannon_S4",
+            "name": "Omnisky XII Cannon",
+            "type": "WeaponGun.Gun",
+            "min": 4,
+            "max": 4,
+            "editable": true,
+            "stock": "AMRS_LaserCannon_S4"
+          }
+        ],
+        "component": {
+          "scKey": "mount_gimbal_s4",
+          "name": "VariPuck S4 Gimbal Mount"
+        }
+      }
+    },
+    {
+      "slug": "rsi-zeus-es",
+      "class": "RSI_Zeus_ES",
+      "name": "RSI Zeus Mk II ES",
+      "port": {
+        "id": "85a9cbc6-17a0-51e4-961d-eedd75d3f048",
+        "name": "hardpoint_lifesupport",
+        "category": "lifesupport",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 2,
+        "component": {
+          "scKey": "lfsp_tydt_s02_comfortairplus",
+          "name": "ComfortAir Plus"
+        }
+      }
+    },
+    {
+      "slug": "rsi-zeus-es",
+      "class": "RSI_Zeus_ES",
+      "name": "RSI Zeus Mk II ES",
+      "port": {
+        "id": "04a8d8f8-7e8b-5a62-aeb3-6827bc4c97d9",
+        "name": "hardpoint_missile_left",
+        "category": "missile_racks",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 4
+      }
+    },
+    {
+      "slug": "rsi-zeus-es",
+      "class": "RSI_Zeus_ES",
+      "name": "RSI Zeus Mk II ES",
+      "port": {
+        "id": "a12307e8-b02a-5ec2-a9a6-c57fbad2702f",
+        "name": "hardpoint_missile_right",
+        "category": "missile_racks",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 4
+      }
+    },
+    {
+      "slug": "rsi-zeus-es",
+      "class": "RSI_Zeus_ES",
+      "name": "RSI Zeus Mk II ES",
+      "port": {
+        "id": "b0a55891-f984-5b7e-aaf6-f78c5ced4b2d",
+        "name": "hardpoint_power_plant_left",
+        "category": "powerplant",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 2,
+        "component": {
+          "scKey": "powr_lplt_s02_fullforce_scitem",
+          "name": "FullForce"
+        }
+      }
+    },
+    {
+      "slug": "rsi-zeus-es",
+      "class": "RSI_Zeus_ES",
+      "name": "RSI Zeus Mk II ES",
+      "port": {
+        "id": "66060207-3078-5c1b-b601-4ceabdafabe9",
+        "name": "hardpoint_power_plant_right",
+        "category": "powerplant",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 2,
+        "component": {
+          "scKey": "powr_lplt_s02_fullforce_scitem",
+          "name": "FullForce"
+        }
+      }
+    },
+    {
+      "slug": "rsi-zeus-es",
+      "class": "RSI_Zeus_ES",
+      "name": "RSI Zeus Mk II ES",
+      "port": {
+        "id": "ada3d61b-3150-5cd3-8e6a-981d3c84c518",
+        "name": "hardpoint_quantum_drive",
+        "category": "quantumdrive",
+        "group": "propulsion",
+        "source": "game_files",
+        "maxSize": 2,
+        "component": {
+          "scKey": "qdrv_rsi_s02_khaos_scitem",
+          "name": "Khaos"
+        }
+      }
+    },
+    {
+      "slug": "rsi-zeus-es",
+      "class": "RSI_Zeus_ES",
+      "name": "RSI Zeus Mk II ES",
+      "port": {
+        "id": "5a55febc-97b5-501a-ae00-eaf83484a24d",
+        "name": "hardpoint_radar",
+        "category": "radar",
+        "group": "avionic",
+        "source": "game_files",
+        "maxSize": 3,
+        "component": {
+          "scKey": "radr_wlop_s03_lephari",
+          "name": "Lephari"
+        }
+      }
+    },
+    {
+      "slug": "rsi-zeus-es",
+      "class": "RSI_Zeus_ES",
+      "name": "RSI Zeus Mk II ES",
+      "port": {
+        "id": "5b3716ed-4f33-5c5c-b4be-b0f217352517",
+        "name": "hardpoint_shield_generator_1",
+        "category": "shieldgenerator",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 2,
+        "component": {
+          "scKey": "shld_behr_s02_5ma_scitem",
+          "name": "5MA 'Chimalli'"
+        }
+      }
+    },
+    {
+      "slug": "rsi-zeus-es",
+      "class": "RSI_Zeus_ES",
+      "name": "RSI Zeus Mk II ES",
+      "port": {
+        "id": "20fa77b2-9361-566c-bb67-ad6b39746d29",
+        "name": "hardpoint_shield_generator_2",
+        "category": "shieldgenerator",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 2,
+        "component": {
+          "scKey": "shld_behr_s02_5ma_scitem",
+          "name": "5MA 'Chimalli'"
+        }
+      }
+    },
+    {
+      "slug": "rsi-zeus-es",
+      "class": "RSI_Zeus_ES",
+      "name": "RSI Zeus Mk II ES",
+      "port": {
+        "id": "96b27009-5385-5455-b0ce-530489f9b807",
+        "name": "hardpoint_shield_generator_3",
+        "category": "shieldgenerator",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 2,
+        "component": {
+          "scKey": "shld_behr_s02_5ma_scitem",
+          "name": "5MA 'Chimalli'"
+        }
+      }
+    },
+    {
+      "slug": "rsi-zeus-es",
+      "class": "RSI_Zeus_ES",
+      "name": "RSI Zeus Mk II ES",
+      "port": {
+        "id": "218b9b43-9c3b-5ba4-9846-839f066597d7",
+        "name": "hardpoint_shield_generator_4",
+        "category": "shieldgenerator",
+        "group": "system",
+        "source": "game_files",
+        "maxSize": 2,
+        "component": {
+          "scKey": "shld_behr_s02_5ma_scitem",
+          "name": "5MA 'Chimalli'"
+        }
+      }
+    },
+    {
+      "slug": "rsi-zeus-es",
+      "class": "RSI_Zeus_ES",
+      "name": "RSI Zeus Mk II ES",
+      "port": {
+        "id": "b325f64f-b3e5-59e4-b052-3a8ec29002b4",
+        "name": "hardpoint_turret_bottom",
+        "category": "turret",
+        "group": "weapon",
+        "source": "game_files",
+        "maxSize": 3,
+        "weaponControl": "pilot",
+        "turretClass": "RSI_Zeus_Remote_Turret_Bottom_S3",
+        "childGuns": [
+          {
+            "hardpoint": "hardpoint_class_2",
+            "class": "KLWE_LaserRepeater_S3",
+            "name": "CF-337 Panther Repeater",
+            "type": "WeaponGun.Gun",
+            "min": 3,
+            "max": 3,
+            "editable": true,
+            "stock": "KLWE_LaserRepeater_S3"
+          },
+          {
+            "hardpoint": "hardpoint_class_2",
+            "class": "KLWE_LaserRepeater_S3",
+            "name": "CF-337 Panther Repeater",
+            "type": "WeaponGun.Gun",
+            "min": 3,
+            "max": 3,
+            "editable": true,
+            "stock": "KLWE_LaserRepeater_S3"
+          }
+        ],
+        "component": {
+          "scKey": "rsi_zeus_remote_turret_bottom_s3",
+          "name": "Remote Turret"
+        }
       }
     },
     {

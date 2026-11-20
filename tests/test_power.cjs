@@ -33,7 +33,10 @@ for (const hull of db.ships) {
     assert.equal(hull.spool,-1);
   }
   if(s.output===hull.stockGen)gen++;
-  near(s.dpsBurst||0,(hull.stockDps||0)+(hull.turretDps||0));burst++;
+  // Tiburon: its hardware-locked S10 Supremacy beam is a fitted weapon in the app but the game-file
+  // aggregate (and the wiki's Pilot DPS) leaves it out. Expect exactly the beam's DPS on top.
+  const beamExtra=hull.class==='AEGS_Tiburon'?db.weapons.find(w=>w.class==='HRST_LaserBeam_Tiburon').dps:0;
+  near(s.dpsBurst||0,(hull.stockDps||0)+(hull.turretDps||0)+beamExtra,1e-3);burst++;
 }
 const N=db.ships.length;assert.equal(burst,N);assert.equal(matched,N-11); assert.equal(gen,N); assert.equal(residual.length,11);
 const marauder=ship('DRAK_Marauder');
