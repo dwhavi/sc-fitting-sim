@@ -135,7 +135,7 @@ function pipFmt(c){ if(c.pw!=null) return `${fmt(Math.ceil(c.pw))}핍`; if(c.pow
 function compShort(kind,c){
   if(!c) return '';
   const cb=clsBadge(c.cls);
-  if(kind==='weapon'){ const fam=c.family?` · ${c.family}`:''; const ft=fireBadge(c); return `${c.name}${fam} · ${fmt(c.dps)} DPS${susFmt(c)}${ft} · ${pipFmt(c)}${emFmt(c)}`; }
+  if(kind==='weapon'){ const fam=c.family?` · ${c.family}`:''; const ft=fireBadge(c); return `${c.name}${fam} · ${fmt(c.dps)} DPS${susFmt(c)}${ft}${speedFmt(c)} · ${pipFmt(c)}${emFmt(c)}`; }
   if(kind==='shield') return `${cb}${c.name} · HP ${fmt(c.hp)} · ${pipFmt(c)}${emFmt(c)}`;
   if(kind==='power') return `${cb}${c.name} · ${fmt(c.pwGen!=null?c.pwGen:c.output)}p${emFmt(c)}`;
   if(kind==='cooler') return `${cb}${c.name} · ${fmt(c.rate)} · ${pipFmt(c)}${emFmt(c)}`;
@@ -156,6 +156,11 @@ function fireBadge(c){
   if (ft === 'burst') return ' · 💥점사';
   if (ft === 'rapid') return ' · 🔥연사';
   return '';
+}
+// 탄속 표시 (2026-11-21): 게임 Ammunition.Speed (m/s, 발사체 속도). 연사속도(rpm)와 다름.
+function speedFmt(c){
+  if(!c || c.speed==null) return '';
+  return ` · 탄속 ${fmt(c.speed)}m/s`;
 }
 // sustain 표시: 게임 Damage.Sustained (Erkul En()/ye() 대응).
 function susFmt(c){
@@ -217,7 +222,7 @@ function openCompModal(slotId, kind, opts){
   drawChips();
   const redraw=()=>draw(($('mCompQ').value||'').toLowerCase().trim());
   const specMini=(kk,c)=>{
-    if(kk==='weapon') return `<span class="spec-mini">${fmt(c.dps)} DPS${c.sustain!=null?` (지속 ${fmt(c.sustain)})`:''}</span><span class="spec-mini">${pipFmt(c)||'—'}</span>${c.em!=null?`<span class="spec-mini">EM ${fmt(c.em)}</span>`:''}`;
+    if(kk==='weapon') return `<span class="spec-mini">${fmt(c.dps)} DPS${c.sustain!=null?` (지속 ${fmt(c.sustain)})`:''}</span><span class="spec-mini">${c.speed!=null?`탄속 ${fmt(c.speed)}m/s`:'탄속 —'}</span><span class="spec-mini">${pipFmt(c)||'—'}</span>${c.em!=null?`<span class="spec-mini">EM ${fmt(c.em)}</span>`:''}`;
     if(kk==='shield') return `<span class="spec-mini">HP ${fmt(c.hp)}</span><span class="spec-mini">${pipFmt(c)||'—'}</span>${c.em!=null?`<span class="spec-mini">EM ${fmt(c.em)}</span>`:''}`;
     if(kk==='power') return `<span class="spec-mini">${fmt(c.pwGen!=null?c.pwGen:c.output)}p</span>${c.em!=null?`<span class="spec-mini">EM ${fmt(c.em)}</span>`:''}`;
     if(kk==='cooler') return `<span class="spec-mini">${fmt(c.rate)}</span><span class="spec-mini">${pipFmt(c)||'—'}</span>${c.em!=null?`<span class="spec-mini">EM ${fmt(c.em)}</span>`:''}`;

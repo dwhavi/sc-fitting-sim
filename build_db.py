@@ -285,6 +285,8 @@ def main():
             'alphaBy': best['alphaBy'] if best else '',
             'dmgtype': best['types'] if best else [],
             'range': w.get('EffectiveRange') or am.get('Range'),
+            # 탄속 (m/s, 2026-11-21): Ammunition.Speed — 발사체 속도. 연사속도(rpm)와 다름.
+            'speed': am.get('Speed'),
             'dpsRaw': {t: m.get('Dps' + t) for t in DAMAGE_TYPES
                        if m.get('Dps' + t)} if False else {},
             'alphaRaw': {},
