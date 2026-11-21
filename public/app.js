@@ -182,14 +182,13 @@ function openCompModal(slotId, kind, opts){
   $('mov').addEventListener('click',e=>{ if(e.target.id==='mov') closeModal(); });
   let compFCls='ALL', compFSz='ALL', compFGr='ALL', compSort='';
   const SORTS={
-    '':['기본 순서',()=>0],
+    '':['이름 순',(a,b)=>(a.name||'').localeCompare(b.name||'')],
     perf:['성능 높은 순',(a,b)=>{
       const pv={weapon:c=>c.dps||0,shield:c=>c.hp||0,power:c=>(c.pwGen!=null?c.pwGen:c.output)||0,cooler:c=>c.rate||0,qd:c=>c.speed||0,missile:c=>(c.missiles||0)*10+(c.msize||0),radar:()=>0}[opts.gunSize?'weapon':kind]||(()=>0);
       return (pv(b)-pv(a))||((a.name||'').localeCompare(b.name||''));
     }],
     pipAsc:['핍 적은 순',(a,b)=>(((a.pw==null?1e9:a.pw))-((b.pw==null?1e9:b.pw)))],
-    emAsc:['EM 낮은 순',(a,b)=>(((a.em==null?1e9:a.em))-((b.em==null?1e9:b.em)))],
-    name:['이름 순',(a,b)=>(a.name||'').localeCompare(b.name||'')]
+    emAsc:['EM 낮은 순',(a,b)=>(((a.em==null?1e9:a.em))-((b.em==null?1e9:b.em)))]
   };
   $('mCompSort').innerHTML=Object.entries(SORTS).map(([k,[t]])=>`<option value="${k}">${t}</option>`).join('');
   $('mCompSort').addEventListener('change',e=>{ compSort=e.target.value; redraw(); });
@@ -228,7 +227,8 @@ function openCompModal(slotId, kind, opts){
   };
   const draw=q=>{
     let flt=list.filter(c=>(compFCls==='ALL'||(c.cls||'')===compFCls)&&(compFSz==='ALL'||String(c.size)===String(compFSz))&&(compFGr==='ALL'||String(c.grade??'')===String(compFGr))&&((labelFor(opts.gunSize?'weapon':kind,c)+' '+(c.mfr||'')).toLowerCase().includes(q)));
-    if(compSort&&SORTS[compSort]) flt=[...flt].sort(SORTS[compSort][1]);
+    // 기본 정렬: 이름 오름차순 (드롭다운에서 성능·핍·EM 순으로 바꿀 수 있음)
+    flt=[...flt].sort((SORTS[compSort]||SORTS[''])[1]);
     const rows=[{empty:true}].concat(flt);
     $('mCompCount').textContent=`${flt.length} / ${list.length}종 표시중`;
     $('mCompList').innerHTML=rows.map(r=>{
