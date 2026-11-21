@@ -389,6 +389,10 @@ function stockGunFor(subId) {
   const m = String(subId).match(/^(.*):w(\d+)$/);
   if (!m) return '';
   const port = (FY || []).find(x => x.id === m[1]);
+  // 순정이 아닌 다른 터렛 카드를 단 슬롯: 원래 순정 터렛의 스톡 무기는 미리 채우지 않는다
+  // (호환 터렛의 포트 사이즈가 다를 수 있음 — 예: F7A Mk II 센터 TMSB-5 는 S4 전용).
+  const selCard = port && (port.id in build) ? build[port.id] : '';
+  if (selCard && port.turretClass && selCard !== port.turretClass) return '';
   const g = port && port.childGuns && port.childGuns[parseInt(m[2], 10)];
   if (!g) return '';
   return g.stock || g.class || '';
@@ -509,14 +513,17 @@ function findTurret(scKey, name) {
   return null;
 }
 function turretCompat(h) {
-  // 이 포트에 달리는 카드만: 순정 turretClass + 호환 childGuns[].class.
-  // 게임 파일 체인에서 추출 (enrich_turret_slots.py). 정보 없으면 null = 구동작.
+  // 이 포트에 달리는 카드: 순정 turretClass + 호환 childGuns[].class (게임 파일 체인)
+  // + 포트 태그·타입 규칙으로 호환되는 다른 터렛 카드 (h.compat, enrich_turret_slots.py).
+  // 정보 없으면 null = 구동작.
   const tc = h.turretClass || null;
   const kids = h.childGuns || [];
-  if (!tc && !kids.length) return null;
+  const compat = h.compat || [];
+  if (!tc && !kids.length && !compat.length) return null;
   const set = new Set();
   if (tc) set.add(String(tc).toLowerCase());
   for (const k of kids) if (k.class) set.add(String(k.class).toLowerCase());
+  for (const c of compat) set.add(String(c).toLowerCase());
   return set;
 }
 function compatCards(h, cardKind) {

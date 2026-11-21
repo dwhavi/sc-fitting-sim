@@ -29,6 +29,67 @@ NOISE = ('Display', 'Room', 'SeatAccess', 'WeaponAttachment')
 TURRET_PARENTS = ('TurretBase', 'Turret', 'UtilityTurret')
 GUN_CHILDREN = ('Turret', 'WeaponGun', 'WeaponMining', 'WeaponSalvage',
                 'TractorBeam', 'WeaponDefensive')
+ITEMS = os.path.join(ROOT, 'data', 'raw', 'items.json')
+
+
+def load_items():
+    """items.json -> className: {type, subType, size, reqtags}. 터렛 호환 계산용."""
+    if not os.path.exists(ITEMS):
+        return {}
+    out = {}
+    for x in json.load(io.open(ITEMS, encoding='utf-8')):
+        si = x.get('stdItem') or {}
+        out[x.get('className')] = {
+            'type': x.get('type'), 'subType': x.get('subType'),
+            'size': x.get('size'), 'reqtags': si.get('RequiredTags') or []}
+    return out
+
+
+def port_defs(d):
+    """함선 최상위 Loadout 포트 -> {min,max,compat,porttags} (터렛 포트 호환 원천)."""
+    out = {}
+    for e in d.get('Loadout') or []:
+        n = e.get('HardpointName')
+        if not n:
+            continue
+        out[n] = {'min': e.get('MinSize'), 'max': e.get('MaxSize'),
+                  'compat': [(t.get('Type'), tuple(t.get('SubTypes') or []))
+                             for t in e.get('CompatibleTypes', [])],
+                  'porttags': e.get('PortTags') or []}
+    return out
+
+
+def compat_turrets(pd, items):
+    """게임 파일 규칙 그대로의 터렛 호환 목록:
+    포트 CompatibleTypes(Turret + subtype) + 사이즈 범위 + 아이템 RequiredTags ⊆ 포트 PortTags.
+    순정 짐벌 마운트 포트(GunTurret 만)는 대상에서 제외 — 카드 선택지는 기존처럼 순정만.
+    후보가 없으면 None."""
+    ctypes = pd['compat']
+    # 전용 터렛 포트(BallTurret/MannedTurret/CanardTurret 등)만 넓힌다.
+    # 'GunTurret'·'Gun' 은 짐벌/고정 마운트용 — 카드 선택지는 기존처럼 순정만.
+    tsubs = {st for t, subs in ctypes if t == 'Turret' for st in subs}
+    if not tsubs or not any(st and st not in ('GunTurret', 'Gun') for st in tsubs):
+        return None
+    ptags = set(pd['porttags'])
+    pmin = pd['min'] or 1
+    pmax = pd['max'] or 99
+    ok = []
+    for cn, it in items.items():
+        if it['type'] != 'Turret':
+            continue
+        if it['size'] is None or not (pmin <= it['size'] <= pmax):
+            continue
+        req = it['reqtags'] or []
+        if req and not set(req) <= ptags:
+            continue
+        for t, subs in ctypes:
+            if t != 'Turret':
+                continue
+            if subs and it['subType'] not in subs:
+                continue
+            ok.append(cn)
+            break
+    return sorted(set(ok))
 
 
 def ship_class_of(fn, mapping):
@@ -117,6 +178,8 @@ def main():
         mapping = json.load(io.open(META, encoding='utf-8')).get('class_to_file', {})
     slots = json.load(io.open(SLOTS, encoding='utf-8'))
     per_ship = {}
+    per_ship_ports = {}
+    items = load_items()
     files = sorted(glob.glob(os.path.join(RAW_SHIPS, '*.json')))
     print(f'raw ship files: {len(files)}')
     for f in files:
@@ -125,12 +188,14 @@ def main():
         if not klass:
             continue
         try:
+            d = json.load(io.open(f, encoding='utf-8'))
             per_ship[klass] = extract(fn)
+            per_ship_ports[klass] = port_defs(d)
         except Exception as e:
             print(f'  !! {fn}: {e}')
     print(f'ships with turret info: {len(per_ship)}')
 
-    n_hit = n_miss = n_gun = 0
+    n_hit = n_miss = n_gun = n_compat = 0
     for s in slots['slots']:
         p = s['port']
         info = match_info(p, per_ship.get(s.get('class')) or {})
@@ -148,6 +213,15 @@ def main():
                 p['group'] = 'weapon'
             p['childGuns'] = info['childGuns']
             n_gun += 1
+        # 이 포트에 호환되는 다른 터렛 카드 (게임 파일 태그·타입 규칙). 순정만이면 미기록.
+        pd = (per_ship_ports.get(s.get('class')) or {}).get(p['name'])
+        comp = compat_turrets(pd, items) if pd else None
+        base = {p.get('turretClass') or ''} | {g.get('class') for g in (p.get('childGuns') or [])}
+        if comp and any(c not in base for c in comp):
+            p['compat'] = comp
+            n_compat += 1
+        elif 'compat' in p:
+            del p['compat']
     bak = SLOTS + '.bak'
     if not os.path.exists(bak):
         shutil.copy2(SLOTS, bak)
@@ -155,7 +229,7 @@ def main():
     json.dump(slots, io.open(SLOTS, 'w', encoding='utf-8'),
               ensure_ascii=False)
     print(f'ports turretClass: {n_hit}, no-stock-class: {n_miss}, '
-          f'with childGuns: {n_gun}')
+          f'with childGuns: {n_gun}, with compat options: {n_compat}')
     print(f'wrote {SLOTS} ({os.path.getsize(SLOTS)}B)')
 
 

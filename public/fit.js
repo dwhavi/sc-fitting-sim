@@ -327,18 +327,19 @@
     }
     return Object.values(by);
   }
+  const lineSort = (a, b) => (((a.size || 0) - (b.size || 0)) || String(a.name || '').localeCompare(b.name || '', 'ko'));
   function planHTML(plan, opts) {
     opts = opts || {};
     const stopName = t => { const T = SHOPS.terms[t]; return `<b>${esc(T.n)}</b><span class="fit-dim"> · ${esc(SYS_KO[T.sys] || T.sys)} · ${esc(T.loc)}</span>`; };
     let h = '';
     plan.stops.forEach((st, i) => {
       h += `<div class="fit-stop"><div class="fit-stop-h">${i + 1}. ${stopName(st.t)}<span class="fit-sub">${nf(st.sub)} aUEC</span></div>`
-        + st.lines.map(l => `<div class="fit-line"><span>${esc(l.name)}${l.qty > 1 ? ' ×' + l.qty : ''} <span class="fit-dim">${KIND_KO[l.kind] || l.kind} S${l.size}</span></span><span>${nf(l.price * l.qty)}${l.price > l.min * 1.05 ? `<span class="fit-dim"> (최저 ${nf(l.min)})</span>` : ''}</span></div>`).join('')
+        + st.lines.slice().sort(lineSort).map(l => `<div class="fit-line"><span>${esc(l.name)}${l.qty > 1 ? ' ×' + l.qty : ''} <span class="fit-dim">${KIND_KO[l.kind] || l.kind} S${l.size}</span></span><span>${nf(l.price * l.qty)}${l.price > l.min * 1.05 ? `<span class="fit-dim"> (최저 ${nf(l.min)})</span>` : ''}</span></div>`).join('')
         + '</div>';
     });
     if (plan.missing.length) {
       h += `<div class="fit-stop fit-miss"><div class="fit-stop-h">⚠️ 구매처 미확인 (선택 지역 ${opt.sys.map(s => SYS_KO[s] || s).join('/')} 기준)</div>`
-        + plan.missing.map(m => { const p = anyPrice(m.cls); return `<div class="fit-line"><span>${esc(m.name)}${m.qty > 1 ? ' ×' + m.qty : ''}</span><span class="fit-dim">${p != null ? '다른 지역에는 있음 (지역 칩 확인)' : '데이터 없음 · 인게임 확인 필요'}</span></div>`; }).join('') + '</div>';
+        + plan.missing.slice().sort(lineSort).map(m => { const p = anyPrice(m.cls); return `<div class="fit-line"><span>${esc(m.name)}${m.qty > 1 ? ' ×' + m.qty : ''}</span><span class="fit-dim">${p != null ? '다른 지역에는 있음 (지역 칩 확인)' : '데이터 없음 · 인게임 확인 필요'}</span></div>`; }).join('') + '</div>';
     }
     if (plan.stops.length) h += `<div class="fit-total">합계 ${nf(plan.total)} aUEC <span class="fit-dim">(스테이션 묶음 기준${plan.minTotal < plan.total ? ' · 품목별 최저가 합 ' + nf(plan.minTotal) : ''})</span></div>`;
     return h;
@@ -496,7 +497,11 @@
     ];
     const tabs = Object.entries(PRESETS).map(([k, p]) => `<button class="chip${sel === k ? ' on' : ''}" data-t="${k}">${p.ico} ${p.t}</button>`).join('');
     const cmp = rows.map(([lbl, k, g, f]) => `<tr><td>${lbl}</td><td>${f(g(base0))}</td>${deltaCell(k, g(base0), g(r.m), f)}</tr>`).join('');
-    const chg = r.changes.length ? r.changes.map(c => {
+    const chg = r.changes.length ? r.changes.slice().sort((a, b) => {
+      // 변경 리스트 오름차순: 부품 사이즈 → 이름
+      const ca = findComp(a.s.kind, a.to), cb = findComp(b.s.kind, b.to);
+      return (((ca && ca.size) || 0) - ((cb && cb.size) || 0)) || String((ca && ca.name) || '').localeCompare((cb && cb.name) || '', 'ko');
+    }).map(c => {
       const a = findComp(c.s.kind, c.from), b = findComp(c.s.kind, c.to);
       const p = minPrice(c.to);
       return `<div class="fit-line"><span><span class="fit-dim">${esc(c.s.label)}</span><br>${esc(a ? a.name : '— 없음')} → <b>${esc(b ? b.name : '— 없음')}</b></span><span>${c.to === c.s.stock ? '<span class="fit-dim">스톡 복귀</span>' : (p != null ? '💰 ' + nf(p) : '<span class="warn">구매처 미확인</span>')}</span></div>`;
@@ -551,8 +556,9 @@
   function copyList(r) {
     const ship = (DB.ships.find(s => s.slug === curShip) || {}).name || curShip;
     const L = [`[${ship}] ${PRESETS[RES.sel].t} 피팅 — 구매 목록`];
-    r.plan.stops.forEach((st, i) => { const T = SHOPS.terms[st.t]; L.push(`${i + 1}) ${T.n} (${T.sys} · ${T.loc}) ${nf(st.sub)} aUEC`); st.lines.forEach(l => L.push(`   - ${l.name}${l.qty > 1 ? ' x' + l.qty : ''} ${nf(l.price * l.qty)}`)); });
-    r.plan.missing.forEach(m => L.push(`? ${m.name} x${m.qty} (구매처 미확인)`));
+    const ls = (a, b) => (((a.size || 0) - (b.size || 0)) || String(a.name || '').localeCompare(b.name || '', 'ko'));
+    r.plan.stops.forEach((st, i) => { const T = SHOPS.terms[st.t]; L.push(`${i + 1}) ${T.n} (${T.sys} · ${T.loc}) ${nf(st.sub)} aUEC`); st.lines.slice().sort(ls).forEach(l => L.push(`   - ${l.name}${l.qty > 1 ? ' x' + l.qty : ''} ${nf(l.price * l.qty)}`)); });
+    r.plan.missing.slice().sort(ls).forEach(m => L.push(`? ${m.name} x${m.qty} (구매처 미확인)`));
     L.push(`합계 ${nf(r.plan.total)} aUEC · 출처 UEX(${SHOPS.meta.newestReport})`);
     const txt = L.join('\n');
     const done = () => { $q('fitCopy').textContent = '✅ 복사됨'; };
