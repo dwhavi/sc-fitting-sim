@@ -36,7 +36,7 @@
 
   // ---------- 슬롯 열거 ----------
   const STOCK_KINDS = ['weapon', 'shield', 'power', 'cooler', 'qd', 'radar'];
-  const KIND_KO = { weapon: '무기', shield: '실드', power: '파워플랜트', cooler: '쿨러', qd: '퀀텀드라이브', radar: '레이더' };
+  const KIND_KO = { weapon: '무기', shield: '실드', power: '파워플랜트', cooler: '쿨러', qd: '퀀텀드라이브', radar: '레이더', mount: '마운트', turret: '터렛', turretbase: '터렛' };
   const WORD_KO = { turret: '터렛', side: '측면', front: '앞', back: '뒤', left: '좌', right: '우', top: '상단', bottom: '하단', rear: '후방', nose: '기수', wing: '날개', center: '중앙', centre: '중앙', gun: '주포', remote: '원격', manned: '유인', chin: '턱', belly: '하부', tail: '후미' };
   const pretty = n => String(n || '').split(/\s+/).map(w => WORD_KO[w.toLowerCase()] || w).join(' ');
   const okName = c => c && !/PLACEHOLDER/i.test(c.name || '');
@@ -366,6 +366,17 @@
     const slots = enumSlots();
     const asg = {}; for (const s of slots) asg[s.id] = (s.id in build) ? build[s.id] : s.stock;
     const items = itemsFromAsg(slots, asg);
+    // 마운트·터렛 카드 교체도 구매 대상에 포함 (enumSlots 는 하위 무기 슬롯만 본다)
+    for (const h2 of (FY || [])) {
+      const kind = slotKind(h2);
+      if (kind !== 'mount' && kind !== 'turret') continue;
+      const stockCls = matchDefault(kind, h2.component || {});
+      const cur = (h2.id in build) ? build[h2.id] : stockCls;
+      if (!cur || cur === stockCls) continue;
+      const c = findComp(kind, cur);
+      if (!c) continue;
+      items.push({ cls: cur, name: c.name, qty: 1, kind, size: c.size });
+    }
     let h = `<div class="chips" style="padding:0 0 8px" id="shopChips">${sysChipsHTML('data-fitsys')}</div>`;
     if (!items.length) h += '<div class="fit-dim">스톡 부품 그대로예요 — 새로 살 부품이 없습니다. 부품을 바꾸면 여기에 파는 곳이 나와요.</div>';
     else h += planHTML(buildPlan(items));
