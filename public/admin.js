@@ -103,7 +103,7 @@
       $("groupList").innerHTML = '<span class="dim">그룹이 없습니다. 먼저 만드세요.</span>';
       return;
     }
-    const { data: members } = await sb.from("group_members").select("group_id, user_id, source, profiles(display_name, discord_user_id)");
+    const { data: members } = await sb.from("group_members").select("group_id, user_id, source, profiles!group_members_user_id_fkey(display_name, discord_user_id)");
     const byGroup = {};
     (members || []).forEach((m) => {
       (byGroup[m.group_id] = byGroup[m.group_id] || []).push(m);
