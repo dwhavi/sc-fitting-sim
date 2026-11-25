@@ -122,9 +122,121 @@
         if (derr || !dres || !dres.ok) { setStatus("삭제 실패: " + (derr ? derr.message : (dres && dres.error) || "오류"), true); return; }
         loadCloudList();
       };
-      row.appendChild(label); row.appendChild(loadBtn); row.appendChild(delBtn);
+      const cmtBtn = document.createElement("button");
+      cmtBtn.textContent = "💬";
+      cmtBtn.title = "댓글 · 테스트 기록";
+      cmtBtn.style.cssText = "padding:3px 8px;font-size:11px";
+      cmtBtn.onclick = () => openDiscussion(f.id);
+      row.appendChild(label); row.appendChild(loadBtn); row.appendChild(cmtBtn); row.appendChild(delBtn);
       host.appendChild(row);
     });
+  }
+
+  // ---- 댓글 · 테스트 기록 패널 (4단계) ----
+  // 읽기·쓰기 모두 fittings-api get/comment_*/test_* 경유: 그룹 지정 피팅은
+  // 서버가 요청마다 Discord 역할을 재검증한다. 클라이언트는 표시만 담당.
+  async function openDiscussion(fittingId) {
+    const { data, error } = await client().functions.invoke("fittings-api", { body: { action: "get", id: fittingId } });
+    const fit = data && data.fitting;
+    if (error || !fit) { setStatus("열기 실패: " + (error ? error.message : "없음"), true); return; }
+    const me = (data && data.me) || {};
+    const ov = document.createElement("div");
+    ov.className = "modal-ov";
+    const fmt = (t) => new Date(t).toLocaleString("ko-KR");
+    const cmtHtml = (fit.comments || []).map((c) => {
+      const own = c.author_id === me.id;
+      const acts = (own ? " <a href='#' data-ce='" + c.id + "'>수정</a>" : "") +
+        ((own || me.admin) ? " <a href='#' data-cd='" + c.id + "' style='color:var(--bad)'>삭제</a>" : "");
+      return "<div style='border-bottom:1px solid var(--line);padding:6px 0;font-size:12px'>" +
+        "<b>" + escHtml(c.author_name || "회원") + "</b> <span class='dim'>" + fmt(c.created_at) +
+        (c.updated_at !== c.created_at ? " (수정됨)" : "") + "</span>" + acts +
+        "<div style='margin-top:2px;white-space:pre-wrap'>" + escHtml(c.body) + "</div></div>";
+    }).join("") || "<div class='dim' style='font-size:12px'>댓글이 없어요.</div>";
+    const recHtml = (fit.test_records || []).map((r) => {
+      const vals = Object.entries(r.values || {}).map(([k, v]) => escHtml(k) + ": " + escHtml(String(v))).join(", ");
+      const acts = ((r.author_id === me.id || me.admin) ? " <a href='#' data-rd='" + r.id + "' style='color:var(--bad)'>삭제</a>" : "");
+      return "<div style='border-bottom:1px solid var(--line);padding:6px 0;font-size:12px'>" +
+        "<b>" + escHtml(r.author_name || "회원") + "</b> <span class='dim'>" + fmt(r.created_at) + "</span>" + acts +
+        "<div style='margin-top:2px'><b>조건</b> " + escHtml(r.conditions) + "</div>" +
+        (vals ? "<div><b>수치</b> " + vals + "</div>" : "") +
+        (r.patch_version ? "<div><b>패치</b> " + escHtml(r.patch_version) + "</div>" : "") +
+        (r.memo ? "<div class='dim'>" + escHtml(r.memo) + "</div>" : "") + "</div>";
+    }).join("") || "<div class='dim' style='font-size:12px'>기록이 없어요.</div>";
+    const recSection = fit.visibility === "groups"
+      ? "<h3 style='margin:14px 0 6px;font-size:13px'>테스트 기록</h3><div id='discRecs'>" + recHtml + "</div>" +
+        "<div style='margin-top:8px;display:flex;flex-direction:column;gap:6px'>" +
+        "<input id='discRecCond' placeholder='측정 조건 (예: 지역, 상태)' style='font-size:12px'>" +
+        "<input id='discRecVals' placeholder='수치 (예: top_speed=1234, dps=456)' style='font-size:12px'>" +
+        "<div class='row' style='gap:6px'>"<input id='discRecPatch' placeholder='패치 버전 (예: 4.10.3)' style='font-size:12px;flex:1'><input id='discRecMemo' placeholder='메모 (선택)' style='font-size:12px;flex:2'></div>" +
+        "<div class='row'><button id='discRecAdd' style='flex:1'>기록 추가</button></div></div>"
+      : "";
+    ov.innerHTML =
+      '<div class="modal" style="width:520px;max-height:80vh;overflow-y:auto">' +
+      '<div class="modal-h"><b>💬 ' + escHtml(fit.name) + "</b><button class='modal-x' id='discClose'>✕</button>" +
+      "<div class='sub'>" + escHtml(fit.ship_slug) + " · " + (fit.visibility === "public" ? "공개" : "그룹 지정") + "</div></div>" +
+      "<div style='padding:12px 14px'>" +
+      "<h3 style='margin:0 0 6px;font-size:13px'>댓글</h3><div id='discCmts'>" + cmtHtml + "</div>" +
+      "<div class='row' style='margin-top:8px;gap:6px'><input id='discCmtIn' placeholder='댓글 입력' style='flex:1;font-size:12px'><button id='discCmtAdd'>등록</button></div>" +
+      recSection +
+      '<div id="discMsg" class="dim" style="font-size:12px;margin-top:8px"></div>' +
+      "</div></div>";
+    document.body.appendChild(ov);
+    const close = () => ov.remove();
+    $("discClose").onclick = close;
+    const reload = () => { close(); openDiscussion(fittingId); };
+    $("discCmtAdd").onclick = async () => {
+      const text = $("discCmtIn").value.trim();
+      if (!text) return;
+      $("discCmtAdd").disabled = true;
+      const { data: r, error: e } = await client().functions.invoke("fittings-api", { body: { action: "comment_add", id: fittingId, body: text } });
+      if (e || !r || !r.ok) { $("discMsg").textContent = "댓글 실패: " + (e ? e.message : (r && r.error) || "오류"); $("discCmtAdd").disabled = false; return; }
+      reload();
+    };
+    ov.querySelectorAll("[data-ce]").forEach((a) => {
+      a.onclick = async (ev) => {
+        ev.preventDefault();
+        const text = prompt("댓글 수정");
+        if (!text || !text.trim()) return;
+        await client().functions.invoke("fittings-api", { body: { action: "comment_edit", comment_id: a.dataset.ce, body: text.trim() } });
+        reload();
+      };
+    });
+    ov.querySelectorAll("[data-cd]").forEach((a) => {
+      a.onclick = async (ev) => {
+        ev.preventDefault();
+        if (!confirm("댓글을 삭제할까요?")) return;
+        await client().functions.invoke("fittings-api", { body: { action: "comment_delete", comment_id: a.dataset.cd } });
+        reload();
+      };
+    });
+    ov.querySelectorAll("[data-rd]").forEach((a) => {
+      a.onclick = async (ev) => {
+        ev.preventDefault();
+        if (!confirm("테스트 기록을 삭제할까요?")) return;
+        await client().functions.invoke("fittings-api", { body: { action: "test_delete", record_id: a.dataset.rd } });
+        reload();
+      };
+    });
+    const recAdd = $("discRecAdd");
+    if (recAdd) recAdd.onclick = async () => {
+      const conditions = $("discRecCond").value.trim();
+      if (!conditions) { $("discMsg").textContent = "측정 조건을 입력하세요."; return; }
+      const values = {};
+      $("discRecVals").value.split(",").forEach((kv) => {
+        const m = kv.split("=");
+        if (m.length === 2 && m[0].trim()) {
+          const num = Number(m[1].trim());
+          values[m[0].trim()] = isNaN(num) ? m[1].trim() : num;
+        }
+      });
+      recAdd.disabled = true;
+      const { data: r, error: e } = await client().functions.invoke("fittings-api", { body: {
+        action: "test_add", id: fittingId, conditions, values,
+        patch_version: $("discRecPatch").value.trim(), memo: $("discRecMemo").value.trim(),
+      } });
+      if (e || !r || !r.ok) { $("discMsg").textContent = "기록 실패: " + (e ? e.message : (r && r.error) || "오류"); recAdd.disabled = false; return; }
+      reload();
+    };
   }
 
   async function loadCloudFitting(id) {

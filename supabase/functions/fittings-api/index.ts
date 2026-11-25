@@ -44,6 +44,13 @@ Deno.serve(async (req) => {
   let body: {
     action?: string;
     id?: string;
+    comment_id?: string;
+    record_id?: string;
+    body?: string;
+    conditions?: string;
+    values?: unknown;
+    patch_version?: string;
+    memo?: string;
     ship_slug?: string;
     name?: string;
     payload?: unknown;
@@ -131,6 +138,11 @@ Deno.serve(async (req) => {
     return rows.filter((f) => !f.hidden && (f.visibility === "public" || allowed.has(f.id)));
   }
 
+  // isAdmin: 댓글·기록 삭제 버튼 표시와 관리자 삭제에 사용. profiles.site_role 기준.
+  const { data: myProfile } = await admin
+    .from("profiles").select("site_role").eq("id", user.id).maybeSingle();
+  const isAdmin = myProfile?.site_role === "admin";
+
   if (action === "list_mine") {
     const { data, error } = await admin
       .from("fittings")
@@ -153,7 +165,104 @@ Deno.serve(async (req) => {
     if (!data) return json({ error: "not_found" }, 404);
     const visible = await visibleFittingRows([data]);
     if (!visible.length) return json({ error: "not_found" }, 404); // 존재 자체 비공개
-    return json({ ok: true, verified, fitting: visible[0] });
+    const extra = await loadDiscussion(data.id);
+    return json({ ok: true, verified, fitting: { ...visible[0], ...extra }, me: { id: user.id, admin: isAdmin } });
+  }
+
+  // ---- 댓글·테스트 기록: 피팅 열람 권한과 같은 경로로만 ----
+  async function loadDiscussion(fittingId: string) {
+    const { data: comments } = await admin
+      .from("comments")
+      .select("id, author_id, body, created_at, updated_at, profiles!comments_author_id_fkey(display_name)")
+      .eq("fitting_id", fittingId)
+      .order("created_at", { ascending: true })
+      .limit(200);
+    const { data: records } = await admin
+      .from("test_records")
+      .select("id, author_id, conditions, values, patch_version, memo, created_at, updated_at, profiles!test_records_author_id_fkey(display_name)")
+      .eq("fitting_id", fittingId)
+      .order("created_at", { ascending: false })
+      .limit(100);
+    const flat = (rows: any[]) => (rows ?? []).map((r) => {
+      const { profiles, ...rest } = r;
+      return { ...rest, author_name: profiles?.display_name ?? null };
+    });
+    return { comments: flat(comments ?? []), test_records: flat(records ?? []) };
+  }
+
+  // 쓰기 공통: 대상 피팅이 요청자에게 보여야 한다 (열람 권한 = 댓글·기록 쓰기 권한).
+  // 그룹 지정 피팅은 이 검사가 verified 재검증을 통과해야만 보이므로 fail-closed.
+  async function visibleFitting(fittingId: string | undefined) {
+    if (!fittingId) return { error: "id_required", status: 400 } as const;
+    const { data } = await admin
+      .from("fittings").select("id, visibility").eq("id", fittingId).maybeSingle();
+    if (!data) return { error: "not_found", status: 404 } as const;
+    const visible = await visibleFittingRows([data]);
+    if (!visible.length) return { error: "not_found", status: 404 } as const;
+    return { fitting: data } as const;
+  }
+
+  if (action === "comment_add") {
+    const text = (body.body ?? "").trim();
+    if (!text || text.length > 2000) return json({ error: "invalid_body" }, 400);
+    const v = await visibleFitting(body.id);
+    if (!("fitting" in v)) return json({ error: v.error }, v.status);
+    const { data, error } = await admin.from("comments").insert({
+      fitting_id: body.id, author_id: user.id, body: text,
+    }).select("id, created_at").single();
+    if (error) return json({ error: error.message }, 500);
+    return json({ ok: true, id: data.id });
+  }
+
+  if (action === "comment_edit") {
+    const text = (body.body ?? "").trim();
+    if (!body.comment_id) return json({ error: "id_required" }, 400);
+    if (!text || text.length > 2000) return json({ error: "invalid_body" }, 400);
+    const { data: own } = await admin.from("comments")
+      .select("author_id").eq("id", body.comment_id).maybeSingle();
+    if (!own || own.author_id !== user.id) return json({ error: "not_found" }, 404);
+    const { error } = await admin.from("comments")
+      .update({ body: text, updated_at: new Date().toISOString() }).eq("id", body.comment_id);
+    if (error) return json({ error: error.message }, 500);
+    return json({ ok: true });
+  }
+
+  if (action === "comment_delete") {
+    if (!body.comment_id) return json({ error: "id_required" }, 400);
+    const { data: own } = await admin.from("comments")
+      .select("author_id").eq("id", body.comment_id).maybeSingle();
+    if (!own || (own.author_id !== user.id && !isAdmin)) return json({ error: "not_found" }, 404);
+    const { error } = await admin.from("comments").delete().eq("id", body.comment_id);
+    if (error) return json({ error: error.message }, 500);
+    return json({ ok: true });
+  }
+
+  if (action === "test_add") {
+    const conditions = (body.conditions ?? "").trim();
+    if (!conditions || conditions.length > 2000) return json({ error: "invalid_conditions" }, 400);
+    const v = await visibleFitting(body.id);
+    if (!("fitting" in v)) return json({ error: v.error }, v.status);
+    // 테스트 기록은 비공개(그룹 지정) 피팅에만 붙는다 (기획서 4단계).
+    if (v.fitting.visibility !== "groups") return json({ error: "records_only_on_group_fittings" }, 400);
+    const memo = body.memo?.trim() || null;
+    if (memo && memo.length > 2000) return json({ error: "invalid_memo" }, 400);
+    const { data, error } = await admin.from("test_records").insert({
+      fitting_id: body.id, author_id: user.id, conditions,
+      values: (body.values && typeof body.values === "object") ? body.values : {},
+      patch_version: body.patch_version?.trim() || null, memo,
+    }).select("id, created_at").single();
+    if (error) return json({ error: error.message }, 500);
+    return json({ ok: true, id: data.id });
+  }
+
+  if (action === "test_delete") {
+    if (!body.record_id) return json({ error: "id_required" }, 400);
+    const { data: own } = await admin.from("test_records")
+      .select("author_id").eq("id", body.record_id).maybeSingle();
+    if (!own || (own.author_id !== user.id && !isAdmin)) return json({ error: "not_found" }, 404);
+    const { error } = await admin.from("test_records").delete().eq("id", body.record_id);
+    if (error) return json({ error: error.message }, 500);
+    return json({ ok: true });
   }
 
   if (action === "browse") {
