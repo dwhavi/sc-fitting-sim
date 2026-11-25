@@ -1,6 +1,15 @@
 # Discord 로그인·역할 연동 설정 안내
 
-사이트는 이미 코드가 올라가 있고, 아래 설정을 마치면 로그인과 권한 연동이 켜진다.
+> **현재 진행 상태 (2026-11-25)**
+> - 완료: Supabase 프로젝트 생성(`sc-fitting-sim`, Seoul), 마이그레이션 0001~0003 적용,
+>   `public/config.js`에 Project URL/anon 키 연결, Edge Function 4개 배포.
+>   합성 fixture로 RLS·fittings-api 우회 차단 14개 시나리오를 실환경 검증했다
+>   (`scripts/live-rls-verify.py`, 검증 후 fixture 전량 삭제).
+> - 남음: Discord 개발자 앱·봇 생성(사용자 승인 대기), 3~5단계와 7~8단계.
+>   Discord OAuth 로그인 성공 경로와 실제 역할 동기화는 아직 미검증이다.
+> - 비밀값(DB 비밀번호, service_role, CLI PAT)은 저장소가 아닌 Instinct 볼트에 있다.
+
+아래는 전체 설정 절차다. 1·2·5·6단계는 이미 끝난 상태이고, 새 환경을 다시 만들 때 그대로 따라 하면 된다.
 설정 전에는 로그인 버튼이 "준비 중"으로 표시되고 기존 기능은 그대로 동작한다.
 
 예상 소요: 30~40분. 봇은 임시 Discord 서버에서 먼저 시험하는 것을 권장.
