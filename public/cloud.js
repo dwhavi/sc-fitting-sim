@@ -183,7 +183,8 @@
     document.body.appendChild(ov);
     const close = () => ov.remove();
     $("discClose").onclick = close;
-    const reload = () => { close(); openDiscussion(fittingId); };
+    // 재랜더링: 겹친 패널이 남지 않게 모든 모달 오버레이를 닫고 다시 연다.
+    const reload = () => { document.querySelectorAll(".modal-ov").forEach((o) => o.remove()); openDiscussion(fittingId); };
     $("discCmtAdd").onclick = async () => {
       const text = $("discCmtIn").value.trim();
       if (!text) return;
