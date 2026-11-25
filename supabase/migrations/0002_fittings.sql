@@ -1,7 +1,10 @@
 -- SC Fitting Sim — 2단계: 피팅 서버 저장과 공개 범위
 -- 0001_init.sql 적용 후 실행.
 -- 공개 피팅: 로그인 없이(anon 포함) 누구나 열람.
--- 그룹 지정 피팅: 지정 그룹 소속 + Discord 확인 신선도(my_group_ids) 충족 시에만 열람.
+-- 그룹 지정 피팅: 직접 DB 접근 불가. fittings-api가 요청마다 Discord 역할을
+-- 즉시 재검증한 뒤 중개한다 (유예 없음). my_group_ids의 1시간 신선도 캐시는
+-- 내 그룹 목록·피팅의 대상 그룹 표시 같은 메타데이터에만 쓰이고 피팅 내용의
+-- 접근 권한은 주지 않는다.
 -- 작성자 예외는 기획에서 명시적으로 제거됐다: 탈퇴·만료 후 작성자도 차단.
 -- 관리자 전체 열람은 사용자 미결정 사항이라 넣지 않는다.
 -- 관리자의 숨김/삭제는 내용을 반환하지 않는 admin_moderate_fitting 함수로만 한다.
@@ -93,7 +96,8 @@ create table public.fitting_groups (
 
 alter table public.fitting_groups enable row level security;
 
--- 읽기: 피팅이 보이는 사람은 대상 그룹 목록도 볼 수 있다
+-- 읽기: 피팅이 보이는 사람은 대상 그룹 목록(메타데이터)도 볼 수 있다.
+-- 그룹 지정 피팅의 내용(payload)은 이 정책과 무관하게 fittings-api만 반환한다.
 create policy "fitting_groups_select"
   on public.fitting_groups for select
   using (public.fitting_is_visible(fitting_id));
