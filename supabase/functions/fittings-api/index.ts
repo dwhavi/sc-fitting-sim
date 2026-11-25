@@ -41,7 +41,15 @@ Deno.serve(async (req) => {
   if (userErr || !userData.user) return json({ error: "unauthorized" }, 401);
   const user = userData.user;
 
-  let body: { action?: string; id?: string } = {};
+  let body: {
+    action?: string;
+    id?: string;
+    ship_slug?: string;
+    name?: string;
+    payload?: unknown;
+    visibility?: string;
+    group_ids?: string[];
+  } = {};
   try { body = await req.json(); } catch { /* 빈 본문 허용 */ }
   const action = body.action ?? "browse";
 
@@ -157,6 +165,64 @@ Deno.serve(async (req) => {
       .limit(100);
     if (error) return json({ error: error.message }, 500);
     return json({ ok: true, verified, fittings: await visibleFittingRows(data ?? []) });
+  }
+
+  // ---- 쓰기: 제한 자료 mutation은 여기서만, 즉시 재검증 후 ----
+  if (action === "save") {
+    const visibility = body.visibility === "groups" ? "groups" : "public";
+    const groupIds = [...new Set(body.group_ids ?? [])];
+    if (!body.ship_slug || !body.name || !body.payload) {
+      return json({ error: "missing_fields" }, 400);
+    }
+    if (visibility === "groups") {
+      // 그룹 지정 저장은 이번 요청의 재검증 통과 그룹만 허용 (캐시·TTL 무관)
+      if (!verified) return json({ error: "verification_unavailable" }, 503);
+      if (!groupIds.length) return json({ error: "groups_required" }, 400);
+      if (!groupIds.every((g) => allowedGroups.includes(g))) {
+        return json({ error: "group_not_allowed" }, 403);
+      }
+    }
+    let fittingId = body.id;
+    if (fittingId) {
+      const { data: existing } = await admin
+        .from("fittings").select("author_id").eq("id", fittingId).maybeSingle();
+      if (!existing || existing.author_id !== user.id) return json({ error: "not_found" }, 404);
+      const { error } = await admin.from("fittings").update({
+        ship_slug: body.ship_slug, name: body.name, payload: body.payload,
+        visibility, updated_at: new Date().toISOString(),
+      }).eq("id", fittingId);
+      if (error) return json({ error: error.message }, 500);
+    } else {
+      const { data, error } = await admin.from("fittings").insert({
+        author_id: user.id, ship_slug: body.ship_slug, name: body.name,
+        payload: body.payload, visibility,
+      }).select("id").single();
+      if (error) return json({ error: error.message }, 500);
+      fittingId = data.id;
+    }
+    await admin.from("fitting_groups").delete().eq("fitting_id", fittingId);
+    if (visibility === "groups") {
+      const { error } = await admin.from("fitting_groups").insert(
+        groupIds.map((g) => ({ fitting_id: fittingId, group_id: g })),
+      );
+      if (error) return json({ error: error.message }, 500);
+    }
+    return json({ ok: true, id: fittingId });
+  }
+
+  if (action === "delete") {
+    if (!body.id) return json({ error: "id_required" }, 400);
+    const { data: existing } = await admin
+      .from("fittings").select("author_id, visibility").eq("id", body.id).maybeSingle();
+    if (!existing || existing.author_id !== user.id) return json({ error: "not_found" }, 404);
+    // 그룹 지정 피팅 삭제도 재검증 후에만 (탈퇴 작성자의 조작 차단)
+    if (existing.visibility === "groups" && !verified) {
+      return json({ error: "verification_unavailable" }, 503);
+    }
+    await admin.from("fitting_groups").delete().eq("fitting_id", body.id);
+    const { error } = await admin.from("fittings").delete().eq("id", body.id);
+    if (error) return json({ error: error.message }, 500);
+    return json({ ok: true });
   }
 
   return json({ error: "unknown_action" }, 400);

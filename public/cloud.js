@@ -64,19 +64,21 @@
       const gidList = [...pick.querySelectorAll("input:checked")].map((c) => c.value);
       if (visibility === "groups" && !gidList.length) { $("cloudDlgMsg").textContent = "공개할 그룹을 하나 이상 고르세요."; return; }
       $("cloudDoSave").disabled = true;
-      const { data, error } = await client().from("fittings").insert({
-        author_id: session().user.id,
-        ship_slug: curShip,
-        name: name,
-        payload: currentPayload(),
-        visibility: visibility,
-      }).select("id").single();
-      if (error) { $("cloudDlgMsg").textContent = "저장 실패: " + error.message; $("cloudDoSave").disabled = false; return; }
-      if (visibility === "groups") {
-        const { error: e2 } = await client().from("fitting_groups").insert(
-          gidList.map((g) => ({ fitting_id: data.id, group_id: g })),
-        );
-        if (e2) { $("cloudDlgMsg").textContent = "그룹 지정 실패: " + e2.message; $("cloudDoSave").disabled = false; return; }
+      // 저장도 fittings-api 경유: 그룹 지정은 서버가 역할을 즉시 재검증한다.
+      const { data, error } = await client().functions.invoke("fittings-api", {
+        body: {
+          action: "save",
+          ship_slug: curShip,
+          name: name,
+          payload: currentPayload(),
+          visibility: visibility,
+          group_ids: gidList,
+        },
+      });
+      if (error || !data || !data.ok) {
+        $("cloudDlgMsg").textContent = "저장 실패: " + (error ? error.message : (data && data.error) || "오류");
+        $("cloudDoSave").disabled = false;
+        return;
       }
       ov.remove();
       setStatus("서버에 저장됨 — " + name);
@@ -116,7 +118,8 @@
       delBtn.style.cssText = "padding:3px 8px;font-size:11px";
       delBtn.onclick = async () => {
         if (!confirm("서버 피팅을 삭제할까요?")) return;
-        await client().from("fittings").delete().eq("id", f.id);
+        const { data: dres, error: derr } = await client().functions.invoke("fittings-api", { body: { action: "delete", id: f.id } });
+        if (derr || !dres || !dres.ok) { setStatus("삭제 실패: " + (derr ? derr.message : (dres && dres.error) || "오류"), true); return; }
         loadCloudList();
       };
       row.appendChild(label); row.appendChild(loadBtn); row.appendChild(delBtn);

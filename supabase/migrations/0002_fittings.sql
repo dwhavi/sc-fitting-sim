@@ -67,23 +67,21 @@ create policy "fittings_select_public"
   on public.fittings for select
   using (not hidden and visibility = 'public');
 
--- 작성은 로그인 회원 누구나. 본인 이름으로만.
+-- 직접 쓰기는 공개 피팅뿐. 그룹 지정 피팅의 생성·수정·삭제·공개범위 변경은
+-- 모두 fittings-api Edge Function이 Discord 역할을 즉시 재검증한 뒤 중개한다.
+-- (확인 캐시가 TTL 안에 남은 상태의 쓰기 우회 차단)
 create policy "fittings_insert_member"
   on public.fittings for insert
-  with check (auth.uid() is not null and author_id = auth.uid());
+  with check (auth.uid() is not null and author_id = auth.uid() and visibility = 'public');
 
--- 수정·삭제는 작성자 본인이면서 현재 열람 가능한 경우만.
--- 열람 불가(탈퇴·역할 회수·확인 만료) 작성자는 관리도 불가:
--- 공개 전환이나 그룹 변경으로 읽기 권한을 되찾는 우회를 막는다.
--- (관리자 중재는 아래 함수 경유)
 create policy "fittings_update_author"
   on public.fittings for update
-  using (author_id = auth.uid() and public.fitting_is_visible(id))
-  with check (author_id = auth.uid() and public.fitting_is_visible(id));
+  using (author_id = auth.uid() and visibility = 'public' and not hidden)
+  with check (author_id = auth.uid() and visibility = 'public');
 
 create policy "fittings_delete_author"
   on public.fittings for delete
-  using (author_id = auth.uid() and public.fitting_is_visible(id));
+  using (author_id = auth.uid() and visibility = 'public');
 
 -- ===== 피팅별 공개 대상 그룹 =====
 
@@ -100,23 +98,8 @@ create policy "fitting_groups_select"
   on public.fitting_groups for select
   using (public.fitting_is_visible(fitting_id));
 
--- 지정: 작성자 본인이, 자신이 속한 그룹으로만
-create policy "fitting_groups_write_author"
-  on public.fitting_groups for all
-  using (
-    exists (
-      select 1 from public.fittings f
-      where f.id = fitting_id and f.author_id = auth.uid()
-    )
-    and group_id in (select public.my_group_ids())
-  )
-  with check (
-    exists (
-      select 1 from public.fittings f
-      where f.id = fitting_id and f.author_id = auth.uid()
-    )
-    and group_id in (select public.my_group_ids())
-  );
+-- 지정: 직접 쓰기 정책 없음. fittings-api(service role)만 쓴다.
+-- 읽기 정책은 위 fitting_groups_select만 유지.
 
 -- ===== 관리자 중재 (내용 열람 없이 숨김/해제/삭제) =====
 -- 반환값 없이 상태만 바꾸고 관리 기록을 남긴다.

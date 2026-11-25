@@ -242,19 +242,36 @@ run("그룹 피팅: 관리자라도 그룹 비소속이면 차단 (전체 열람
 });
 run("그룹 피팅: 그룹 소속 작성자는 열람 가능 (소속 경로)", () => assert(visible(U.discordFresh, F_GROUP) === true));
 run("그룹 피팅: 비소속 작성자 본인도 차단 (작성자 예외 제거 확인)", () => assert(visible(U.outsider, F_GROUP2) === false));
-// 수정·삭제 정책의 판별식(author_id 일치 AND 현재 열람 가능) 시뮬레이션.
-// RLS 정책 자체는 실환경 검증.
-function canManage(uid, fitting, authorId) {
-  return authorId === uid && visible(uid, fitting);
+// 쓰기 경로 판별식 시뮬레이션. RLS 정책·함수 본문 자체는 실환경 검증.
+// 직접 DB 쓰기(insert/update/delete): 공개 피팅 + 작성자 + 열람 가능만.
+function canManageDirect(uid, fitting, authorId, visibility) {
+  return authorId === uid && visibility === "public" && visible(uid, fitting);
 }
-run("관리 정책: 소속 작성자는 수정·삭제 가능", () => {
-  assert(canManage(U.discordFresh, F_GROUP, U.discordFresh) === true);
+run("직접 쓰기: 공개 피팅은 작성자가 수정·삭제 가능", () => {
+  assert(canManageDirect(U.outsider, F_PUBLIC, U.outsider, "public") === true);
 });
-run("관리 정책: 탈퇴·비소속 작성자는 수정·삭제 불가 (공개 전환 우회 차단)", () => {
-  assert(canManage(U.outsider, F_GROUP2, U.outsider) === false);
+run("직접 쓰기: 그룹 피팅은 소속 작성자도 직접 mutation 불가 (fittings-api만)", () => {
+  assert(canManageDirect(U.discordFresh, F_GROUP, U.discordFresh, "groups") === false);
 });
-run("관리 정책: 타인 피팅은 관리 불가", () => {
-  assert(canManage(U.discordFresh, F_GROUP2, U.outsider) === false);
+run("직접 쓰기: 탈퇴·비소속 작성자 불가 (공개 전환 우회 차단)", () => {
+  assert(canManageDirect(U.outsider, F_GROUP2, U.outsider, "groups") === false);
+});
+run("직접 쓰기: 타인 공개 피팅 불가", () => {
+  assert(canManageDirect(U.discordFresh, F_PUBLIC, U.outsider, "public") === false);
+});
+// fittings-api 측 규칙: 그룹 저장은 이번 요청 재검증의 허용 그룹 ⊆ 만 가능.
+function apiSaveGroupsAllowed(uid, requested) {
+  const allowed = groupsOf(uid);
+  return requested.length > 0 && requested.every((g) => allowed.includes(g));
+}
+run("fittings-api: 소속 그룹으로 저장 허용", () => {
+  assert(apiSaveGroupsAllowed(U.discordFresh, ["aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"]) === true);
+});
+run("fittings-api: 비소속 그룹으로 저장 거부", () => {
+  assert(apiSaveGroupsAllowed(U.discordFresh, ["ffffffff-ffff-4fff-8fff-ffffffffffff"]) === false);
+});
+run("fittings-api: 역할 없는 멤버의 그룹 저장 거부", () => {
+  assert(apiSaveGroupsAllowed(U.roleless, ["aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"]) === false);
 });
 run("숨김 피팅: 누구도 열람 불가", () => {
   assert(visible(U.admin, F_HIDDEN) === false);
