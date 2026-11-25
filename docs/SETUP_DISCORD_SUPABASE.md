@@ -1,12 +1,15 @@
 # Discord 로그인·역할 연동 설정 안내
 
-> **현재 진행 상태 (2026-11-25)**
-> - 완료: Supabase 프로젝트 생성(`sc-fitting-sim`, Seoul), 마이그레이션 0001~0003 적용,
->   `public/config.js`에 Project URL/anon 키 연결, Edge Function 4개 배포.
+> **현재 진행 상태 (2026-11-25, 갱신)**
+> - 완료: Supabase 프로젝트 생성(`sc-fitting-sim`, Seoul), 마이그레이션 0001~0004 적용,
+>   `public/config.js`에 Project URL/anon 키·길드 ID 연결, Edge Function 4개 배포.
 >   합성 fixture로 RLS·fittings-api 우회 차단 14개 시나리오를 실환경 검증했다
 >   (`scripts/live-rls-verify.py`, 검증 후 fixture 전량 삭제).
-> - 남음: Discord 개발자 앱·봇 생성(사용자 승인 대기), 3~5단계와 7~8단계.
->   Discord OAuth 로그인 성공 경로와 실제 역할 동기화는 아직 미검증이다.
+> - 완료(실환경): Discord 개발자 앱·봇 생성(테스트 서버 ABox Com), 실Discord OAuth 로그인,
+>   프로필 자동생성·역할 동기화, 관리자 화면 실데이터, 그룹·역할 매핑 관리,
+>   그룹 지정 피팅의 저장·열람·역할 회수 즉시 차단·재부여 복구·삭제 전 주기,
+>   4단계 댓글·테스트 기록(API + 💬 패널 UI). 테스트 데이터는 검증 후 전량 삭제.
+> - 미검증: 실제 Discord 계정 두 개 사이 시나리오(계정 부족), 대량 목록 성능.
 > - 비밀값(DB 비밀번호, service_role, CLI PAT)은 저장소가 아닌 Instinct 볼트에 있다.
 
 아래는 전체 설정 절차다. 1·2·5·6단계는 이미 끝난 상태이고, 새 환경을 다시 만들 때 그대로 따라 하면 된다.
