@@ -307,10 +307,11 @@ Deno.serve(async (req) => {
       const { data: existing } = await admin
         .from("fittings").select("author_id, visibility").eq("id", fittingId).maybeSingle();
       if (!existing || existing.author_id !== user.id) return json({ error: "not_found" }, 404);
-      // 기존이 그룹 지정 피팅이면 공개 전환을 포함한 모든 변경에 재검증 필요
-      // (탈퇴 작성자가 공개 전환으로 읽기 권한을 되찾는 우회 차단)
-      if (existing.visibility === "groups" && !verified) {
-        return json({ error: "verification_unavailable" }, 503);
+      // 기존이 그룹 지정 피팅이면 공개 전환을 포함한 모든 변경에 현재 멤버십 필요.
+      // 작성자 예외 없음: 탈퇴 작성자는 자신의 제한 피팅도 수정할 수 없다.
+      if (existing.visibility === "groups") {
+        const v = await visibleFitting(fittingId);
+        if (!("fitting" in v)) return json({ error: v.error }, v.status);
       }
       const { error } = await admin.from("fittings").update({
         ship_slug: body.ship_slug, name: body.name, payload: body.payload,
@@ -341,9 +342,10 @@ Deno.serve(async (req) => {
     const { data: existing } = await admin
       .from("fittings").select("author_id, visibility").eq("id", body.id).maybeSingle();
     if (!existing || existing.author_id !== user.id) return json({ error: "not_found" }, 404);
-    // 그룹 지정 피팅 삭제도 재검증 후에만 (탈퇴 작성자의 조작 차단)
-    if (existing.visibility === "groups" && !verified) {
-      return json({ error: "verification_unavailable" }, 503);
+    // 그룹 지정 피팅 삭제도 현재 멤버십 통과 후에만 (탈퇴 작성자의 조작 차단)
+    if (existing.visibility === "groups") {
+      const v = await visibleFitting(body.id);
+      if (!("fitting" in v)) return json({ error: v.error }, v.status);
     }
     await admin.from("fitting_groups").delete().eq("fitting_id", body.id);
     const { error } = await admin.from("fittings").delete().eq("id", body.id);
