@@ -4,9 +4,9 @@
 // 설정 방법은 docs/SETUP_DISCORD_SUPABASE.md 참고.
 window.SCFIT_CONFIG = {
   // Supabase 프로젝트 설정 > API 의 Project URL (예: https://abcdefgh.supabase.co)
-  SUPABASE_URL: "",
+  SUPABASE_URL: "https://sijnasvcvyafxalwqdsp.supabase.co",
   // 같은 화면의 anon public 키
-  SUPABASE_ANON_KEY: "",
+  SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNpam5hc3ZjdnlhZnhhbHdxZHNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU1NjcyNTYsImV4cCI6MjExMTE0MzI1Nn0.RaLAWvBC7XhBUZAw6VFV6CfCiUwCpQbaAHgobBUT2JM",
   // 권한 기준으로 삼을 Discord 서버 ID (개발자 모드에서 서버 우클릭 > 서버 ID 복사)
   DISCORD_GUILD_ID: "",
   // 화면 표시용 서버 이름 (선택)
