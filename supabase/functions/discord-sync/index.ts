@@ -46,6 +46,23 @@ Deno.serve(async (req) => {
   if (!meRes.ok) return json({ error: "discord_me_failed", status: meRes.status }, 502);
   const me = await meRes.json();
 
+  // 2-1) 토큰의 Discord 계정이 로그인한 Supabase 사용자의 Discord identity와
+  // 같은지 확인. 다르면 다른 사람의 Discord 역할을 내 계정에 입히는
+  // 권한 상승 경로가 되므로 거부한다.
+  const identities = (user.identities ?? []) as Array<{
+    provider?: string;
+    id?: string;
+    identity_data?: { provider_id?: string; sub?: string };
+  }>;
+  const linked = identities.some(
+    (i) =>
+      i.provider === "discord" &&
+      (i.id === me.id ||
+        i.identity_data?.provider_id === me.id ||
+        i.identity_data?.sub === me.id),
+  );
+  if (!linked) return json({ error: "discord_identity_mismatch" }, 403);
+
   const memberRes = await fetch(`${DISCORD_API}/users/@me/guilds/${guildId}/member`, {
     headers: { Authorization: `Bearer ${providerToken}` },
   });

@@ -1,0 +1,154 @@
+-- SC Fitting Sim — 2단계: 피팅 서버 저장과 공개 범위
+-- 0001_init.sql 적용 후 실행.
+-- 공개 피팅: 로그인 없이(anon 포함) 누구나 열람.
+-- 그룹 지정 피팅: 지정 그룹 소속 + Discord 확인 신선도(my_group_ids) 충족 시에만 열람.
+-- 관리자 전체 열람은 사용자 미결정 사항이라 넣지 않는다.
+-- 관리자의 숨김/삭제는 내용을 반환하지 않는 admin_moderate_fitting 함수로만 한다.
+-- RLS 정책 간 상호 참조(무한 재귀)를 피하기 위해 교차 조회는
+-- 모두 security definer 함수를 거친다.
+
+create table public.fittings (
+  id uuid primary key default gen_random_uuid(),
+  author_id uuid not null references public.profiles (id) on delete cascade,
+  ship_slug text not null,
+  name text not null,
+  payload jsonb not null,
+  visibility text not null default 'public' check (visibility in ('public', 'groups')),
+  patch_version text,
+  hidden boolean not null default false,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index fittings_public_idx on public.fittings (created_at desc) where visibility = 'public' and not hidden;
+
+-- 피팅에 지정된 그룹 목록 (RLS 우회, 읽기 전용 계산)
+create or replace function public.fitting_group_ids(p_fitting_id uuid)
+returns setof uuid
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select group_id from public.fitting_groups where fitting_id = p_fitting_id;
+$$;
+
+-- 피팅 열람 가능 여부의 단일 정의 (정책과 다른 테이블 정책이 공용)
+create or replace function public.fitting_is_visible(p_fitting_id uuid)
+returns boolean
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select exists (
+    select 1 from public.fittings f
+    where f.id = p_fitting_id
+      and not f.hidden
+      and (
+        f.visibility = 'public'
+        or f.author_id = auth.uid()
+        or exists (
+          select 1 from public.fitting_group_ids(f.id) gid
+          where gid in (select public.my_group_ids())
+        )
+      )
+  );
+$$;
+
+alter table public.fittings enable row level security;
+
+create policy "fittings_select_visible"
+  on public.fittings for select
+  using (
+    not hidden
+    and (
+      visibility = 'public'
+      or author_id = auth.uid()
+      or exists (
+        select 1 from public.fitting_group_ids(fittings.id) gid
+        where gid in (select public.my_group_ids())
+      )
+    )
+  );
+
+-- 작성은 로그인 회원 누구나. 본인 이름으로만.
+create policy "fittings_insert_member"
+  on public.fittings for insert
+  with check (auth.uid() is not null and author_id = auth.uid());
+
+-- 수정·삭제는 작성자 본인만 (관리자 중재는 아래 함수 경유)
+create policy "fittings_update_author"
+  on public.fittings for update
+  using (author_id = auth.uid())
+  with check (author_id = auth.uid());
+
+create policy "fittings_delete_author"
+  on public.fittings for delete
+  using (author_id = auth.uid());
+
+-- ===== 피팅별 공개 대상 그룹 =====
+
+create table public.fitting_groups (
+  fitting_id uuid not null references public.fittings (id) on delete cascade,
+  group_id uuid not null references public.groups (id) on delete cascade,
+  primary key (fitting_id, group_id)
+);
+
+alter table public.fitting_groups enable row level security;
+
+-- 읽기: 피팅이 보이는 사람은 대상 그룹 목록도 볼 수 있다
+create policy "fitting_groups_select"
+  on public.fitting_groups for select
+  using (public.fitting_is_visible(fitting_id));
+
+-- 지정: 작성자 본인이, 자신이 속한 그룹으로만
+create policy "fitting_groups_write_author"
+  on public.fitting_groups for all
+  using (
+    exists (
+      select 1 from public.fittings f
+      where f.id = fitting_id and f.author_id = auth.uid()
+    )
+    and group_id in (select public.my_group_ids())
+  )
+  with check (
+    exists (
+      select 1 from public.fittings f
+      where f.id = fitting_id and f.author_id = auth.uid()
+    )
+    and group_id in (select public.my_group_ids())
+  );
+
+-- ===== 관리자 중재 (내용 열람 없이 숨김/해제/삭제) =====
+-- 반환값 없이 상태만 바꾸고 관리 기록을 남긴다.
+
+create or replace function public.admin_moderate_fitting(
+  p_fitting_id uuid,
+  p_action text  -- 'hide' | 'unhide' | 'delete'
+)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not public.is_admin() then
+    raise exception 'forbidden';
+  end if;
+  if p_action = 'hide' then
+    update public.fittings set hidden = true, updated_at = now() where id = p_fitting_id;
+  elsif p_action = 'unhide' then
+    update public.fittings set hidden = false, updated_at = now() where id = p_fitting_id;
+  elsif p_action = 'delete' then
+    delete from public.fittings where id = p_fitting_id;
+  else
+    raise exception 'unknown action';
+  end if;
+  insert into public.audit_log (actor_id, action, target)
+  values (auth.uid(), 'fitting_' || p_action, p_fitting_id::text);
+end;
+$$;
+
+revoke all on function public.admin_moderate_fitting(uuid, text) from public;
+grant execute on function public.admin_moderate_fitting(uuid, text) to authenticated;
