@@ -1,5 +1,6 @@
 // SC Fitting Sim — 서버 피팅 저장/불러오기 (로그인 필요, 2단계)
-// 권한 강제는 서버 RLS가 한다. 이 파일은 화면과 요청만 담당.
+// 공개 피팅만 RLS로 직접 읽는다. 그룹 지정 피팅과 본인 목록은 fittings-api
+// Edge Function이 Discord 역할을 즉시 재검증한 뒤 중개한다. 이 파일은 화면과 요청만 담당.
 (function () {
   const $ = (id) => document.getElementById(id);
 
@@ -23,12 +24,12 @@
   }
 
   async function myGroups() {
+    // RLS(groups_select_member_or_admin)가 역할 근거 소속 그룹만 돌려준다.
     const { data, error } = await client()
-      .from("group_members")
-      .select("group_id, groups(name)")
-      .eq("user_id", session().user.id);
+      .from("groups")
+      .select("id, name");
     if (error) return [];
-    return (data || []).map((r) => ({ id: r.group_id, name: r.groups ? r.groups.name : "?" }));
+    return (data || []).map((r) => ({ id: r.id, name: r.name }));
   }
 
   function openSaveDialog(groups) {
@@ -93,19 +94,13 @@
     const host = $("cloudList");
     if (!host) return;
     if (!session()) { host.innerHTML = ""; return; }
-    // 제한 자료 접근 시 재검증: 그룹 피팅이 섞일 수 있는 목록 조회 전에
-    // Discord 멤버십을 즉시 재확인해 역할 회수 반영 지연을 다음 접근 시점으로 줄인다.
-    if (window.scAuth && scAuth.refreshNow) { try { await scAuth.refreshNow(); } catch (e) {} }
-    const { data, error } = await client()
-      .from("fittings")
-      .select("id, ship_slug, name, visibility, created_at")
-      .eq("author_id", session().user.id)
-      .order("created_at", { ascending: false })
-      .limit(50);
-    if (error) { host.innerHTML = '<div class="fit-dim">목록 실패: ' + escHtml(error.message) + "</div>"; return; }
-    if (!data.length) { host.innerHTML = '<div class="fit-dim">서버에 저장된 피팅이 없어요.</div>'; return; }
+    // 제한 자료는 fittings-api가 Discord 역할을 즉시 재검증한 뒤 중개한다.
+    const { data, error } = await client().functions.invoke("fittings-api", { body: { action: "list_mine" } });
+    if (error || !data || !data.ok) { host.innerHTML = '<div class="fit-dim">목록 실패: ' + escHtml(error ? error.message : (data && data.error) || "오류") + "</div>"; return; }
+    const rows = data.fittings || [];
+    if (!rows.length) { host.innerHTML = '<div class="fit-dim">서버에 저장된 피팅이 없어요.</div>'; return; }
     host.innerHTML = "";
-    data.forEach((f) => {
+    rows.forEach((f) => {
       const row = document.createElement("div");
       row.style.cssText = "display:flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:6px;padding:5px 8px;margin-top:5px;font-size:12px";
       const label = document.createElement("div");
@@ -130,11 +125,12 @@
   }
 
   async function loadCloudFitting(id) {
-    const { data, error } = await client().from("fittings").select("ship_slug, payload").eq("id", id).single();
-    if (error || !data) { setStatus("불러오기 실패: " + (error ? error.message : "없음"), true); return; }
-    const p = data.payload || {};
-    if (data.ship_slug !== curShip) {
-      await selectShip(data.ship_slug);
+    const { data, error } = await client().functions.invoke("fittings-api", { body: { action: "get", id } });
+    const fit = data && data.fitting;
+    if (error || !fit) { setStatus("불러오기 실패: " + (error ? error.message : "없음"), true); return; }
+    const p = fit.payload || {};
+    if (fit.ship_slug !== curShip) {
+      await selectShip(fit.ship_slug);
     }
     build = p.build || {};
     renderSlots();
@@ -145,7 +141,7 @@
     }
     renderSlots();
     updateStats();
-    setStatus("서버 피팅 불러옴 — " + data.ship_slug);
+    setStatus("서버 피팅 불러옴 — " + fit.ship_slug);
   }
 
   async function onSaveClick() {

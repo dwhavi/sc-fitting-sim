@@ -18,14 +18,13 @@ as $$
   );
 $$;
 
--- 모든 그룹 소속(source와 무관)은 서버 측 Discord 멤버십 확인 시각이
--- 신선할 때만 유효하다. 마지막 확인이 DISCORD_CHECK_TTL을 넘기면
--- 재확인(로그인, discord-refresh, 제한 자료 접근 시 갱신) 전까지
--- 그룹 소속으로 인정하지 않는다(fail-closed).
--- TTL은 Discord 장애 시의 유예일 뿐이며, 실제 회수 반영은 제한 자료 접근
--- 시 discord-refresh가 재확인하므로 다음 접근 시점에 이루어진다.
--- 관리자 직접 배정(source='manual')의 Discord 확인 면제는 사용자 미승인
--- 예외라 적용하지 않는다.
+-- 그룹 소속의 유일한 근거는 Discord 역할이다: 서버 측에 기록된 보유 역할
+-- (member_discord_roles)이 역할↔그룹 연결(discord_role_mappings)과 맞고,
+-- 마지막 서버 멤버십 확인이 DISCORD_CHECK_TTL 이내여야 한다.
+-- group_members는 관리 화면 표시용 캐시일 뿐 권한 근거가 아니다.
+-- 따라서 관리자 직접 배정이나 캐시 행 삽입만으로는 접근 권한이 생기지
+-- 않는다(미승인 우회 예외 없음). 역할을 잃은 서버 멤버도 차단된다.
+-- 확인이 TTL보다 오래되면 재확인 전까지 소속 불인정(fail-closed).
 create or replace function public.discord_check_ttl()
 returns interval
 language sql
@@ -39,14 +38,19 @@ security definer
 set search_path = public
 stable
 as $$
-  select gm.group_id from public.group_members gm
-  where gm.user_id = auth.uid()
-    and exists (
-      select 1 from public.member_guild_checks c
-      where c.user_id = auth.uid()
-        and c.is_member
-        and c.checked_at > now() - public.discord_check_ttl()
-    );
+  select distinct drm.group_id
+  from public.discord_role_mappings drm
+  join public.member_discord_roles mdr
+    on mdr.guild_id = drm.guild_id
+   and mdr.discord_role_id = drm.discord_role_id
+   and mdr.user_id = auth.uid()
+  where exists (
+    select 1 from public.member_guild_checks c
+    where c.user_id = auth.uid()
+      and c.guild_id = drm.guild_id
+      and c.is_member
+      and c.checked_at > now() - public.discord_check_ttl()
+  );
 $$;
 
 -- ===== 회원 =====

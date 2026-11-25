@@ -46,7 +46,14 @@ Deno.serve(async (req) => {
   const memberRes = await fetch(
     `${DISCORD_API}/guilds/${guildId}/members/${profile.discord_user_id}`,
     { headers: { Authorization: `Bot ${botToken}` } },
-  );
+  ).catch(() => null);
+
+  // 200=멤버, 404=탈퇴 확정. 그 외 오류(Discord 장애 등)는 미확인:
+  // 기존 기록을 지우지 않고 checked_at도 갱신하지 않는다. 확인 시각이
+  // TTL(1시간)을 넘기면 DB가 자동으로 그룹 소속을 인정하지 않는다(fail-closed).
+  if (!memberRes || (memberRes.status !== 404 && !memberRes.ok)) {
+    return json({ error: "discord_unavailable", verified: false }, 502);
+  }
 
   const isMember = memberRes.ok;
   const member = isMember ? await memberRes.json() : null;

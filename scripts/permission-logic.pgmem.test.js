@@ -81,7 +81,12 @@ function loadMigration(sql, label) {
       .replace(/returns setof uuid/gi, "returns table (g uuid)")
       .replace(/\(select public\.my_group_ids\(\)\)/g, "(select g from public.my_group_ids())")
       .replace(/from public\.fitting_group_ids\((f\.id|fittings\.id)\) gid/g, "from public.fitting_group_ids($1)")
-      .replace(/where gid in \(select/g, "where g in (select");
+      .replace(/where gid in \(select/g, "where g in (select")
+      // pg-mem 2단계 상관참조 미지원: my_group_ids의 exists를 동치 join으로 치환
+      .replace(
+        /where exists \(\s*select 1 from public\.member_guild_checks c\s*where c\.user_id = auth\.uid\(\)\s*and c\.guild_id = drm\.guild_id\s*and c\.is_member\s*and c\.checked_at > now\(\) - public\.discord_check_ttl\(\)\s*\)/,
+        "join public.member_guild_checks c on c.user_id = auth.uid() and c.guild_id = drm.guild_id and c.is_member and c.checked_at > now() - public.discord_check_ttl()"
+      );
     if (/^create (or replace )?function /i.test(head) || /^create trigger /i.test(head)) deferred.push(stripped);
     else db.public.none(stripped);
   }
@@ -103,11 +108,12 @@ const U = {
   discordKicked: "55555555-5555-4555-8555-555555555555",
   outsider: "66666666-6666-4666-8666-666666666666",
   manualStale: "77777777-7777-4777-8777-777777777777",
+  roleless: "88888888-8888-4888-8888-888888888888",
 };
 
 db.public.none(`
   insert into auth.users(id) values
-    ('${U.admin}'),('${U.manualMem}'),('${U.discordFresh}'),('${U.discordStale}'),('${U.discordKicked}'),('${U.outsider}'),('${U.manualStale}');
+    ('${U.admin}'),('${U.manualMem}'),('${U.discordFresh}'),('${U.discordStale}'),('${U.discordKicked}'),('${U.outsider}'),('${U.manualStale}'),('${U.roleless}');
 `);
 // 가입 트리거(handle_new_user)는 plpgsql이라 pg-mem에서 검증 불가.
 // 실환경에서 확인하도록 남기고, 여기서는 트리거 결과를 직접 시딩한다.
@@ -121,10 +127,18 @@ db.public.none(`
   update public.profiles set site_role='admin' where id='${U.admin}';
   insert into public.groups(id, name) values
     ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', '테스트그룹');
-  -- 관리자 직접 배정 2명 (신선 확인 보유 / 확인 만료)
+  -- group_members는 표시용 캐시: 어떤 source 행도 권한을 주지 않아야 한다
   insert into public.group_members(group_id, user_id, source) values
     ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', '${U.manualMem}', 'manual'),
-    ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', '${U.manualStale}', 'manual');
+    ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', '${U.manualStale}', 'manual'),
+    ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', '${U.roleless}', 'discord');
+  -- 역할↔그룹 연결과 서버 측 역할 기록이 진짜 근거
+  insert into public.discord_role_mappings(guild_id, discord_role_id, discord_role_name, group_id) values
+    ('g1', 'r1', '클랜원', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa');
+  insert into public.member_discord_roles(user_id, guild_id, discord_role_id) values
+    ('${U.discordFresh}', 'g1', 'r1'),
+    ('${U.discordStale}', 'g1', 'r1'),
+    ('${U.discordKicked}', 'g1', 'r1');
   -- Discord 동기화 배정 3명 (신선 / 오래됨 / 탈퇴)
   insert into public.group_members(group_id, user_id, source) values
     ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', '${U.discordFresh}', 'discord'),
@@ -135,10 +149,11 @@ db.public.none(`
     ('${U.discordStale}', 'g1', true, now() - interval '25 hours'),
     ('${U.discordKicked}', 'g1', false, now()),
     ('${U.manualMem}', 'g1', true, now()),
-    ('${U.manualStale}', 'g1', true, now() - interval '25 hours');
+    ('${U.manualStale}', 'g1', true, now() - interval '25 hours'),
+    ('${U.roleless}', 'g1', true, now());
   insert into public.fittings(id, author_id, ship_slug, name, payload, visibility, hidden) values
     ('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb', '${U.outsider}', 'taurus', '공개피팅', '{}', 'public', false),
-    ('cccccccc-cccc-4ccc-8ccc-cccccccccccc', '${U.manualMem}', 'taurus', '그룹피팅', '{\"secret\":1}', 'groups', false),
+    ('cccccccc-cccc-4ccc-8ccc-cccccccccccc', '${U.discordFresh}', 'taurus', '그룹피팅', '{\"secret\":1}', 'groups', false),
     ('dddddddd-dddd-4ddd-8ddd-dddddddddddd', '${U.outsider}', 'taurus', '숨김피팅', '{}', 'public', true),
     ('eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee', '${U.outsider}', 'taurus', '탈퇴작성자피팅', '{}', 'groups', false);
   insert into public.fitting_groups(fitting_id, group_id) values
@@ -151,11 +166,14 @@ function groupsOf(uid) {
   currentUid = uid;
   return db.public.many("select g::text from public.my_group_ids()").map((r) => r.g);
 }
-run("수동 배정 + 신선한 Discord 확인 → 그룹 소속 인정", () => {
-  assert(groupsOf(U.manualMem).length === 1);
+run("group_members 캐시 행 + 신선 확인만으로는 소속 불인정 (역할 근거 없음)", () => {
+  assert(groupsOf(U.manualMem).length === 0, "캐시 행이 권한을 줌");
 });
-run("수동 배정 + 확인 만료 → 차단 (수동 배정의 Discord 확인 면제는 미승인 예외라 없음)", () => {
+run("캐시 행 + 확인 만료 → 차단", () => {
   assert(groupsOf(U.manualStale).length === 0);
+});
+run("서버 멤버라도 연결된 Discord 역할이 없으면 차단 (역할 기준 강제)", () => {
+  assert(groupsOf(U.roleless).length === 0);
 });
 run("Discord 소속 + 신선한 확인 → 그룹 소속 인정", () => {
   assert(groupsOf(U.discordFresh).length === 1);
@@ -222,8 +240,22 @@ run("그룹 피팅: 비소속·로그아웃 차단 (존재 자체 비공개)", (
 run("그룹 피팅: 관리자라도 그룹 비소속이면 차단 (전체 열람 미확정 사항 미적용)", () => {
   assert(visible(U.admin, F_GROUP) === false);
 });
-run("그룹 피팅: 그룹 소속 작성자는 열람 가능 (소속 경로)", () => assert(visible(U.manualMem, F_GROUP) === true));
+run("그룹 피팅: 그룹 소속 작성자는 열람 가능 (소속 경로)", () => assert(visible(U.discordFresh, F_GROUP) === true));
 run("그룹 피팅: 비소속 작성자 본인도 차단 (작성자 예외 제거 확인)", () => assert(visible(U.outsider, F_GROUP2) === false));
+// 수정·삭제 정책의 판별식(author_id 일치 AND 현재 열람 가능) 시뮬레이션.
+// RLS 정책 자체는 실환경 검증.
+function canManage(uid, fitting, authorId) {
+  return authorId === uid && visible(uid, fitting);
+}
+run("관리 정책: 소속 작성자는 수정·삭제 가능", () => {
+  assert(canManage(U.discordFresh, F_GROUP, U.discordFresh) === true);
+});
+run("관리 정책: 탈퇴·비소속 작성자는 수정·삭제 불가 (공개 전환 우회 차단)", () => {
+  assert(canManage(U.outsider, F_GROUP2, U.outsider) === false);
+});
+run("관리 정책: 타인 피팅은 관리 불가", () => {
+  assert(canManage(U.discordFresh, F_GROUP2, U.outsider) === false);
+});
 run("숨김 피팅: 누구도 열람 불가", () => {
   assert(visible(U.admin, F_HIDDEN) === false);
   assert(visible(null, F_HIDDEN) === false);

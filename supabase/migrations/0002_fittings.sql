@@ -60,33 +60,30 @@ $$;
 
 alter table public.fittings enable row level security;
 
-create policy "fittings_select_visible"
+-- PostgREST 직접 읽기는 공개 피팅만. 그룹 지정 피팅과 본인 목록은
+-- fittings-api Edge Function이 Discord 역할을 즉시 재검증한 뒤 중개한다
+-- (클라이언트가 재확인 호출을 생략하고 DB를 직접 치는 우회 차단).
+create policy "fittings_select_public"
   on public.fittings for select
-  using (
-    not hidden
-    and (
-      visibility = 'public'
-      or exists (
-        select 1 from public.fitting_group_ids(fittings.id) gid
-        where gid in (select public.my_group_ids())
-      )
-    )
-  );
+  using (not hidden and visibility = 'public');
 
 -- 작성은 로그인 회원 누구나. 본인 이름으로만.
 create policy "fittings_insert_member"
   on public.fittings for insert
   with check (auth.uid() is not null and author_id = auth.uid());
 
--- 수정·삭제는 작성자 본인만 (관리자 중재는 아래 함수 경유)
+-- 수정·삭제는 작성자 본인이면서 현재 열람 가능한 경우만.
+-- 열람 불가(탈퇴·역할 회수·확인 만료) 작성자는 관리도 불가:
+-- 공개 전환이나 그룹 변경으로 읽기 권한을 되찾는 우회를 막는다.
+-- (관리자 중재는 아래 함수 경유)
 create policy "fittings_update_author"
   on public.fittings for update
-  using (author_id = auth.uid())
-  with check (author_id = auth.uid());
+  using (author_id = auth.uid() and public.fitting_is_visible(id))
+  with check (author_id = auth.uid() and public.fitting_is_visible(id));
 
 create policy "fittings_delete_author"
   on public.fittings for delete
-  using (author_id = auth.uid());
+  using (author_id = auth.uid() and public.fitting_is_visible(id));
 
 -- ===== 피팅별 공개 대상 그룹 =====
 
