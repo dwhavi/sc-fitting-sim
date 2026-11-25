@@ -122,3 +122,16 @@ cd public && python3 -m http.server 8811     # 로컬 서버
 `radar_fields.py`가 `build_db.py`의 레이더 원본 필드를 보존한다. `tests/radar_source.json`은 LIVE f182b7f1 원본 대조용 독립 스냅샷이다. `node tests/test_radar.cjs`로 원본 보존, 동률·우열, 전투 탐지군 강제, 잠금, 구매/예산 충돌, 다른 프리셋 시작점 유입을 검사한다. 게임 내 실제 탐지 거리 실측은 아니다.
 
 전투 결과 생성 후 장착/잠금/구매 조건이 바뀌면 재계산 전 적용·저장·복사를 막는다. 오래된 결과가 새 레이더 잠금을 덮어쓰지 않게 하는 안전장치다.
+
+## 멀티유저 권한 (2026-11-25, 1단계)
+
+Discord 로그인과 Discord 서버 역할 기반 권한을 붙이는 1단계. 공개 피팅은 로그인 없이, 비공개 피팅은 지정 그룹 소속만 보는 구조의 기반이다.
+
+- `public/config.js`: Supabase URL/anon 키, Discord 서버 ID (공개 가능 값만)
+- `public/auth.js`: Discord OAuth 로그인, 로그인 직후·이용 중 역할 동기화 호출
+- `public/admin.html` / `admin.js`: 관리자 화면 (역할 연결, 그룹, 회원, 관리 기록)
+- `supabase/migrations/0001_init.sql`: profiles/groups/group_members/discord_role_mappings/member_discord_roles/member_guild_checks/audit_log + RLS
+- `supabase/functions/discord-sync|discord-refresh|discord-admin`: 멤버·역할 확인과 그룹 동기화, 봇 토큰 조회
+- 설정 절차: `docs/SETUP_DISCORD_SUPABASE.md`
+
+설정값이 비어 있으면 로그인은 "준비 중"으로 표시되고 기존 시뮬레이터는 그대로 동작한다. 봇 토큰·service_role 키는 저장소에 두지 않는다.

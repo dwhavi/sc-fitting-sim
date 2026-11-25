@@ -52,6 +52,12 @@ button.on:hover{background:#134d2e}
 .pwr-col.off .pwr-ico{filter:grayscale(1)}
 .pwr-w{font-size:10px;color:var(--dim);white-space:nowrap}
 #status{font-size:12px;color:var(--dim);margin-top:6px}
+.auth-area{margin-left:auto;display:flex;gap:8px;align-items:center}
+.auth-btn{font-size:12px;padding:5px 10px}
+.auth-btn:disabled{opacity:.5;cursor:default}
+.auth-chip{font-size:12px;color:var(--txt);background:#0e141c;border:1px solid var(--line);border-radius:6px;padding:5px 9px}
+.auth-admin{color:var(--acc);font-size:12px;text-decoration:none;border:1px solid #1e4a6e;border-radius:6px;padding:5px 9px;background:#12314a}
+.auth-msg{font-size:11px;color:var(--bad);flex-basis:100%}
 @media(max-width:600px){.slot .meta{flex-basis:105px}}
 main>*{min-width:0}.stat{min-width:0;overflow-wrap:anywhere}
 @media(max-width:860px){main{grid-template-columns:minmax(0,1fr)}}
@@ -118,6 +124,7 @@ main>*{min-width:0}.stat{min-width:0;overflow-wrap:anywhere}
 <body>
 <header>
 <h1>🚀 SC Fitting Sim</h1><small>Star Citizen 함선 피팅 시뮬레이터 (MVP · 데이터: scunpacked + FleetYards)</small>
+<div id="authArea" class="auth-area"></div>
 </header>
 <main>
 <div>
@@ -179,6 +186,9 @@ main>*{min-width:0}.stat{min-width:0;overflow-wrap:anywhere}
 </div>
 </main>
 <div id="modalRoot"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="config.js?v=1"></script>
+<script src="auth.js?v=1"></script>
 <script src="app.js?v=147"></script>
 <script src="fit.js?v=11"></script>
 </body>
