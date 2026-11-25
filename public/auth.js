@@ -136,12 +136,22 @@
     });
   }
 
+  // 제한 자료 접근 시 서버 측 신선도 강제: 주기(throttle)와 무관하게
+  // Discord 멤버십을 즉시 재확인한다. 실패해도 예외를 던지지 않고
+  // DB의 마지막 확인 시각(TTL)에 따라 접근이 결정된다.
+  async function refreshNow() {
+    if (!session) return;
+    sessionStorage.setItem("scfit.refreshedAt", String(Date.now()));
+    await callFunction("discord-refresh", {});
+  }
+
   // 다른 스크립트에서 쓸 공개 API
   window.scAuth = {
     get session() { return session; },
     get profile() { return profile; },
     get client() { return supabase; },
     isAdmin: () => !!(profile && profile.site_role === "admin"),
+    refreshNow,
   };
 
   if (document.readyState === "loading") {

@@ -101,13 +101,13 @@ const U = {
   discordFresh: "33333333-3333-4333-8333-333333333333",
   discordStale: "44444444-4444-4444-8444-444444444444",
   discordKicked: "55555555-5555-4555-8555-555555555555",
-  outsider: "66666666-6666-4666-8666-6666666666666666".slice(0, 36),
+  outsider: "66666666-6666-4666-8666-666666666666",
+  manualStale: "77777777-7777-4777-8777-777777777777",
 };
-U.outsider = "66666666-6666-4666-8666-666666666666";
 
 db.public.none(`
   insert into auth.users(id) values
-    ('${U.admin}'),('${U.manualMem}'),('${U.discordFresh}'),('${U.discordStale}'),('${U.discordKicked}'),('${U.outsider}');
+    ('${U.admin}'),('${U.manualMem}'),('${U.discordFresh}'),('${U.discordStale}'),('${U.discordKicked}'),('${U.outsider}'),('${U.manualStale}');
 `);
 // 가입 트리거(handle_new_user)는 plpgsql이라 pg-mem에서 검증 불가.
 // 실환경에서 확인하도록 남기고, 여기서는 트리거 결과를 직접 시딩한다.
@@ -121,9 +121,10 @@ db.public.none(`
   update public.profiles set site_role='admin' where id='${U.admin}';
   insert into public.groups(id, name) values
     ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', '테스트그룹');
-  -- 관리자 직접 배정
+  -- 관리자 직접 배정 2명 (신선 확인 보유 / 확인 만료)
   insert into public.group_members(group_id, user_id, source) values
-    ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', '${U.manualMem}', 'manual');
+    ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', '${U.manualMem}', 'manual'),
+    ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', '${U.manualStale}', 'manual');
   -- Discord 동기화 배정 3명 (신선 / 오래됨 / 탈퇴)
   insert into public.group_members(group_id, user_id, source) values
     ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', '${U.discordFresh}', 'discord'),
@@ -132,13 +133,17 @@ db.public.none(`
   insert into public.member_guild_checks(user_id, guild_id, is_member, checked_at) values
     ('${U.discordFresh}', 'g1', true, now()),
     ('${U.discordStale}', 'g1', true, now() - interval '25 hours'),
-    ('${U.discordKicked}', 'g1', false, now());
+    ('${U.discordKicked}', 'g1', false, now()),
+    ('${U.manualMem}', 'g1', true, now()),
+    ('${U.manualStale}', 'g1', true, now() - interval '25 hours');
   insert into public.fittings(id, author_id, ship_slug, name, payload, visibility, hidden) values
     ('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb', '${U.outsider}', 'taurus', '공개피팅', '{}', 'public', false),
     ('cccccccc-cccc-4ccc-8ccc-cccccccccccc', '${U.manualMem}', 'taurus', '그룹피팅', '{\"secret\":1}', 'groups', false),
-    ('dddddddd-dddd-4ddd-8ddd-dddddddddddd', '${U.outsider}', 'taurus', '숨김피팅', '{}', 'public', true);
+    ('dddddddd-dddd-4ddd-8ddd-dddddddddddd', '${U.outsider}', 'taurus', '숨김피팅', '{}', 'public', true),
+    ('eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee', '${U.outsider}', 'taurus', '탈퇴작성자피팅', '{}', 'groups', false);
   insert into public.fitting_groups(fitting_id, group_id) values
-    ('cccccccc-cccc-4ccc-8ccc-cccccccccccc', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa');
+    ('cccccccc-cccc-4ccc-8ccc-cccccccccccc', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'),
+    ('eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa');
 `);
 
 // ---- 함수 단위 검증 ----
@@ -146,8 +151,11 @@ function groupsOf(uid) {
   currentUid = uid;
   return db.public.many("select g::text from public.my_group_ids()").map((r) => r.g);
 }
-run("수동 배정 회원은 TTL과 무관하게 그룹 소속", () => {
+run("수동 배정 + 신선한 Discord 확인 → 그룹 소속 인정", () => {
   assert(groupsOf(U.manualMem).length === 1);
+});
+run("수동 배정 + 확인 만료 → 차단 (수동 배정의 Discord 확인 면제는 미승인 예외라 없음)", () => {
+  assert(groupsOf(U.manualStale).length === 0);
 });
 run("Discord 소속 + 신선한 확인 → 그룹 소속 인정", () => {
   assert(groupsOf(U.discordFresh).length === 1);
@@ -187,10 +195,10 @@ function visible(uid, fitting) {
       and not f.hidden
       and (
         f.visibility = 'public'
-        or f.author_id = auth.uid()
         or exists (
           -- pg-mem이 함수 호출을 상수 평가하려다 실패하므로 fitting_group_ids
           -- 본문과 동일한 서브쿼리로 인라인한다 (래퍼 조합은 실환경 검증)
+          -- 작성자 예외 없음(기획 확정): 마이그레이션과 같은 판별식
           select 1 from public.fitting_groups fg
           where fg.fitting_id = '${fitting}' -- pg-mem 2단계 상관참조 미지원으로 리터럴 사용 (동일 의미)
             and fg.group_id in (${glist})
@@ -201,6 +209,7 @@ function visible(uid, fitting) {
 const F_PUBLIC = "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb";
 const F_GROUP = "cccccccc-cccc-4ccc-8ccc-cccccccccccc";
 const F_HIDDEN = "dddddddd-dddd-4ddd-8ddd-dddddddddddd";
+const F_GROUP2 = "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee";
 
 run("공개 피팅: 로그아웃(anon)도 열람 가능", () => assert(visible(null, F_PUBLIC) === true));
 run("그룹 피팅: 신선한 Discord 소속은 열람 가능", () => assert(visible(U.discordFresh, F_GROUP) === true));
@@ -213,7 +222,8 @@ run("그룹 피팅: 비소속·로그아웃 차단 (존재 자체 비공개)", (
 run("그룹 피팅: 관리자라도 그룹 비소속이면 차단 (전체 열람 미확정 사항 미적용)", () => {
   assert(visible(U.admin, F_GROUP) === false);
 });
-run("그룹 피팅: 작성자 본인은 열람 가능", () => assert(visible(U.outsider, F_PUBLIC) === true));
+run("그룹 피팅: 그룹 소속 작성자는 열람 가능 (소속 경로)", () => assert(visible(U.manualMem, F_GROUP) === true));
+run("그룹 피팅: 비소속 작성자 본인도 차단 (작성자 예외 제거 확인)", () => assert(visible(U.outsider, F_GROUP2) === false));
 run("숨김 피팅: 누구도 열람 불가", () => {
   assert(visible(U.admin, F_HIDDEN) === false);
   assert(visible(null, F_HIDDEN) === false);

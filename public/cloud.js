@@ -93,6 +93,9 @@
     const host = $("cloudList");
     if (!host) return;
     if (!session()) { host.innerHTML = ""; return; }
+    // 제한 자료 접근 시 재검증: 그룹 피팅이 섞일 수 있는 목록 조회 전에
+    // Discord 멤버십을 즉시 재확인해 역할 회수 반영 지연을 다음 접근 시점으로 줄인다.
+    if (window.scAuth && scAuth.refreshNow) { try { await scAuth.refreshNow(); } catch (e) {} }
     const { data, error } = await client()
       .from("fittings")
       .select("id, ship_slug, name, visibility, created_at")

@@ -2,6 +2,7 @@
 -- 0001_init.sql 적용 후 실행.
 -- 공개 피팅: 로그인 없이(anon 포함) 누구나 열람.
 -- 그룹 지정 피팅: 지정 그룹 소속 + Discord 확인 신선도(my_group_ids) 충족 시에만 열람.
+-- 작성자 예외는 기획에서 명시적으로 제거됐다: 탈퇴·만료 후 작성자도 차단.
 -- 관리자 전체 열람은 사용자 미결정 사항이라 넣지 않는다.
 -- 관리자의 숨김/삭제는 내용을 반환하지 않는 admin_moderate_fitting 함수로만 한다.
 -- RLS 정책 간 상호 참조(무한 재귀)를 피하기 위해 교차 조회는
@@ -47,8 +48,9 @@ as $$
       and not f.hidden
       and (
         f.visibility = 'public'
-        or f.author_id = auth.uid()
         or exists (
+          -- 작성자 예외 없음: 그룹 탈퇴·확인 만료 후에는 작성자 본인도
+          -- 비공개 피팅을 읽을 수 없다 (기획 확정 사항)
           select 1 from public.fitting_group_ids(f.id) gid
           where gid in (select public.my_group_ids())
         )
@@ -64,7 +66,6 @@ create policy "fittings_select_visible"
     not hidden
     and (
       visibility = 'public'
-      or author_id = auth.uid()
       or exists (
         select 1 from public.fitting_group_ids(fittings.id) gid
         where gid in (select public.my_group_ids())

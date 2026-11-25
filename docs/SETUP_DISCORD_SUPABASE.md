@@ -19,7 +19,8 @@
 
 1. Supabase 대시보드 **SQL Editor** → **New query**.
 2. 이 저장소의 `supabase/migrations/0001_init.sql` 전체를 붙여넣고 **Run**.
-3. **Table Editor**에서 profiles, groups, group_members, discord_role_mappings, member_discord_roles, member_guild_checks, audit_log 테이블이 보이면 성공.
+3. 같은 방법으로 `supabase/migrations/0002_fittings.sql`도 실행.
+4. **Table Editor**에서 profiles, groups, group_members, discord_role_mappings, member_discord_roles, member_guild_checks, audit_log, fittings, fitting_groups 테이블이 보이면 성공.
 
 ## 3. Discord 개발자 앱과 봇 만들기
 
@@ -83,8 +84,19 @@ update public.profiles set site_role = 'admin' where id = '<본인 User UID>';
 1. 임시 서버에 시험 역할(예: `테스터`)을 만들고 본인 계정에 부여.
 2. 관리 화면 > Discord 역할 연결에서 `테스터` → 시험 그룹 연결.
 3. 로그아웃 후 다시 로그인 → 시험 그룹 소속 확인.
-4. 임시 서버에서 역할 회수 → 10분 내 재확인(discord-refresh) 또는 재로그인으로 그룹에서 빠지는지 확인.
+4. 임시 서버에서 역할 회수 → 재로그인 또는 재확인(discord-refresh) 후 그룹에서 빠지는지 확인. 확인이 24시간 이상 오래되면 재확인 전까지 그룹 소속이 자동으로 인정되지 않는지(차단)도 확인.
 5. 문제 없으면 DISCORD_GUILD_ID를 실제 서버로 바꾸고 봇을 실제 서버에 설치 (서버 관리자 승인 필요).
+
+### 권한 로직 시험 (선택)
+
+로컬에서 DB 없이 권한 판별 로직만 시험할 수 있다.
+
+```
+npm i pg-mem
+node scripts/permission-logic.pgmem.test.js
+```
+
+pg-mem은 실제 PostgreSQL이 아니므로 RLS 정책의 실제 행 필터링, plpgsql 함수(가입 트리거, 관리자 중재)는 이 시험이 검증하지 못한다. 실환경에서는 위 "동작 확인" 절차로 검증한다.
 
 ---
 
@@ -93,5 +105,9 @@ update public.profiles set site_role = 'admin' where id = '<본인 User UID>';
 - 로그인: Supabase Auth의 Discord OAuth. 사이트는 Discord 비밀번호를 받지 않는다.
 - 권한 근거: `member_discord_roles`(서버 측 확인 기록) + `discord_role_mappings` + `group_members`. 브라우저의 user_metadata는 권한 근거로 쓰지 않는다.
 - 역할 확인 시점: 로그인 직후(discord-sync, 본인 토큰) + 이용 중 주기적 재확인(discord-refresh, 봇 토큰).
+- 그룹 소속의 유효 조건(source와 무관하게 동일): 서버 측 Discord 멤버십 확인이 1시간 이내일 것. 관리자 직접 배정도 이 확인을 면제하지 않는다(면제는 미승인 예외).
+- 실제 회수 반영 지연: 그룹 피팅 같은 제한 자료에 접근할 때마다 클라이언트가 discord-refresh로 즉시 재확인하므로, 역할 회수는 다음 접근 시점에 반영된다. 그 사이 이용 중에도 10분 간격으로 재확인한다.
+- 1시간 TTL의 의미: Discord 장애 등으로 재확인 자체가 불가할 때의 유예 한도. 이 시각이 지나면 자동 차단(fail-closed). 즉시 회수가 아니며, 즉시 회수(게이트웨이 봇)는 이 단계 범위 밖이다.
+- 계정 연결 검증: discord-sync는 로그인 토큰의 Discord 사용자와 Supabase 계정에 연결된 Discord identity가 일치하는지 확인하고, 다르면 403으로 거부한다. 남의 Discord 계정을 내 계정에 붙이는 우회를 막는다.
 - 수집하지 않는 것: Discord 채팅·DM, Discord 비밀번호. 봇 토큰은 Supabase 서버 비밀 설정에만 보관.
 - 역할 변경·탈퇴의 즉시 반영(게이트웨이 봇)은 상시 구동 서버가 필요해 이 단계 범위 밖. 필요하면 별도 호스팅을 정한 뒤 추가한다.

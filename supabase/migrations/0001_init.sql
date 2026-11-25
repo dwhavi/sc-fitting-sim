@@ -18,15 +18,19 @@ as $$
   );
 $$;
 
--- Discord 역할로 배정된 소속(source='discord')은 서버 측 확인 시각이
+-- 모든 그룹 소속(source와 무관)은 서버 측 Discord 멤버십 확인 시각이
 -- 신선할 때만 유효하다. 마지막 확인이 DISCORD_CHECK_TTL을 넘기면
--- 재확인(로그인 또는 discord-refresh) 전까지 그룹 소속으로 인정하지 않는다.
--- 관리자가 직접 배정한 소속(source='manual')은 이 만료를 적용하지 않는다.
+-- 재확인(로그인, discord-refresh, 제한 자료 접근 시 갱신) 전까지
+-- 그룹 소속으로 인정하지 않는다(fail-closed).
+-- TTL은 Discord 장애 시의 유예일 뿐이며, 실제 회수 반영은 제한 자료 접근
+-- 시 discord-refresh가 재확인하므로 다음 접근 시점에 이루어진다.
+-- 관리자 직접 배정(source='manual')의 Discord 확인 면제는 사용자 미승인
+-- 예외라 적용하지 않는다.
 create or replace function public.discord_check_ttl()
 returns interval
 language sql
 immutable
-as $$ select interval '24 hours' $$;
+as $$ select interval '1 hour' $$;
 
 create or replace function public.my_group_ids()
 returns setof uuid
@@ -37,14 +41,11 @@ stable
 as $$
   select gm.group_id from public.group_members gm
   where gm.user_id = auth.uid()
-    and (
-      gm.source = 'manual'
-      or exists (
-        select 1 from public.member_guild_checks c
-        where c.user_id = auth.uid()
-          and c.is_member
-          and c.checked_at > now() - public.discord_check_ttl()
-      )
+    and exists (
+      select 1 from public.member_guild_checks c
+      where c.user_id = auth.uid()
+        and c.is_member
+        and c.checked_at > now() - public.discord_check_ttl()
     );
 $$;
 
