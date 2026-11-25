@@ -167,7 +167,7 @@
         "<div style='margin-top:8px;display:flex;flex-direction:column;gap:6px'>" +
         "<input id='discRecCond' placeholder='측정 조건 (예: 지역, 상태)' style='font-size:12px'>" +
         "<input id='discRecVals' placeholder='수치 (예: top_speed=1234, dps=456)' style='font-size:12px'>" +
-        "<div class='row' style='gap:6px'>"<input id='discRecPatch' placeholder='패치 버전 (예: 4.10.3)' style='font-size:12px;flex:1'><input id='discRecMemo' placeholder='메모 (선택)' style='font-size:12px;flex:2'></div>" +
+        "<div class='row' style='gap:6px'><input id='discRecPatch' placeholder='패치 버전 (예: 4.10.3)' style='font-size:12px;flex:1'><input id='discRecMemo' placeholder='메모 (선택)' style='font-size:12px;flex:2'></div>" +
         "<div class='row'><button id='discRecAdd' style='flex:1'>기록 추가</button></div></div>"
       : "";
     ov.innerHTML =
