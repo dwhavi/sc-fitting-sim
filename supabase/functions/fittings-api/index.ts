@@ -35,11 +35,15 @@ Deno.serve(async (req) => {
 
   const authHeader = req.headers.get("Authorization") ?? "";
   const admin = createClient(supabaseUrl, serviceKey);
-  const { data: userData, error: userErr } = await admin.auth.getUser(
-    authHeader.replace("Bearer ", ""),
-  );
-  if (userErr || !userData.user) return json({ error: "unauthorized" }, 401);
-  const user = userData.user;
+  // 익명 허용: 공개 피팅의 browse/get은 로그인 없이 볼 수 있다 (공개 피팅은
+  // 로그인 없이 열람 가능한 기획). 쓰기와 비공개 자료는 로그인 필수.
+  let user: { id: string } | null = null;
+  if (authHeader) {
+    const { data: userData } = await admin.auth.getUser(
+      authHeader.replace("Bearer ", ""),
+    );
+    user = userData.user;
+  }
 
   let body: {
     action?: string;
@@ -64,7 +68,7 @@ Deno.serve(async (req) => {
   // verified: 이번 요청에서 서버 확인이 성공했는가. 실패 시 제한 자료 차단.
   let verified = false;
   let allowedGroups: string[] = [];
-  if (guildId && botToken) {
+  if (user && guildId && botToken) {
     const { data: profile } = await admin
       .from("profiles")
       .select("discord_user_id")
@@ -139,11 +143,12 @@ Deno.serve(async (req) => {
   }
 
   // isAdmin: 댓글·기록 삭제 버튼 표시와 관리자 삭제에 사용. profiles.site_role 기준.
-  const { data: myProfile } = await admin
-    .from("profiles").select("site_role").eq("id", user.id).maybeSingle();
+  const { data: myProfile } = user ? await admin
+    .from("profiles").select("site_role").eq("id", user.id).maybeSingle() : { data: null };
   const isAdmin = myProfile?.site_role === "admin";
 
   if (action === "list_mine") {
+    if (!user) return json({ error: "unauthorized" }, 401);
     const { data, error } = await admin
       .from("fittings")
       .select("id, ship_slug, name, visibility, created_at")
@@ -166,7 +171,7 @@ Deno.serve(async (req) => {
     const visible = await visibleFittingRows([data]);
     if (!visible.length) return json({ error: "not_found" }, 404); // 존재 자체 비공개
     const extra = await loadDiscussion(data.id);
-    return json({ ok: true, verified, fitting: { ...visible[0], ...extra }, me: { id: user.id, admin: isAdmin } });
+    return json({ ok: true, verified, fitting: { ...visible[0], ...extra }, me: user ? { id: user.id, admin: isAdmin } : null });
   }
 
   // ---- 댓글·테스트 기록: 피팅 열람 권한과 같은 경로로만 ----
@@ -203,6 +208,7 @@ Deno.serve(async (req) => {
   }
 
   if (action === "comment_add") {
+    if (!user) return json({ error: "unauthorized" }, 401);
     const text = (body.body ?? "").trim();
     if (!text || text.length > 2000) return json({ error: "invalid_body" }, 400);
     const v = await visibleFitting(body.id);
@@ -215,6 +221,7 @@ Deno.serve(async (req) => {
   }
 
   if (action === "comment_edit") {
+    if (!user) return json({ error: "unauthorized" }, 401);
     const text = (body.body ?? "").trim();
     if (!body.comment_id) return json({ error: "id_required" }, 400);
     if (!text || text.length > 2000) return json({ error: "invalid_body" }, 400);
@@ -228,6 +235,7 @@ Deno.serve(async (req) => {
   }
 
   if (action === "comment_delete") {
+    if (!user) return json({ error: "unauthorized" }, 401);
     if (!body.comment_id) return json({ error: "id_required" }, 400);
     const { data: own } = await admin.from("comments")
       .select("author_id").eq("id", body.comment_id).maybeSingle();
@@ -238,6 +246,7 @@ Deno.serve(async (req) => {
   }
 
   if (action === "test_add") {
+    if (!user) return json({ error: "unauthorized" }, 401);
     const conditions = (body.conditions ?? "").trim();
     if (!conditions || conditions.length > 2000) return json({ error: "invalid_conditions" }, 400);
     const v = await visibleFitting(body.id);
@@ -256,6 +265,7 @@ Deno.serve(async (req) => {
   }
 
   if (action === "test_delete") {
+    if (!user) return json({ error: "unauthorized" }, 401);
     if (!body.record_id) return json({ error: "id_required" }, 400);
     const { data: own } = await admin.from("test_records")
       .select("author_id").eq("id", body.record_id).maybeSingle();
@@ -278,6 +288,7 @@ Deno.serve(async (req) => {
 
   // ---- 쓰기: 제한 자료 mutation은 여기서만, 즉시 재검증 후 ----
   if (action === "save") {
+    if (!user) return json({ error: "unauthorized" }, 401);
     const visibility = body.visibility === "groups" ? "groups" : "public";
     const groupIds = [...new Set(body.group_ids ?? [])];
     if (!body.ship_slug || !body.name || !body.payload) {
@@ -325,6 +336,7 @@ Deno.serve(async (req) => {
   }
 
   if (action === "delete") {
+    if (!user) return json({ error: "unauthorized" }, 401);
     if (!body.id) return json({ error: "id_required" }, 400);
     const { data: existing } = await admin
       .from("fittings").select("author_id, visibility").eq("id", body.id).maybeSingle();

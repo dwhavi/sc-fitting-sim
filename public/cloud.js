@@ -176,21 +176,24 @@
       "<div class='sub'>" + escHtml(fit.ship_slug) + " · " + (fit.visibility === "public" ? "공개" : "그룹 지정") + "</div></div>" +
       "<div style='padding:12px 14px'>" +
       "<h3 style='margin:0 0 6px;font-size:13px'>댓글</h3><div id='discCmts'>" + cmtHtml + "</div>" +
-      "<div class='row' style='margin-top:8px;gap:6px'><input id='discCmtIn' placeholder='댓글 입력' style='flex:1;font-size:12px'><button id='discCmtAdd'>등록</button></div>" +
+      (session()
+        ? "<div class='row' style='margin-top:8px;gap:6px'><input id='discCmtIn' placeholder='댓글 입력' style='flex:1;font-size:12px'><button id='discCmtAdd'>등록</button></div>"
+        : "<div class='dim' style='font-size:12px;margin-top:8px'>Discord 로그인 후 댓글을 쓸 수 있어요.</div>") +
       recSection +
       '<div id="discMsg" class="dim" style="font-size:12px;margin-top:8px"></div>' +
       "</div></div>";
     document.body.appendChild(ov);
     const close = () => ov.remove();
     $("discClose").onclick = close;
+    const cmtAdd = $("discCmtAdd");
+    if (cmtAdd) cmtAdd.onclick = async () => {
     // 재랜더링: 겹친 패널이 남지 않게 모든 모달 오버레이를 닫고 다시 연다.
     const reload = () => { document.querySelectorAll(".modal-ov").forEach((o) => o.remove()); openDiscussion(fittingId); };
-    $("discCmtAdd").onclick = async () => {
       const text = $("discCmtIn").value.trim();
       if (!text) return;
-      $("discCmtAdd").disabled = true;
+      cmtAdd.disabled = true;
       const { data: r, error: e } = await client().functions.invoke("fittings-api", { body: { action: "comment_add", id: fittingId, body: text } });
-      if (e || !r || !r.ok) { $("discMsg").textContent = "댓글 실패: " + (e ? e.message : (r && r.error) || "오류"); $("discCmtAdd").disabled = false; return; }
+      if (e || !r || !r.ok) { $("discMsg").textContent = "댓글 실패: " + (e ? e.message : (r && r.error) || "오류"); cmtAdd.disabled = false; return; }
       reload();
     };
     ov.querySelectorAll("[data-ce]").forEach((a) => {
@@ -267,16 +270,72 @@
     openSaveDialog(groups);
   }
 
+  // ---- 피팅 둘러보기 (공개 + 로그인 시 허용 그룹) ----
+  // 목록은 fittings-api browse: 비로그인은 공개만, 로그인은 허용 그룹 포함.
+  // 비공개 피팅은 목록·검색·직접 URL 어디에도 메타데이터가 나오지 않는다
+  // (서버가 존재 자체를 숨긴다 — get도 not_found).
+  let browseRows = [];
+  async function loadBrowse() {
+    const host = $("browseList");
+    if (!host) return;
+    const { data, error } = await client().functions.invoke("fittings-api", { body: { action: "browse" } });
+    if (error || !data || !data.ok) { host.innerHTML = '<div class="fit-dim">목록 실패: ' + escHtml(error ? error.message : (data && data.error) || "오류") + "</div>"; return; }
+    browseRows = data.fittings || [];
+    renderBrowse();
+  }
+
+  function renderBrowse() {
+    const host = $("browseList");
+    if (!host) return;
+    const q = ($("browseSearch") && $("browseSearch").value || "").trim().toLowerCase();
+    const rows = browseRows.filter((f) => !q || f.name.toLowerCase().includes(q) || f.ship_slug.toLowerCase().includes(q));
+    if (!rows.length) { host.innerHTML = '<div class="fit-dim">표시할 피팅이 없어요.</div>'; return; }
+    host.innerHTML = "";
+    rows.forEach((f) => {
+      const row = document.createElement("div");
+      row.style.cssText = "display:flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:6px;padding:5px 8px;margin-top:5px;font-size:12px";
+      const label = document.createElement("div");
+      label.style.flex = "1";
+      label.innerHTML = "<b>" + escHtml(f.name) + "</b> <span class='dim'>" + escHtml(f.ship_slug) +
+        " · " + (f.visibility === "public" ? "공개" : "그룹 지정") + " · " + new Date(f.created_at).toLocaleDateString("ko-KR") + "</span>";
+      const loadBtn = document.createElement("button");
+      loadBtn.textContent = "불러오기";
+      loadBtn.style.cssText = "padding:3px 8px;font-size:11px";
+      loadBtn.onclick = () => loadCloudFitting(f.id);
+      const cmtBtn = document.createElement("button");
+      cmtBtn.textContent = "💬";
+      cmtBtn.title = "댓글 · 테스트 기록";
+      cmtBtn.style.cssText = "padding:3px 8px;font-size:11px";
+      cmtBtn.onclick = () => openDiscussion(f.id);
+      row.appendChild(label); row.appendChild(loadBtn); row.appendChild(cmtBtn);
+      host.appendChild(row);
+    });
+  }
+
+  // 직접 URL (?fit=<id>): 보이는 피팅만 불러온다. 보이지 않으면
+  // 메타데이터 없이 "없다"는 메시지만 표시한다.
+  async function loadFromUrl() {
+    const id = new URLSearchParams(location.search).get("fit");
+    if (!id) return;
+    const { data, error } = await client().functions.invoke("fittings-api", { body: { action: "get", id } });
+    if (error || !data || !data.fitting) { setStatus("피팅을 찾을 수 없어요.", true); return; }
+    await loadCloudFitting(id);
+  }
+
   function boot() {
     const btn = $("cloudSaveBtn");
     if (!btn) return;
+    const bs = $("browseSearch");
+    if (bs) bs.oninput = renderBrowse;
+    loadBrowse();
+    loadFromUrl();
     btn.onclick = onSaveClick;
     // 로그인 상태가 바뀌면 목록 갱신
     let last = null;
     setInterval(() => {
       const s = session();
       const key = s ? s.user.id : null;
-      if (key !== last) { last = key; loadCloudList(); }
+      if (key !== last) { last = key; loadCloudList(); loadBrowse(); }
     }, 1500);
   }
 
