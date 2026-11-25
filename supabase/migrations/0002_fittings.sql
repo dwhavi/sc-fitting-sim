@@ -26,6 +26,14 @@ create table public.fittings (
 
 create index fittings_public_idx on public.fittings (created_at desc) where visibility = 'public' and not hidden;
 
+create table public.fitting_groups (
+  fitting_id uuid not null references public.fittings (id) on delete cascade,
+  group_id uuid not null references public.groups (id) on delete cascade,
+  primary key (fitting_id, group_id)
+);
+
+alter table public.fitting_groups enable row level security;
+
 -- 피팅에 지정된 그룹 목록 (RLS 우회, 읽기 전용 계산)
 create or replace function public.fitting_group_ids(p_fitting_id uuid)
 returns setof uuid
@@ -88,13 +96,7 @@ create policy "fittings_delete_author"
 
 -- ===== 피팅별 공개 대상 그룹 =====
 
-create table public.fitting_groups (
-  fitting_id uuid not null references public.fittings (id) on delete cascade,
-  group_id uuid not null references public.groups (id) on delete cascade,
-  primary key (fitting_id, group_id)
-);
 
-alter table public.fitting_groups enable row level security;
 
 -- 읽기: 피팅이 보이는 사람은 대상 그룹 목록(메타데이터)도 볼 수 있다.
 -- 그룹 지정 피팅의 내용(payload)은 이 정책과 무관하게 fittings-api만 반환한다.
