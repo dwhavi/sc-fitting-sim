@@ -185,7 +185,7 @@ Deno.serve(async (req) => {
     let fittingId = body.id;
     if (fittingId) {
       const { data: existing } = await admin
-        .from("fittings").select("author_id").eq("id", fittingId).maybeSingle();
+        .from("fittings").select("author_id, visibility").eq("id", fittingId).maybeSingle();
       if (!existing || existing.author_id !== user.id) return json({ error: "not_found" }, 404);
       // 기존이 그룹 지정 피팅이면 공개 전환을 포함한 모든 변경에 재검증 필요
       // (탈퇴 작성자가 공개 전환으로 읽기 권한을 되찾는 우회 차단)
