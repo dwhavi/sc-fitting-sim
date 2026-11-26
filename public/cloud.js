@@ -47,12 +47,12 @@
   }
 
   // 서버가 Discord 역할을 즉시 재검증해 계산한 등급. 화면 표시용이며 권한은 서버가 다시 판단한다.
-  const GRADE_SHORT = ["0 함장", "1 항해사·전투원·상인", "2 베테랑 탐사원", "3 탐사원"];
+  const GRADE_SHORT = ["0등급 · 함장", "1등급 · 항해사·전투원·상인", "2등급 · 베테랑 탐사원", "3등급 · 탐사원"];
   // 열람 등급 체크박스: 0~3 개별 선택 (비연속 가능). 4등급은 보안 자료를 볼 수 없어 선택지에 없다.
   function gradeBoxes(name, sel) {
     const cur = sel || [0, 1, 2, 3];
     return '<div class="gradeboxes" data-gb="' + name + '" style="display:flex;flex-direction:column;gap:3px;font-size:12px">' +
-      GRADE_SHORT.map((l, g) => '<label style="display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" value="' + g + '"' + (cur.includes(g) ? " checked" : "") + ' style="width:auto"> ' + l + "등급</label>").join("") + "</div>";
+      GRADE_SHORT.map((l, g) => '<label style="display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" value="' + g + '"' + (cur.includes(g) ? " checked" : "") + ' style="width:auto"> ' + l + "</label>").join("") + "</div>";
   }
   function readBoxes(root) { return [...root.querySelectorAll("input[type=checkbox]:checked")].map((c) => Number(c.value)).sort(); }
 
