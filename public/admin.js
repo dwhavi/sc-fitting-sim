@@ -254,6 +254,7 @@
     const tgt = (a) => {
       const d = a.detail || {};
       if (a.action === "fitting_exposure") return "보안 피팅 " + String(a.target).slice(0, 8) + (d.max_grade ? " → " + (d.max_grade === 0 ? "함장만" : "0~" + d.max_grade + "등급") : "");
+      if (/_by_admin$/.test(a.action)) return (a.action.startsWith("comment") ? "댓글" : "테스트 기록") + " (작성: " + ((d.author_id && names[d.author_id] || "회원 알 수 없음").replace(/^회원 /, "")) + ")";
       if (a.action === "discord_sync" || a.action === "discord_refresh") return "자동 역할 확인";
       if (a.target && names[a.target]) return names[a.target];
       if (d.role_name) return "역할 " + d.role_name;
