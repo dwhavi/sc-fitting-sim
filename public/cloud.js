@@ -82,7 +82,10 @@
       }
       ov.remove();
       setStatus("서버에 저장됨 — " + name);
+      const ml = $("cloudList");
+      if (ml) ml.innerHTML = '<div class="fit-dim">목록 불러오는 중…</div>';
       loadCloudList();
+      loadBrowse();
     };
   }
 
@@ -121,6 +124,7 @@
         const { data: dres, error: derr } = await client().functions.invoke("fittings-api", { body: { action: "delete", id: f.id } });
         if (derr || !dres || !dres.ok) { setStatus("삭제 실패: " + (derr ? derr.message : (dres && dres.error) || "오류"), true); return; }
         loadCloudList();
+        loadBrowse();
       };
       const cmtBtn = document.createElement("button");
       cmtBtn.textContent = "💬";
@@ -185,10 +189,11 @@
     document.body.appendChild(ov);
     const close = () => ov.remove();
     $("discClose").onclick = close;
+    // 재랜더링: 겹친 패널이 남지 않게 모든 모달 오버레이를 닫고 다시 연다.
+    // (모든 핸들러가 공유하도록 함수 최상위 범위에 둔다)
+    const reload = () => { document.querySelectorAll(".modal-ov").forEach((o) => o.remove()); openDiscussion(fittingId); };
     const cmtAdd = $("discCmtAdd");
     if (cmtAdd) cmtAdd.onclick = async () => {
-    // 재랜더링: 겹친 패널이 남지 않게 모든 모달 오버레이를 닫고 다시 연다.
-    const reload = () => { document.querySelectorAll(".modal-ov").forEach((o) => o.remove()); openDiscussion(fittingId); };
       const text = $("discCmtIn").value.trim();
       if (!text) return;
       cmtAdd.disabled = true;

@@ -162,8 +162,16 @@
           "<option value='" + r + "'" + (p.site_role === r ? " selected" : "") + ">" +
           { member: "회원", researcher: "연구자", admin: "관리자" }[r] + "</option>").join("") +
         "</select></td><td class='dim'>" + fmtTime(p.created_at) + "</td></tr>").join("") + "</table>";
+    const adminCount = data.filter((p) => p.site_role === "admin").length;
+    const meId = window.scAuth.session.user.id;
     $("memberList").querySelectorAll("[data-role-user]").forEach((sel) => {
+      const prev = (data.find((p) => p.id === sel.dataset.roleUser) || {}).site_role;
       sel.onchange = async () => {
+        // 마지막 관리자 보호: 관리자가 1명뿐이면 강등 불가, 본인 강등은 확인을 받는다.
+        if (prev === "admin" && sel.value !== "admin") {
+          if (adminCount <= 1) { alert("마지막 관리자는 강등할 수 없어요. 먼저 다른 관리자를 지정하세요."); sel.value = prev; return; }
+          if (sel.dataset.roleUser === meId && !confirm("본인의 관리자 권한을 내려놓을까요? 이후 이 화면에 들어올 수 없어요.")) { sel.value = prev; return; }
+        }
         const { error: e2 } = await sb.from("profiles").update({ site_role: sel.value, updated_at: new Date().toISOString() }).eq("id", sel.dataset.roleUser);
         if (e2) { alert("역할 변경 실패: " + e2.message); loadMembers(); return; }
         await audit("site_role_change", sel.dataset.roleUser, { site_role: sel.value });
