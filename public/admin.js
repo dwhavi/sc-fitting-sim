@@ -253,7 +253,7 @@
     (fr.data || []).forEach((x) => { names[x.id] = "피팅 " + x.name; });
     const tgt = (a) => {
       const d = a.detail || {};
-      if (a.action === "fitting_exposure") return "보안 피팅 " + String(a.target).slice(0, 8) + (d.max_grade ? " → " + (d.max_grade === 2 ? "0~2등급만" : "0~3등급") : "");
+      if (a.action === "fitting_exposure") return "보안 피팅 " + String(a.target).slice(0, 8) + (d.max_grade ? " → " + (d.max_grade === 0 ? "함장만" : "0~" + d.max_grade + "등급") : "");
       if (a.action === "discord_sync" || a.action === "discord_refresh") return "자동 역할 확인";
       if (a.target && names[a.target]) return names[a.target];
       if (d.role_name) return "역할 " + d.role_name;

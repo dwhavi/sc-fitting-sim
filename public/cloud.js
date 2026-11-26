@@ -42,7 +42,7 @@
   const GRADE_NAMES = ["함장", "1등급 (항해사·전투원·상인)", "2등급 (베테랑 탐사원)", "3등급 (탐사원)", "4등급 (등급 미부여)"];
   function visLabel(f) {
     if (f.visibility === "public") return "일반";
-    return "보안 · " + (f.max_grade === 2 ? "0~2등급 열람" : "0~3등급 열람");
+    return "보안 · " + (f.max_grade === 0 ? "함장만 열람" : "0~" + (f.max_grade == null ? 3 : f.max_grade) + "등급 열람");
   }
 
   // 서버가 Discord 역할을 즉시 재검증해 계산한 등급. 화면 표시용이며 권한은 서버가 다시 판단한다.
@@ -64,7 +64,7 @@
       (me.can_create_security ? '<option value="security">보안 — 기본 0~3등급 열람</option>' : "") + "</select>" +
       (me.can_create_security ? "" : '<div class="dim" style="font-size:11px;margin-top:4px">보안 자료는 3등급 이상(0~3등급)만 만들 수 있어요.</div>');
     const expo = me.can_restrict
-      ? '<select id="cloudMax" style="width:auto"><option value="3">열람 등급: 0~3등급 (기본)</option><option value="2">열람 등급: 0~2등급만</option></select>'
+      ? '<select id="cloudMax" style="width:auto"><option value="3">열람 등급: 0~3등급 (기본)</option><option value="2">열람 등급: 0~2등급</option><option value="1">열람 등급: 0~1등급</option><option value="0">열람 등급: 0등급(함장)만</option></select>'
       : "";
     ov.innerHTML =
       '<div class="modal" style="width:420px">' +
@@ -94,6 +94,7 @@
       const name = $("cloudName").value.trim();
       if (!name) { $("cloudDlgMsg").textContent = "이름을 입력하세요."; return; }
       const visibility = visSel.value;
+      if (visibility === "security" && $("cloudMax") && Number($("cloudMax").value) < (me.grade == null ? 9 : me.grade) && !confirm("내 등급이 열람 범위 밖이에요. 저장 후 나도 이 자료를 볼 수 없어요. 계속할까요?")) return;
       const maxSel = $("cloudMax");
       const maxGrade = visibility === "security" && maxSel ? Number(maxSel.value) : undefined;
       $("cloudDoSave").disabled = true;
@@ -247,6 +248,7 @@
     const reload = () => { document.querySelectorAll(".modal-ov").forEach((o) => o.remove()); openDiscussion(fittingId); };
     const expoSel = $("discExpo");
     if (expoSel) expoSel.onchange = async () => {
+      if (me.grade != null && Number(expoSel.value) < me.grade && !confirm("내 등급(" + me.grade + ")이 열람 범위 밖이 돼요. 이 자료는 나도 더 이상 볼 수 없게 됩니다. 계속할까요?")) { expoSel.value = String(fit.max_grade); return; }
       expoSel.disabled = true;
       const { data: r, error: e } = await inv("fittings-api", { body: { action: "set_exposure", id: fittingId, max_grade: Number(expoSel.value) } });
       if (e || !r || !r.ok) { $("discMsg").textContent = "열람 등급 변경 실패: " + (e ? e.message : (r && r.error) || "오류"); expoSel.disabled = false; return; }

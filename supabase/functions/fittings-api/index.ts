@@ -147,7 +147,7 @@ Deno.serve(async (req) => {
     if (!user) return json({ error: "unauthorized" }, 401);
     if (!canRestrict) return json({ error: "forbidden" }, 403);
     const mg = Number(body.max_grade);
-    if (![2, 3].includes(mg)) return json({ error: "invalid_max_grade" }, 400);
+    if (![0, 1, 2, 3].includes(mg)) return json({ error: "invalid_max_grade" }, 400);
     const v = await visibleFitting(body.id);
     if (!("fitting" in v)) return json({ error: v.error }, v.status);
     if (v.fitting.visibility !== "security") return json({ error: "not_security" }, 400);
@@ -315,7 +315,7 @@ Deno.serve(async (req) => {
     let wantMax: number | null = null;
     if (body.max_grade !== undefined && body.max_grade !== null) {
       wantMax = Number(body.max_grade);
-      if (![2, 3].includes(wantMax)) return json({ error: "invalid_max_grade" }, 400);
+      if (![0, 1, 2, 3].includes(wantMax)) return json({ error: "invalid_max_grade" }, 400);
     }
     let fittingId = body.id;
     let maxGrade = 3;
