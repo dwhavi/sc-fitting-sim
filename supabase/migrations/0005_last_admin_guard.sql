@@ -4,6 +4,8 @@ language plpgsql as $$
 begin
   if (tg_op = 'UPDATE' and old.site_role = 'admin' and new.site_role <> 'admin')
      or (tg_op = 'DELETE' and old.site_role = 'admin') then
+    -- 동시 강등 경합 방지: 관리자 변경을 직렬화한다.
+    perform pg_advisory_xact_lock(727001);
     if (select count(*) from public.profiles where site_role = 'admin' and id <> old.id) = 0 then
       raise exception 'last_admin_protected';
     end if;
