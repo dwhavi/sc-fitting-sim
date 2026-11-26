@@ -231,7 +231,7 @@
     site_role_change: "사이트 역할 변경", role_mapping_add: "역할→그룹 연결 추가", role_mapping_delete: "역할→그룹 연결 해제",
     grade_mapping_add: "역할→등급 연결 추가", grade_mapping_delete: "역할→등급 연결 해제",
     group_member_remove: "그룹에서 회원 제외", group_create: "그룹 생성", group_delete: "그룹 삭제",
-    fitting_exposure: "피팅 열람 등급 변경", comment_delete_by_admin: "관리자가 댓글 삭제", test_record_delete_by_admin: "관리자가 테스트 기록 삭제",
+    fitting_exposure: "피팅 열람 등급 변경", discord_sync: "Discord 역할 동기화", discord_refresh: "Discord 역할 재확인", comment_delete_by_admin: "관리자가 댓글 삭제", test_record_delete_by_admin: "관리자가 테스트 기록 삭제",
   };
 
   async function loadAudit() {
@@ -253,6 +253,8 @@
     (fr.data || []).forEach((x) => { names[x.id] = "피팅 " + x.name; });
     const tgt = (a) => {
       const d = a.detail || {};
+      if (a.action === "fitting_exposure") return "보안 피팅 " + String(a.target).slice(0, 8) + (d.max_grade ? " → " + (d.max_grade === 2 ? "0~2등급만" : "0~3등급") : "");
+      if (a.action === "discord_sync" || a.action === "discord_refresh") return "자동 역할 확인";
       if (a.target && names[a.target]) return names[a.target];
       if (d.role_name) return "역할 " + d.role_name;
       if (d.group_name) return "그룹 " + d.group_name;
