@@ -61,6 +61,8 @@
       options: {
         scopes: "identify guilds.members.read",
         redirectTo: location.origin + location.pathname,
+        // 이미 승인한 사용자는 Discord 권한 승인 화면을 다시 거치지 않는다.
+        ...(localStorage.getItem("scfit.authorized") ? { queryParams: { prompt: "none" } } : {}),
       },
     });
     if (error) renderLoggedOut("로그인 실패: " + error.message);
@@ -109,8 +111,19 @@
     profile = data || null;
   }
 
+  function renderChecking() {
+    const el = area();
+    if (!el) return;
+    el.innerHTML = "";
+    const chip = document.createElement("span");
+    chip.className = "auth-chip";
+    chip.textContent = "로그인 확인 중…";
+    el.appendChild(chip);
+  }
+
   async function boot() {
-    renderLoggedOut();
+    // 로그인 복귀 직후나 세션 확인 전에 "로그인" 버튼이 먼저 보이지 않게 한다.
+    if (configured && cfg.SUPABASE_URL) renderChecking(); else renderLoggedOut();
     if (!configured || !cfg.SUPABASE_URL) return;
     if (!window.supabase || !window.supabase.createClient) return;
     supabase = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
@@ -118,13 +131,18 @@
     const { data } = await supabase.auth.getSession();
     session = data.session;
     if (session) {
+      localStorage.setItem("scfit.authorized", "1");
+      renderLoggedIn(); // 이름이 비어도 먼저 로그인 상태를 보여 주고, 역할 동기화는 뒤에서 진행
       await syncRoles();
       await loadProfile();
       renderLoggedIn();
+    } else {
+      renderLoggedOut();
     }
     supabase.auth.onAuthStateChange(async (_event, s) => {
       session = s;
       if (session) {
+        renderLoggedIn();
         await syncRoles();
         await loadProfile();
         renderLoggedIn();

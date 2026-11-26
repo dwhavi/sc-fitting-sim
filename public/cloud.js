@@ -14,6 +14,20 @@
     el.style.color = bad ? "var(--bad)" : "var(--dim)";
   }
 
+  // 서버 요청 중에는 상태줄에 진행 표시를 보여 준다 (요청 하나가 5~15초 걸릴 수 있음).
+  let pending = 0;
+  async function inv(name, opts) {
+    const st = $("cloudStatus");
+    pending++;
+    if (st) { st.textContent = "⏳ 서버에서 확인 중… (최대 15초 걸릴 수 있어요)"; st.style.color = "var(--dim)"; }
+    try { return await client().functions.invoke(name, opts); }
+    finally { pending--; if (!pending && st && st.textContent.startsWith("⏳")) st.textContent = ""; }
+  }
+  function shipName(slug) {
+    const sh = (window.DB && DB.ships || (typeof DB !== "undefined" && DB.ships) || []).find((x) => x.slug === slug || x.class === slug);
+    return (sh && sh.name) || slug;
+  }
+
   function currentPayload() {
     return {
       ship: curShip,
@@ -34,12 +48,13 @@
   async function loadMe() {
     const el = $("cloudGrade");
     if (!session()) { myMe = null; if (el) el.textContent = ""; return null; }
-    const { data } = await client().functions.invoke("fittings-api", { body: { action: "me" } });
+    const { data } = await inv("fittings-api", { body: { action: "me" } });
     myMe = data && data.ok ? data : null;
     if (el) el.textContent = myMe ? "내 등급: " + (myMe.verified ? GRADE_NAMES[myMe.grade] : "확인 중 · 4등급으로 취급") : "";
     return myMe;
   }
 
+  let myFits = [];
   function openSaveDialog(me) {
     const ov = document.createElement("div");
     ov.className = "modal-ov";
@@ -54,7 +69,9 @@
       '<div class="modal-h"><b>☁️ 서버에 저장</b><button class="modal-x" id="cloudCancel">✕</button>' +
       '<div class="sub">' + escHtml(curShip) + " · 현재 부품 구성과 전력 배분을 계정에 저장합니다.</div></div>" +
       '<div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px">' +
-      '<input id="cloudName" placeholder="피팅 이름" value="' + escHtml(curShip + " " + new Date().toLocaleDateString("ko-KR")) + '">' +
+      (myFits.length ? '<select id="cloudTarget" style="width:auto"><option value="">새 피팅으로 저장</option>' +
+        myFits.map((f) => '<option value="' + escHtml(f.id) + '">덮어쓰기 · ' + escHtml(f.name) + ' (' + escHtml(shipName(f.ship_slug)) + ')</option>').join("") + "</select>" : "") +
+      '<input id="cloudName" placeholder="피팅 이름" value="' + escHtml(shipName(curShip) + " " + new Date().toLocaleDateString("ko-KR")) + '">' +
       "<div>" + vis + '</div>' +
       '<div id="cloudExpoPick" style="display:none">' + expo + "</div>" +
       '<div class="row"><button id="cloudDoSave" style="flex:1">저장</button></div>' +
@@ -64,6 +81,11 @@
     $("cloudCancel").onclick = () => ov.remove();
     const visSel = $("cloudVis");
     const pick = $("cloudExpoPick");
+    const tgt = $("cloudTarget");
+    if (tgt) tgt.onchange = () => {
+      const f = myFits.find((x) => x.id === tgt.value);
+      if (f) { $("cloudName").value = f.name; visSel.value = f.visibility === "security" && me.can_create_security ? "security" : "public"; if ($("cloudMax") && f.max_grade) $("cloudMax").value = String(f.max_grade); syncPick(); }
+    };
     const syncPick = () => { pick.style.display = visSel.value === "security" ? "" : "none"; };
     visSel.onchange = syncPick; syncPick();
     $("cloudDoSave").onclick = async () => {
@@ -74,9 +96,10 @@
       const maxGrade = visibility === "security" && maxSel ? Number(maxSel.value) : undefined;
       $("cloudDoSave").disabled = true;
       // 저장도 fittings-api 경유: 그룹 지정은 서버가 역할을 즉시 재검증한다.
-      const { data, error } = await client().functions.invoke("fittings-api", {
+      const { data, error } = await inv("fittings-api", {
         body: {
           action: "save",
+          id: ($("cloudTarget") && $("cloudTarget").value) || undefined,
           ship_slug: curShip,
           name: name,
           payload: currentPayload(),
@@ -89,8 +112,9 @@
         $("cloudDoSave").disabled = false;
         return;
       }
+      const wasOverwrite = body_id_used();
       ov.remove();
-      setStatus("서버에 저장됨 — " + name);
+      setStatus((wasOverwrite ? "덮어쓰기 완료 — " : "서버에 저장됨 — ") + name);
       const ml = $("cloudList");
       if (ml) ml.innerHTML = '<div class="fit-dim">목록 불러오는 중…</div>';
       loadCloudList();
@@ -98,6 +122,7 @@
     };
   }
 
+  function body_id_used() { return !!($("cloudTarget") && $("cloudTarget").value); }
   function escHtml(s) {
     return String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({
       "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
@@ -109,9 +134,10 @@
     if (!host) return;
     if (!session()) { host.innerHTML = ""; return; }
     // 제한 자료는 fittings-api가 Discord 역할을 즉시 재검증한 뒤 중개한다.
-    const { data, error } = await client().functions.invoke("fittings-api", { body: { action: "list_mine" } });
+    const { data, error } = await inv("fittings-api", { body: { action: "list_mine" } });
     if (error || !data || !data.ok) { host.innerHTML = '<div class="fit-dim">목록 실패: ' + escHtml(error ? error.message : (data && data.error) || "오류") + "</div>"; return; }
     const rows = data.fittings || [];
+    myFits = rows;
     if (!rows.length) { host.innerHTML = '<div class="fit-dim">서버에 저장된 피팅이 없어요.</div>'; return; }
     host.innerHTML = "";
     rows.forEach((f) => {
@@ -119,8 +145,8 @@
       row.style.cssText = "display:flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:6px;padding:5px 8px;margin-top:5px;font-size:12px";
       const label = document.createElement("div");
       label.style.flex = "1";
-      label.innerHTML = "<b>" + escHtml(f.name) + "</b> <span class='dim'>" + escHtml(f.ship_slug) +
-        " · " + visLabel(f) + " · " + new Date(f.created_at).toLocaleDateString("ko-KR") + "</span>";
+      label.innerHTML = "<b>" + escHtml(f.name) + "</b> <span class='dim'>" + escHtml(shipName(f.ship_slug)) +
+        " · " + visLabel(f) + (f.author_name ? " · 작성 " + escHtml(f.author_name) : "") + " · " + new Date(f.created_at).toLocaleDateString("ko-KR") + "</span>";
       const loadBtn = document.createElement("button");
       loadBtn.textContent = "불러오기";
       loadBtn.style.cssText = "padding:3px 8px;font-size:11px";
@@ -130,7 +156,7 @@
       delBtn.style.cssText = "padding:3px 8px;font-size:11px";
       delBtn.onclick = async () => {
         if (!confirm("서버 피팅을 삭제할까요?")) return;
-        const { data: dres, error: derr } = await client().functions.invoke("fittings-api", { body: { action: "delete", id: f.id } });
+        const { data: dres, error: derr } = await inv("fittings-api", { body: { action: "delete", id: f.id } });
         if (derr || !dres || !dres.ok) { setStatus("삭제 실패: " + (derr ? derr.message : (dres && dres.error) || "오류"), true); return; }
         loadCloudList();
         loadBrowse();
@@ -140,16 +166,29 @@
       cmtBtn.title = "댓글 · 테스트 기록";
       cmtBtn.style.cssText = "padding:3px 8px;font-size:11px";
       cmtBtn.onclick = () => openDiscussion(f.id);
-      row.appendChild(label); row.appendChild(loadBtn); row.appendChild(cmtBtn); row.appendChild(delBtn);
+      row.appendChild(label); row.appendChild(loadBtn); row.appendChild(shareBtn(f)); row.appendChild(cmtBtn); row.appendChild(delBtn);
       host.appendChild(row);
     });
+  }
+
+  function shareBtn(f) {
+    const b = document.createElement("button");
+    b.textContent = "🔗";
+    b.title = "공유 링크 복사";
+    b.style.cssText = "padding:3px 8px;font-size:11px";
+    b.onclick = async () => {
+      const url = location.origin + location.pathname + "?fit=" + f.id;
+      try { await navigator.clipboard.writeText(url); setStatus("링크를 복사했어요. 보안 자료는 열람 등급이 되는 로그인 사용자에게만 보여요."); }
+      catch (e) { prompt("링크를 복사하세요", url); }
+    };
+    return b;
   }
 
   // ---- 댓글 · 테스트 기록 패널 (4단계) ----
   // 읽기·쓰기 모두 fittings-api get/comment_*/test_* 경유: 그룹 지정 피팅은
   // 서버가 요청마다 Discord 역할을 재검증한다. 클라이언트는 표시만 담당.
   async function openDiscussion(fittingId) {
-    const { data, error } = await client().functions.invoke("fittings-api", { body: { action: "get", id: fittingId } });
+    const { data, error } = await inv("fittings-api", { body: { action: "get", id: fittingId } });
     const fit = data && data.fitting;
     if (error || !fit) { setStatus("열기 실패: " + (error ? error.message : "없음"), true); return; }
     const me = (data && data.me) || {};
@@ -189,7 +228,7 @@
     ov.innerHTML =
       '<div class="modal" style="width:520px;max-height:80vh;overflow-y:auto">' +
       '<div class="modal-h"><b>💬 ' + escHtml(fit.name) + "</b><button class='modal-x' id='discClose'>✕</button>" +
-      "<div class='sub'>" + escHtml(fit.ship_slug) + " · " + visLabel(fit) + "</div></div>" +
+      "<div class='sub'>" + escHtml(shipName(fit.ship_slug)) + " · " + visLabel(fit) + "</div></div>" +
       "<div style='padding:12px 14px'>" + expoCtl +
       "<h3 style='margin:0 0 6px;font-size:13px'>댓글</h3><div id='discCmts'>" + cmtHtml + "</div>" +
       (session()
@@ -207,7 +246,7 @@
     const expoSel = $("discExpo");
     if (expoSel) expoSel.onchange = async () => {
       expoSel.disabled = true;
-      const { data: r, error: e } = await client().functions.invoke("fittings-api", { body: { action: "set_exposure", id: fittingId, max_grade: Number(expoSel.value) } });
+      const { data: r, error: e } = await inv("fittings-api", { body: { action: "set_exposure", id: fittingId, max_grade: Number(expoSel.value) } });
       if (e || !r || !r.ok) { $("discMsg").textContent = "열람 등급 변경 실패: " + (e ? e.message : (r && r.error) || "오류"); expoSel.disabled = false; return; }
       reload(); loadCloudList(); loadBrowse();
     };
@@ -216,16 +255,17 @@
       const text = $("discCmtIn").value.trim();
       if (!text) return;
       cmtAdd.disabled = true;
-      const { data: r, error: e } = await client().functions.invoke("fittings-api", { body: { action: "comment_add", id: fittingId, body: text } });
+      const { data: r, error: e } = await inv("fittings-api", { body: { action: "comment_add", id: fittingId, body: text } });
       if (e || !r || !r.ok) { $("discMsg").textContent = "댓글 실패: " + (e ? e.message : (r && r.error) || "오류"); cmtAdd.disabled = false; return; }
       reload();
     };
     ov.querySelectorAll("[data-ce]").forEach((a) => {
       a.onclick = async (ev) => {
         ev.preventDefault();
-        const text = prompt("댓글 수정");
+        const cur = ((fit.comments || []).find((c) => c.id === a.dataset.ce) || {}).body || "";
+        const text = prompt("댓글 수정", cur);
         if (!text || !text.trim()) return;
-        await client().functions.invoke("fittings-api", { body: { action: "comment_edit", comment_id: a.dataset.ce, body: text.trim() } });
+        await inv("fittings-api", { body: { action: "comment_edit", comment_id: a.dataset.ce, body: text.trim() } });
         reload();
       };
     });
@@ -233,7 +273,7 @@
       a.onclick = async (ev) => {
         ev.preventDefault();
         if (!confirm("댓글을 삭제할까요?")) return;
-        await client().functions.invoke("fittings-api", { body: { action: "comment_delete", comment_id: a.dataset.cd } });
+        await inv("fittings-api", { body: { action: "comment_delete", comment_id: a.dataset.cd } });
         reload();
       };
     });
@@ -241,7 +281,7 @@
       a.onclick = async (ev) => {
         ev.preventDefault();
         if (!confirm("테스트 기록을 삭제할까요?")) return;
-        await client().functions.invoke("fittings-api", { body: { action: "test_delete", record_id: a.dataset.rd } });
+        await inv("fittings-api", { body: { action: "test_delete", record_id: a.dataset.rd } });
         reload();
       };
     });
@@ -258,7 +298,7 @@
         }
       });
       recAdd.disabled = true;
-      const { data: r, error: e } = await client().functions.invoke("fittings-api", { body: {
+      const { data: r, error: e } = await inv("fittings-api", { body: {
         action: "test_add", id: fittingId, conditions, values,
         patch_version: $("discRecPatch").value.trim(), memo: $("discRecMemo").value.trim(),
       } });
@@ -268,7 +308,7 @@
   }
 
   async function loadCloudFitting(id) {
-    const { data, error } = await client().functions.invoke("fittings-api", { body: { action: "get", id } });
+    const { data, error } = await inv("fittings-api", { body: { action: "get", id } });
     const fit = data && data.fitting;
     if (error || !fit) { setStatus("불러오기 실패: " + (error ? error.message : "없음"), true); return; }
     const p = fit.payload || {};
@@ -303,7 +343,7 @@
   async function loadBrowse() {
     const host = $("browseList");
     if (!host) return;
-    const { data, error } = await client().functions.invoke("fittings-api", { body: { action: "browse" } });
+    const { data, error } = await inv("fittings-api", { body: { action: "browse" } });
     if (error || !data || !data.ok) { host.innerHTML = '<div class="fit-dim">목록 실패: ' + escHtml(error ? error.message : (data && data.error) || "오류") + "</div>"; return; }
     browseRows = data.fittings || [];
     renderBrowse();
@@ -321,8 +361,8 @@
       row.style.cssText = "display:flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:6px;padding:5px 8px;margin-top:5px;font-size:12px";
       const label = document.createElement("div");
       label.style.flex = "1";
-      label.innerHTML = "<b>" + escHtml(f.name) + "</b> <span class='dim'>" + escHtml(f.ship_slug) +
-        " · " + visLabel(f) + " · " + new Date(f.created_at).toLocaleDateString("ko-KR") + "</span>";
+      label.innerHTML = "<b>" + escHtml(f.name) + "</b> <span class='dim'>" + escHtml(shipName(f.ship_slug)) +
+        " · " + visLabel(f) + (f.author_name ? " · 작성 " + escHtml(f.author_name) : "") + " · " + new Date(f.created_at).toLocaleDateString("ko-KR") + "</span>";
       const loadBtn = document.createElement("button");
       loadBtn.textContent = "불러오기";
       loadBtn.style.cssText = "padding:3px 8px;font-size:11px";
@@ -332,7 +372,7 @@
       cmtBtn.title = "댓글 · 테스트 기록";
       cmtBtn.style.cssText = "padding:3px 8px;font-size:11px";
       cmtBtn.onclick = () => openDiscussion(f.id);
-      row.appendChild(label); row.appendChild(loadBtn); row.appendChild(cmtBtn);
+      row.appendChild(label); row.appendChild(loadBtn); row.appendChild(shareBtn(f)); row.appendChild(cmtBtn);
       host.appendChild(row);
     });
   }
@@ -342,8 +382,8 @@
   async function loadFromUrl() {
     const id = new URLSearchParams(location.search).get("fit");
     if (!id) return;
-    const { data, error } = await client().functions.invoke("fittings-api", { body: { action: "get", id } });
-    if (error || !data || !data.fitting) { setStatus("피팅을 찾을 수 없어요.", true); return; }
+    const { data, error } = await inv("fittings-api", { body: { action: "get", id } });
+    if (error || !data || !data.fitting) { setStatus(session() ? "피팅을 찾을 수 없거나 열람 등급이 맞지 않아요." : "피팅을 찾을 수 없어요. 보안 자료라면 Discord로 로그인하면 보일 수 있어요.", true); return; }
     await loadCloudFitting(id);
   }
 

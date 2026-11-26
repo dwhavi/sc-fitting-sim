@@ -124,7 +124,10 @@ Deno.serve(async (req) => {
     return rows.filter((f) => !f.hidden && (
       f.visibility === "public" ||
       (f.visibility === "security" && verified && grade <= 3 && grade <= (f.max_grade ?? 3))
-    ));
+    )).map((f) => {
+      const { profiles, ...rest } = f;
+      return { ...rest, author_name: profiles?.display_name ?? null };
+    });
   }
   const canCreateSecurity = verified && grade <= 3;
   const canRestrict = verified && grade <= 2;
@@ -158,7 +161,7 @@ Deno.serve(async (req) => {
     if (!user) return json({ error: "unauthorized" }, 401);
     const { data, error } = await admin
       .from("fittings")
-      .select("id, ship_slug, name, visibility, max_grade, created_at")
+      .select("id, ship_slug, name, visibility, max_grade, created_at, profiles!fittings_author_id_fkey(display_name)")
       .eq("author_id", user.id)
       .order("created_at", { ascending: false })
       .limit(50);
@@ -170,7 +173,7 @@ Deno.serve(async (req) => {
     if (!body.id) return json({ error: "id_required" }, 400);
     const { data, error } = await admin
       .from("fittings")
-      .select("id, ship_slug, name, visibility, max_grade, payload, created_at")
+      .select("id, ship_slug, name, visibility, max_grade, payload, created_at, profiles!fittings_author_id_fkey(display_name)")
       .eq("id", body.id)
       .maybeSingle();
     if (error) return json({ error: error.message }, 500);
@@ -249,6 +252,8 @@ Deno.serve(async (req) => {
     if (!own || (own.author_id !== user.id && !isAdmin)) return json({ error: "not_found" }, 404);
     const { error } = await admin.from("comments").delete().eq("id", body.comment_id);
     if (error) return json({ error: error.message }, 500);
+    // 관리자가 남의 댓글을 지운 경우 관리 기록에 남긴다 (내용은 기록하지 않음).
+    if (own.author_id !== user.id) await admin.from("audit_log").insert({ actor_id: user.id, action: "comment_delete_by_admin", target: body.comment_id, detail: { author_id: own.author_id } });
     return json({ ok: true });
   }
 
@@ -279,13 +284,14 @@ Deno.serve(async (req) => {
     if (!own || (own.author_id !== user.id && !isAdmin)) return json({ error: "not_found" }, 404);
     const { error } = await admin.from("test_records").delete().eq("id", body.record_id);
     if (error) return json({ error: error.message }, 500);
+    if (own.author_id !== user.id) await admin.from("audit_log").insert({ actor_id: user.id, action: "test_record_delete_by_admin", target: body.record_id, detail: { author_id: own.author_id } });
     return json({ ok: true });
   }
 
   if (action === "browse") {
     const { data, error } = await admin
       .from("fittings")
-      .select("id, ship_slug, name, visibility, max_grade, created_at")
+      .select("id, ship_slug, name, visibility, max_grade, created_at, profiles!fittings_author_id_fkey(display_name)")
       .eq("hidden", false)
       .order("created_at", { ascending: false })
       .limit(100);

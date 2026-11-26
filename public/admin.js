@@ -171,6 +171,7 @@
     $("groupList").querySelectorAll("[data-rm-member]").forEach((a) => {
       a.onclick = async (e) => {
         e.preventDefault();
+        if (!confirm("이 회원을 그룹에서 뺄까요?")) return;
         const [gid, uid] = a.dataset.rmMember.split(":");
         await sb.from("group_members").delete().eq("group_id", gid).eq("user_id", uid);
         await audit("group_member_remove", uid, { group_id: gid });
@@ -201,9 +202,10 @@
     $("memberList").innerHTML = "<table><tr><th>이름</th><th>Discord ID</th><th>역할</th><th>가입</th></tr>" +
       data.map((p) => "<tr><td>" + esc(p.display_name || "-") + "</td><td class='dim'>" + esc(p.discord_user_id || "-") + "</td>" +
         "<td><select data-role-user='" + p.id + "' style='width:auto'>" +
-        ["member", "researcher", "admin"].map((r) =>
+        // 연구자 역할은 등급 체계로 대체됨: 이미 연구자인 회원에게만 현재 값으로 보인다.
+        ["member", ...(p.site_role === "researcher" ? ["researcher"] : []), "admin"].map((r) =>
           "<option value='" + r + "'" + (p.site_role === r ? " selected" : "") + ">" +
-          { member: "회원", researcher: "연구자", admin: "관리자" }[r] + "</option>").join("") +
+          { member: "회원", researcher: "연구자 (등급으로 대체)", admin: "관리자" }[r] + "</option>").join("") +
         "</select></td><td class='dim'>" + fmtTime(p.created_at) + "</td></tr>").join("") + "</table>";
     const adminCount = data.filter((p) => p.site_role === "admin").length;
     const meId = window.scAuth.session.user.id;
@@ -225,13 +227,41 @@
 
   // ===== 관리 기록 =====
 
+  const ACTION_LABEL = {
+    site_role_change: "사이트 역할 변경", role_mapping_add: "역할→그룹 연결 추가", role_mapping_delete: "역할→그룹 연결 해제",
+    grade_mapping_add: "역할→등급 연결 추가", grade_mapping_delete: "역할→등급 연결 해제",
+    group_member_remove: "그룹에서 회원 제외", group_create: "그룹 생성", group_delete: "그룹 삭제",
+    fitting_exposure: "피팅 열람 등급 변경", comment_delete_by_admin: "관리자가 댓글 삭제", test_record_delete_by_admin: "관리자가 테스트 기록 삭제",
+  };
+
   async function loadAudit() {
     const { data, error } = await sb.from("audit_log").select("action, target, detail, created_at, profiles(display_name)").order("created_at", { ascending: false }).limit(100);
     if (error) { $("auditList").innerHTML = '<span class="bad">불러오기 실패</span>'; return; }
     if (!data.length) { $("auditList").innerHTML = '<span class="dim">기록이 없습니다.</span>'; return; }
+    // 대상 ID를 이름으로 바꾼다 (회원·그룹·역할 연결). 이미 지워진 대상은 짧은 ID로 표시.
+    const [pr, gr, rm, gm, fr] = await Promise.all([
+      sb.from("profiles").select("id, display_name"),
+      sb.from("groups").select("id, name"),
+      sb.from("discord_role_mappings").select("id, discord_role_id, discord_role_name"),
+      sb.from("discord_role_grade_mappings").select("id, discord_role_id, discord_role_name"),
+      sb.from("fittings").select("id, name"),
+    ]);
+    const names = {};
+    (pr.data || []).forEach((x) => { names[x.id] = "회원 " + (x.display_name || "-"); });
+    (gr.data || []).forEach((x) => { names[x.id] = "그룹 " + x.name; });
+    (rm.data || []).concat(gm.data || []).forEach((x) => { names[x.id] = "역할 " + (x.discord_role_name || x.discord_role_id); names[x.discord_role_id] = "역할 " + (x.discord_role_name || x.discord_role_id); });
+    (fr.data || []).forEach((x) => { names[x.id] = "피팅 " + x.name; });
+    const tgt = (a) => {
+      const d = a.detail || {};
+      if (a.target && names[a.target]) return names[a.target];
+      if (d.role_name) return "역할 " + d.role_name;
+      if (d.group_name) return "그룹 " + d.group_name;
+      if (a.target && !/^[0-9a-f]{8}-[0-9a-f]{4}-/i.test(a.target) && !/^\d{15,}$/.test(a.target)) return a.target;
+      return a.target ? "(삭제됨 또는 알 수 없음) " + String(a.target).slice(0, 8) : "-";
+    };
     $("auditList").innerHTML = "<table><tr><th>시각</th><th>행위자</th><th>동작</th><th>대상</th></tr>" +
       data.map((a) => "<tr><td class='dim'>" + fmtTime(a.created_at) + "</td><td>" + esc(a.profiles ? a.profiles.display_name : "-") +
-        "</td><td>" + esc(a.action) + "</td><td class='dim'>" + esc(a.target || "-") + "</td></tr>").join("") + "</table>";
+        "</td><td>" + esc(ACTION_LABEL[a.action] || a.action) + "</td><td class='dim'>" + esc(tgt(a)) + "</td></tr>").join("") + "</table>";
   }
 
   // ===== 시작 =====
