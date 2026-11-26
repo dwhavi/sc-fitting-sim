@@ -23,21 +23,32 @@
     };
   }
 
-  async function myGroups() {
-    // RLS(groups_select_member_or_admin)가 역할 근거 소속 그룹만 돌려준다.
-    const { data, error } = await client()
-      .from("groups")
-      .select("id, name");
-    if (error) return [];
-    return (data || []).map((r) => ({ id: r.id, name: r.name }));
+  const GRADE_NAMES = ["함장", "1등급 (항해사·전투원·상인)", "2등급 (베테랑 탐사원)", "3등급 (탐사원)", "4등급 (등급 미부여)"];
+  function visLabel(f) {
+    if (f.visibility === "public") return "일반";
+    return "보안 · " + (f.max_grade === 2 ? "0~2등급 열람" : "0~3등급 열람");
   }
 
-  function openSaveDialog(groups) {
+  // 서버가 Discord 역할을 즉시 재검증해 계산한 등급. 화면 표시용이며 권한은 서버가 다시 판단한다.
+  let myMe = null;
+  async function loadMe() {
+    const el = $("cloudGrade");
+    if (!session()) { myMe = null; if (el) el.textContent = ""; return null; }
+    const { data } = await client().functions.invoke("fittings-api", { body: { action: "me" } });
+    myMe = data && data.ok ? data : null;
+    if (el) el.textContent = myMe ? "내 등급: " + (myMe.verified ? GRADE_NAMES[myMe.grade] : "확인 중 · 4등급으로 취급") : "";
+    return myMe;
+  }
+
+  function openSaveDialog(me) {
     const ov = document.createElement("div");
     ov.className = "modal-ov";
-    const vis = groups.length
-      ? '<select id="cloudVis" style="width:auto"><option value="public">공개 — 누구나 열람</option><option value="groups">그룹 지정 — 선택 그룹만 열람</option></select>'
-      : '<select id="cloudVis" style="width:auto"><option value="public">공개 — 누구나 열람</option></select><div class="dim" style="font-size:11px;margin-top:4px">속한 그룹이 없어 공개로만 저장할 수 있어요.</div>';
+    const vis = '<select id="cloudVis" style="width:auto"><option value="public">일반 — 누구나 열람</option>' +
+      (me.can_create_security ? '<option value="security">보안 — 기본 0~3등급 열람</option>' : "") + "</select>" +
+      (me.can_create_security ? "" : '<div class="dim" style="font-size:11px;margin-top:4px">보안 자료는 3등급 이상(0~3등급)만 만들 수 있어요.</div>');
+    const expo = me.can_restrict
+      ? '<select id="cloudMax" style="width:auto"><option value="3">열람 등급: 0~3등급 (기본)</option><option value="2">열람 등급: 0~2등급만</option></select>'
+      : "";
     ov.innerHTML =
       '<div class="modal" style="width:420px">' +
       '<div class="modal-h"><b>☁️ 서버에 저장</b><button class="modal-x" id="cloudCancel">✕</button>' +
@@ -45,24 +56,22 @@
       '<div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px">' +
       '<input id="cloudName" placeholder="피팅 이름" value="' + escHtml(curShip + " " + new Date().toLocaleDateString("ko-KR")) + '">' +
       "<div>" + vis + '</div>' +
-      '<div id="cloudGroupPick" style="display:none">' +
-      groups.map((g) => '<label style="display:block;font-size:12px;padding:3px 0"><input type="checkbox" style="width:auto" value="' + g.id + '"> ' + escHtml(g.name) + "</label>").join("") +
-      "</div>" +
+      '<div id="cloudExpoPick" style="display:none">' + expo + "</div>" +
       '<div class="row"><button id="cloudDoSave" style="flex:1">저장</button></div>' +
       '<div id="cloudDlgMsg" class="dim" style="font-size:12px"></div>' +
       "</div></div>";
     document.body.appendChild(ov);
     $("cloudCancel").onclick = () => ov.remove();
     const visSel = $("cloudVis");
-    const pick = $("cloudGroupPick");
-    const syncPick = () => { pick.style.display = visSel.value === "groups" ? "" : "none"; };
+    const pick = $("cloudExpoPick");
+    const syncPick = () => { pick.style.display = visSel.value === "security" ? "" : "none"; };
     visSel.onchange = syncPick; syncPick();
     $("cloudDoSave").onclick = async () => {
       const name = $("cloudName").value.trim();
       if (!name) { $("cloudDlgMsg").textContent = "이름을 입력하세요."; return; }
       const visibility = visSel.value;
-      const gidList = [...pick.querySelectorAll("input:checked")].map((c) => c.value);
-      if (visibility === "groups" && !gidList.length) { $("cloudDlgMsg").textContent = "공개할 그룹을 하나 이상 고르세요."; return; }
+      const maxSel = $("cloudMax");
+      const maxGrade = visibility === "security" && maxSel ? Number(maxSel.value) : undefined;
       $("cloudDoSave").disabled = true;
       // 저장도 fittings-api 경유: 그룹 지정은 서버가 역할을 즉시 재검증한다.
       const { data, error } = await client().functions.invoke("fittings-api", {
@@ -72,7 +81,7 @@
           name: name,
           payload: currentPayload(),
           visibility: visibility,
-          group_ids: gidList,
+          max_grade: maxGrade,
         },
       });
       if (error || !data || !data.ok) {
@@ -111,7 +120,7 @@
       const label = document.createElement("div");
       label.style.flex = "1";
       label.innerHTML = "<b>" + escHtml(f.name) + "</b> <span class='dim'>" + escHtml(f.ship_slug) +
-        " · " + (f.visibility === "public" ? "공개" : "그룹 지정") + " · " + new Date(f.created_at).toLocaleDateString("ko-KR") + "</span>";
+        " · " + visLabel(f) + " · " + new Date(f.created_at).toLocaleDateString("ko-KR") + "</span>";
       const loadBtn = document.createElement("button");
       loadBtn.textContent = "불러오기";
       loadBtn.style.cssText = "padding:3px 8px;font-size:11px";
@@ -166,7 +175,7 @@
         (r.patch_version ? "<div><b>패치</b> " + escHtml(r.patch_version) + "</div>" : "") +
         (r.memo ? "<div class='dim'>" + escHtml(r.memo) + "</div>" : "") + "</div>";
     }).join("") || "<div class='dim' style='font-size:12px'>기록이 없어요.</div>";
-    const recSection = fit.visibility === "groups"
+    const recSection = fit.visibility === "security"
       ? "<h3 style='margin:14px 0 6px;font-size:13px'>테스트 기록</h3><div id='discRecs'>" + recHtml + "</div>" +
         "<div style='margin-top:8px;display:flex;flex-direction:column;gap:6px'>" +
         "<input id='discRecCond' placeholder='측정 조건 (예: 지역, 상태)' style='font-size:12px'>" +
@@ -174,11 +183,14 @@
         "<div class='row' style='gap:6px'><input id='discRecPatch' placeholder='패치 버전 (예: 4.10.3)' style='font-size:12px;flex:1'><input id='discRecMemo' placeholder='메모 (선택)' style='font-size:12px;flex:2'></div>" +
         "<div class='row'><button id='discRecAdd' style='flex:1'>기록 추가</button></div></div>"
       : "";
+    const expoCtl = (me.can_restrict && fit.visibility === "security")
+      ? "<div style='margin:0 0 10px;font-size:12px'><b>열람 등급</b> <select id='discExpo' style='width:auto;font-size:12px'><option value='3'" + (fit.max_grade === 3 ? " selected" : "") + ">0~3등급 (기본)</option><option value='2'" + (fit.max_grade === 2 ? " selected" : "") + ">0~2등급만</option></select></div>"
+      : "";
     ov.innerHTML =
       '<div class="modal" style="width:520px;max-height:80vh;overflow-y:auto">' +
       '<div class="modal-h"><b>💬 ' + escHtml(fit.name) + "</b><button class='modal-x' id='discClose'>✕</button>" +
-      "<div class='sub'>" + escHtml(fit.ship_slug) + " · " + (fit.visibility === "public" ? "공개" : "그룹 지정") + "</div></div>" +
-      "<div style='padding:12px 14px'>" +
+      "<div class='sub'>" + escHtml(fit.ship_slug) + " · " + visLabel(fit) + "</div></div>" +
+      "<div style='padding:12px 14px'>" + expoCtl +
       "<h3 style='margin:0 0 6px;font-size:13px'>댓글</h3><div id='discCmts'>" + cmtHtml + "</div>" +
       (session()
         ? "<div class='row' style='margin-top:8px;gap:6px'><input id='discCmtIn' placeholder='댓글 입력' style='flex:1;font-size:12px'><button id='discCmtAdd'>등록</button></div>"
@@ -192,6 +204,13 @@
     // 재랜더링: 겹친 패널이 남지 않게 모든 모달 오버레이를 닫고 다시 연다.
     // (모든 핸들러가 공유하도록 함수 최상위 범위에 둔다)
     const reload = () => { document.querySelectorAll(".modal-ov").forEach((o) => o.remove()); openDiscussion(fittingId); };
+    const expoSel = $("discExpo");
+    if (expoSel) expoSel.onchange = async () => {
+      expoSel.disabled = true;
+      const { data: r, error: e } = await client().functions.invoke("fittings-api", { body: { action: "set_exposure", id: fittingId, max_grade: Number(expoSel.value) } });
+      if (e || !r || !r.ok) { $("discMsg").textContent = "열람 등급 변경 실패: " + (e ? e.message : (r && r.error) || "오류"); expoSel.disabled = false; return; }
+      reload(); loadCloudList(); loadBrowse();
+    };
     const cmtAdd = $("discCmtAdd");
     if (cmtAdd) cmtAdd.onclick = async () => {
       const text = $("discCmtIn").value.trim();
@@ -271,8 +290,9 @@
   async function onSaveClick() {
     if (!session()) { setStatus("Discord 로그인 후 사용할 수 있어요.", true); return; }
     if (!curShip) { setStatus("먼저 함선을 선택하세요.", true); return; }
-    const groups = await myGroups();
-    openSaveDialog(groups);
+    const me = await loadMe();
+    if (!me) { setStatus("등급을 확인하지 못했어요. 잠시 뒤 다시 시도하세요.", true); return; }
+    openSaveDialog(me);
   }
 
   // ---- 피팅 둘러보기 (공개 + 로그인 시 허용 그룹) ----
@@ -302,7 +322,7 @@
       const label = document.createElement("div");
       label.style.flex = "1";
       label.innerHTML = "<b>" + escHtml(f.name) + "</b> <span class='dim'>" + escHtml(f.ship_slug) +
-        " · " + (f.visibility === "public" ? "공개" : "그룹 지정") + " · " + new Date(f.created_at).toLocaleDateString("ko-KR") + "</span>";
+        " · " + visLabel(f) + " · " + new Date(f.created_at).toLocaleDateString("ko-KR") + "</span>";
       const loadBtn = document.createElement("button");
       loadBtn.textContent = "불러오기";
       loadBtn.style.cssText = "padding:3px 8px;font-size:11px";
@@ -340,7 +360,7 @@
     setInterval(() => {
       const s = session();
       const key = s ? s.user.id : null;
-      if (key !== last) { last = key; loadCloudList(); loadBrowse(); }
+      if (key !== last) { last = key; loadMe(); loadCloudList(); loadBrowse(); }
     }, 1500);
   }
 

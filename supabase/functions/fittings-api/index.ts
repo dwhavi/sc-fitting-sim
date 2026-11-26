@@ -59,7 +59,7 @@ Deno.serve(async (req) => {
     name?: string;
     payload?: unknown;
     visibility?: string;
-    group_ids?: string[];
+    max_grade?: number;
   } = {};
   try { body = await req.json(); } catch { /* 빈 본문 허용 */ }
   const action = body.action ?? "browse";
@@ -67,7 +67,8 @@ Deno.serve(async (req) => {
   // ---- 1. Discord 역할 즉시 재검증 ----
   // verified: 이번 요청에서 서버 확인이 성공했는가. 실패 시 제한 자료 차단.
   let verified = false;
-  let allowedGroups: string[] = [];
+  // 등급 (0~4). 확인 실패·미연결·탈퇴는 4 (fail-closed).
+  let grade = 4;
   if (user && guildId && botToken) {
     const { data: profile } = await admin
       .from("profiles")
@@ -102,56 +103,62 @@ Deno.serve(async (req) => {
           );
         }
 
-        const { data: mappings } = await admin
-          .from("discord_role_mappings")
-          .select("discord_role_id, group_id")
-          .eq("guild_id", guildId);
-        allowedGroups = isMember
-          ? [...new Set((mappings ?? [])
-              .filter((m) => roleIds.includes(m.discord_role_id))
-              .map((m) => m.group_id))]
-          : [];
-
-        // 표시용 캐시 갱신 (권한 근거 아님)
-        await admin.from("group_members").delete()
-          .eq("user_id", user.id).eq("source", "discord");
-        if (allowedGroups.length) {
-          await admin.from("group_members").upsert(
-            allowedGroups.map((g) => ({
-              group_id: g, user_id: user.id, source: "discord", added_by: null,
-            })),
-            { onConflict: "group_id,user_id", ignoreDuplicates: true },
-          );
+        // 등급: 보유 역할에 연결된 등급 중 가장 높은 것(숫자가 작은 것).
+        // (설계 선택: 여러 역할이 있으면 가장 높은 등급 적용)
+        if (isMember) {
+          const { data: gm } = await admin
+            .from("discord_role_grade_mappings")
+            .select("discord_role_id, grade")
+            .eq("guild_id", guildId);
+          const held = (gm ?? []).filter((m) => roleIds.includes(m.discord_role_id)).map((m) => m.grade as number);
+          if (held.length) grade = Math.min(...held);
         }
       }
     }
   }
 
   // ---- 2. 규칙 적용 ----
+  // 보임 = 숨김 아님 AND (일반 OR (보안 AND 재검증 통과 AND 등급<=3 AND 등급<=자료의 max_grade)).
+  // 작성자 예외 없음. 이전 'groups' 값은 보안으로 이관됐고, 남아 있어도 보이지 않는다.
   async function visibleFittingRows(rows: any[]) {
-    const groupRows = rows.filter((f) => f.visibility === "groups");
-    if (!groupRows.length) return rows.filter((f) => !f.hidden);
-    if (!verified || !allowedGroups.length) return rows.filter((f) => !f.hidden && f.visibility === "public");
-    const { data: fgs } = await admin
-      .from("fitting_groups")
-      .select("fitting_id, group_id")
-      .in("fitting_id", groupRows.map((f) => f.id));
-    const allowed = new Set(
-      (fgs ?? []).filter((g) => allowedGroups.includes(g.group_id)).map((g) => g.fitting_id),
-    );
-    return rows.filter((f) => !f.hidden && (f.visibility === "public" || allowed.has(f.id)));
+    return rows.filter((f) => !f.hidden && (
+      f.visibility === "public" ||
+      (f.visibility === "security" && verified && grade <= 3 && grade <= (f.max_grade ?? 3))
+    ));
   }
+  const canCreateSecurity = verified && grade <= 3;
+  const canRestrict = verified && grade <= 2;
 
   // isAdmin: 댓글·기록 삭제 버튼 표시와 관리자 삭제에 사용. profiles.site_role 기준.
   const { data: myProfile } = user ? await admin
     .from("profiles").select("site_role").eq("id", user.id).maybeSingle() : { data: null };
   const isAdmin = myProfile?.site_role === "admin";
 
+  if (action === "me") {
+    if (!user) return json({ ok: true, verified, grade: 4, signed_in: false });
+    return json({ ok: true, verified, signed_in: true, grade, can_create_security: canCreateSecurity, can_restrict: canRestrict });
+  }
+
+  // 노출 제한: 0~2등급만. 자료의 작성자와 무관하게 보안 자료의 열람 등급을 바꾼다.
+  if (action === "set_exposure") {
+    if (!user) return json({ error: "unauthorized" }, 401);
+    if (!canRestrict) return json({ error: "forbidden" }, 403);
+    const mg = Number(body.max_grade);
+    if (![2, 3].includes(mg)) return json({ error: "invalid_max_grade" }, 400);
+    const v = await visibleFitting(body.id);
+    if (!("fitting" in v)) return json({ error: v.error }, v.status);
+    if (v.fitting.visibility !== "security") return json({ error: "not_security" }, 400);
+    const { error } = await admin.from("fittings").update({ max_grade: mg, updated_at: new Date().toISOString() }).eq("id", body.id);
+    if (error) return json({ error: error.message }, 500);
+    await admin.from("audit_log").insert({ actor_id: user.id, action: "fitting_exposure", target: body.id, detail: { max_grade: mg, actor_grade: grade } });
+    return json({ ok: true, max_grade: mg });
+  }
+
   if (action === "list_mine") {
     if (!user) return json({ error: "unauthorized" }, 401);
     const { data, error } = await admin
       .from("fittings")
-      .select("id, ship_slug, name, visibility, created_at")
+      .select("id, ship_slug, name, visibility, max_grade, created_at")
       .eq("author_id", user.id)
       .order("created_at", { ascending: false })
       .limit(50);
@@ -163,7 +170,7 @@ Deno.serve(async (req) => {
     if (!body.id) return json({ error: "id_required" }, 400);
     const { data, error } = await admin
       .from("fittings")
-      .select("id, ship_slug, name, visibility, payload, created_at")
+      .select("id, ship_slug, name, visibility, max_grade, payload, created_at")
       .eq("id", body.id)
       .maybeSingle();
     if (error) return json({ error: error.message }, 500);
@@ -171,7 +178,7 @@ Deno.serve(async (req) => {
     const visible = await visibleFittingRows([data]);
     if (!visible.length) return json({ error: "not_found" }, 404); // 존재 자체 비공개
     const extra = await loadDiscussion(data.id);
-    return json({ ok: true, verified, fitting: { ...visible[0], ...extra }, me: user ? { id: user.id, admin: isAdmin } : null });
+    return json({ ok: true, verified, fitting: { ...visible[0], ...extra }, me: user ? { id: user.id, admin: isAdmin, grade, can_restrict: canRestrict } : null });
   }
 
   // ---- 댓글·테스트 기록: 피팅 열람 권한과 같은 경로로만 ----
@@ -200,7 +207,7 @@ Deno.serve(async (req) => {
   async function visibleFitting(fittingId: string | undefined) {
     if (!fittingId) return { error: "id_required", status: 400 } as const;
     const { data } = await admin
-      .from("fittings").select("id, visibility").eq("id", fittingId).maybeSingle();
+      .from("fittings").select("id, visibility, max_grade, hidden").eq("id", fittingId).maybeSingle();
     if (!data) return { error: "not_found", status: 404 } as const;
     const visible = await visibleFittingRows([data]);
     if (!visible.length) return { error: "not_found", status: 404 } as const;
@@ -252,7 +259,7 @@ Deno.serve(async (req) => {
     const v = await visibleFitting(body.id);
     if (!("fitting" in v)) return json({ error: v.error }, v.status);
     // 테스트 기록은 비공개(그룹 지정) 피팅에만 붙는다 (기획서 4단계).
-    if (v.fitting.visibility !== "groups") return json({ error: "records_only_on_group_fittings" }, 400);
+    if (v.fitting.visibility !== "security") return json({ error: "records_only_on_security_fittings" }, 400);
     const memo = body.memo?.trim() || null;
     if (memo && memo.length > 2000) return json({ error: "invalid_memo" }, 400);
     const { data, error } = await admin.from("test_records").insert({
@@ -278,7 +285,7 @@ Deno.serve(async (req) => {
   if (action === "browse") {
     const { data, error } = await admin
       .from("fittings")
-      .select("id, ship_slug, name, visibility, created_at")
+      .select("id, ship_slug, name, visibility, max_grade, created_at")
       .eq("hidden", false)
       .order("created_at", { ascending: false })
       .limit(100);
@@ -289,49 +296,55 @@ Deno.serve(async (req) => {
   // ---- 쓰기: 제한 자료 mutation은 여기서만, 즉시 재검증 후 ----
   if (action === "save") {
     if (!user) return json({ error: "unauthorized" }, 401);
-    const visibility = body.visibility === "groups" ? "groups" : "public";
-    const groupIds = [...new Set(body.group_ids ?? [])];
+    const visibility = body.visibility === "security" ? "security" : "public";
     if (!body.ship_slug || !body.name || !body.payload) {
       return json({ error: "missing_fields" }, 400);
     }
-    if (visibility === "groups") {
-      // 그룹 지정 저장은 이번 요청의 재검증 통과 그룹만 허용 (캐시·TTL 무관)
+    // 보안 자료 생성은 재검증 통과한 0~3등급만 (4등급은 일반 자료만).
+    if (visibility === "security") {
       if (!verified) return json({ error: "verification_unavailable" }, 503);
-      if (!groupIds.length) return json({ error: "groups_required" }, 400);
-      if (!groupIds.every((g) => allowedGroups.includes(g))) {
-        return json({ error: "group_not_allowed" }, 403);
-      }
+      if (!canCreateSecurity) return json({ error: "grade_not_allowed" }, 403);
+    }
+    // 노출 등급 지정은 0~2등급만. 3등급이 지정하려 하면 거절, 미지정이면 기본/기존 유지.
+    let wantMax: number | null = null;
+    if (body.max_grade !== undefined && body.max_grade !== null) {
+      wantMax = Number(body.max_grade);
+      if (![2, 3].includes(wantMax)) return json({ error: "invalid_max_grade" }, 400);
     }
     let fittingId = body.id;
+    let maxGrade = 3;
     if (fittingId) {
       const { data: existing } = await admin
-        .from("fittings").select("author_id, visibility").eq("id", fittingId).maybeSingle();
+        .from("fittings").select("author_id, visibility, max_grade").eq("id", fittingId).maybeSingle();
       if (!existing || existing.author_id !== user.id) return json({ error: "not_found" }, 404);
-      // 기존이 그룹 지정 피팅이면 공개 전환을 포함한 모든 변경에 현재 멤버십 필요.
-      // 작성자 예외 없음: 탈퇴 작성자는 자신의 제한 피팅도 수정할 수 없다.
-      if (existing.visibility === "groups") {
+      // 기존이 보안 자료면 현재 열람 가능한 사람만 수정 가능 (작성자 예외 없음).
+      if (existing.visibility === "security" || existing.visibility === "groups") {
         const v = await visibleFitting(fittingId);
         if (!("fitting" in v)) return json({ error: v.error }, v.status);
       }
+      maxGrade = existing.max_grade ?? 3;
+      if (wantMax !== null && wantMax !== maxGrade) {
+        if (!canRestrict) return json({ error: "forbidden" }, 403);
+        maxGrade = wantMax;
+      }
       const { error } = await admin.from("fittings").update({
         ship_slug: body.ship_slug, name: body.name, payload: body.payload,
-        visibility, updated_at: new Date().toISOString(),
+        visibility, max_grade: visibility === "security" ? maxGrade : 3,
+        updated_at: new Date().toISOString(),
       }).eq("id", fittingId);
       if (error) return json({ error: error.message }, 500);
     } else {
+      if (wantMax !== null && wantMax !== 3) {
+        if (!canRestrict) return json({ error: "forbidden" }, 403);
+        maxGrade = wantMax;
+      }
       const { data, error } = await admin.from("fittings").insert({
         author_id: user.id, ship_slug: body.ship_slug, name: body.name,
         payload: body.payload, visibility,
+        max_grade: visibility === "security" ? maxGrade : 3,
       }).select("id").single();
       if (error) return json({ error: error.message }, 500);
       fittingId = data.id;
-    }
-    await admin.from("fitting_groups").delete().eq("fitting_id", fittingId);
-    if (visibility === "groups") {
-      const { error } = await admin.from("fitting_groups").insert(
-        groupIds.map((g) => ({ fitting_id: fittingId, group_id: g })),
-      );
-      if (error) return json({ error: error.message }, 500);
     }
     return json({ ok: true, id: fittingId });
   }
@@ -342,12 +355,11 @@ Deno.serve(async (req) => {
     const { data: existing } = await admin
       .from("fittings").select("author_id, visibility").eq("id", body.id).maybeSingle();
     if (!existing || existing.author_id !== user.id) return json({ error: "not_found" }, 404);
-    // 그룹 지정 피팅 삭제도 현재 멤버십 통과 후에만 (탈퇴 작성자의 조작 차단)
-    if (existing.visibility === "groups") {
+    // 보안 자료 삭제도 현재 열람 가능(등급 재검증 통과) 후에만 (탈퇴 작성자의 조작 차단)
+    if (existing.visibility === "security" || existing.visibility === "groups") {
       const v = await visibleFitting(body.id);
       if (!("fitting" in v)) return json({ error: v.error }, v.status);
     }
-    await admin.from("fitting_groups").delete().eq("fitting_id", body.id);
     const { error } = await admin.from("fittings").delete().eq("id", body.id);
     if (error) return json({ error: error.message }, 500);
     return json({ ok: true });

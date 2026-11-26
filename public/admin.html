@@ -36,7 +36,24 @@ table{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap}td,t
 <div id="guard">권한 확인 중…</div>
 <main id="adminMain" style="display:none">
   <div class="panel">
-    <h2>Discord 역할 연결 — 서버 역할 → 사이트 그룹</h2>
+    <h2>Discord 역할 연결 — 서버 역할 → 등급</h2>
+    <div class="dim" style="margin-bottom:8px">로그인한 회원의 등급은 연결된 Discord 역할로 정해집니다. 역할이 여러 개면 가장 높은 등급(숫자가 작은 쪽)이 적용돼요. 연결된 역할이 없거나 서버에서 확인이 안 되면 4등급(등급 미부여)입니다. 0 함장 · 1 항해사/전투원/상인 · 2 베테랑 탐사원 · 3 탐사원.</div>
+    <div id="gradeMapList"><span class="dim">불러오는 중…</span></div>
+    <div class="row" style="margin-top:10px">
+      <select id="gradeRole"></select>
+      <select id="gradeVal">
+        <option value="">등급 선택…</option>
+        <option value="0">0등급 · 함장</option>
+        <option value="1">1등급 · 항해사/전투원/상인</option>
+        <option value="2">2등급 · 베테랑 탐사원</option>
+        <option value="3">3등급 · 탐사원</option>
+      </select>
+      <button id="gradeMapAdd" class="fix">연결 추가</button>
+    </div>
+    <div id="gradeMapMsg" class="dim" style="margin-top:6px"></div>
+  </div>
+  <div class="panel">
+    <h2>(이전 방식) Discord 역할 연결 — 서버 역할 → 사이트 그룹</h2>
     <div class="dim" style="margin-bottom:8px">로그인한 회원이 연결된 Discord 역할을 가지고 있으면 해당 그룹에 자동 배정됩니다. 역할이 회수되면 다음 확인 때 그룹에서 빠집니다.</div>
     <div id="mappingList"><span class="dim">불러오는 중…</span></div>
     <div class="row" style="margin-top:10px">
@@ -47,7 +64,7 @@ table{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap}td,t
     <div id="mapMsg" class="dim" style="margin-top:6px"></div>
   </div>
   <div class="panel">
-    <h2>그룹</h2>
+    <h2>그룹 <small class="dim">(이전 방식: 이제 자료 열람 판단에 쓰이지 않아요)</small></h2>
     <div id="groupList"><span class="dim">불러오는 중…</span></div>
     <div class="row" style="margin-top:10px">
       <input id="newGroupName" placeholder="새 그룹 이름">

@@ -69,6 +69,9 @@
       return;
     }
     guildRoles = data.roles;
+    const gsel = $("gradeRole");
+    if (gsel) gsel.innerHTML = "<option value=''>Discord 역할 선택…</option>" +
+      guildRoles.map((r) => "<option value='" + esc(r.id) + "'>" + esc(r.name) + "</option>").join("");
     sel.innerHTML = "<option value=''>Discord 역할 선택…</option>" +
       guildRoles.map((r) => "<option value='" + esc(r.id) + "'>" + esc(r.name) + "</option>").join("");
   }
@@ -89,6 +92,46 @@
     $("mapMsg").textContent = "";
     await audit("role_mapping_add", roleId, { group_id: groupId, role_name: role ? role.name : null });
     loadMappings(); loadAudit();
+  }
+
+  // ===== Discord 역할 → 등급 연결 =====
+  const GRADE_LABEL = ["0 함장", "1 항해사·전투원·상인", "2 베테랑 탐사원", "3 탐사원"];
+
+  async function loadGradeMappings() {
+    const { data, error } = await sb.from("discord_role_grade_mappings")
+      .select("id, discord_role_id, discord_role_name, grade").order("grade").order("created_at");
+    if (error) { $("gradeMapList").innerHTML = '<span class="bad">불러오기 실패: ' + esc(error.message) + "</span>"; return; }
+    if (!data.length) { $("gradeMapList").innerHTML = '<span class="dim">연결된 역할이 없습니다. 지금은 모든 회원이 4등급이에요.</span>'; return; }
+    $("gradeMapList").innerHTML = "<table><tr><th>Discord 역할</th><th>등급</th><th></th></tr>" +
+      data.map((m) => "<tr><td><span class='tag dc'>" + esc(m.discord_role_name || m.discord_role_id) + "</span></td>" +
+        "<td>" + esc(GRADE_LABEL[m.grade]) + "</td>" +
+        "<td><button class='danger fix' data-del-gmap='" + m.id + "'>해제</button></td></tr>").join("") + "</table>";
+    $("gradeMapList").querySelectorAll("[data-del-gmap]").forEach((b) => {
+      b.onclick = async () => {
+        if (!confirm("이 역할의 등급 연결을 해제할까요? 해당 역할 회원은 다음 확인부터 등급을 잃어요.")) return;
+        await sb.from("discord_role_grade_mappings").delete().eq("id", b.dataset.delGmap);
+        await audit("grade_mapping_delete", b.dataset.delGmap);
+        loadGradeMappings(); loadAudit();
+      };
+    });
+  }
+
+  async function addGradeMapping() {
+    const roleId = $("gradeRole").value;
+    const grade = $("gradeVal").value;
+    if (!roleId || grade === "") { $("gradeMapMsg").textContent = "역할과 등급을 모두 고르세요."; return; }
+    const role = guildRoles.find((r) => r.id === roleId);
+    const { error } = await sb.from("discord_role_grade_mappings").insert({
+      guild_id: window.SCFIT_CONFIG.DISCORD_GUILD_ID,
+      discord_role_id: roleId,
+      discord_role_name: role ? role.name : null,
+      grade: Number(grade),
+      created_by: window.scAuth.session.user.id,
+    });
+    if (error) { $("gradeMapMsg").textContent = "추가 실패: " + (error.code === "23505" ? "이미 연결된 역할이에요." : error.message); return; }
+    $("gradeMapMsg").textContent = "";
+    await audit("grade_mapping_add", roleId, { grade: Number(grade), role_name: role ? role.name : null });
+    loadGradeMappings(); loadAudit();
   }
 
   // ===== 그룹 =====
@@ -213,10 +256,11 @@
     guard.style.display = "none";
     $("adminMain").style.display = "";
     $("mapAdd").onclick = addMapping;
+    $("gradeMapAdd").onclick = addGradeMapping;
     $("groupAdd").onclick = addGroup;
     let searchTimer = null;
     $("memberSearch").oninput = () => { clearTimeout(searchTimer); searchTimer = setTimeout(loadMembers, 300); };
-    loadMappings(); loadGuildRoles(); loadGroups(); loadMembers(); loadAudit();
+    loadMappings(); loadGradeMappings(); loadGuildRoles(); loadGroups(); loadMembers(); loadAudit();
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
