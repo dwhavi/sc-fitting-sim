@@ -60,8 +60,27 @@
   async function loadMe() {
     const el = $("cloudGrade");
     if (!session()) { myMe = null; if (el) el.textContent = ""; return null; }
-    const { data } = await inv("fittings-api", { body: { action: "me" } });
+    let { data } = await inv("fittings-api", { body: { action: "me" } });
     myMe = data && data.ok ? data : null;
+    // 로그인 직후엔 프로필(Discord ID) 기록이 늦어 첫 확인이 실패할 수 있다. 서버는 fail-closed(4등급)라
+    // 권한은 안전하지만 표시가 남지 않도록, 미확인이면 잠시 뒤 몇 번 다시 확인하고 목록도 새로 불러온다.
+    if (myMe && !myMe.verified && !loadMe._retrying) {
+      loadMe._retrying = true;
+      (async () => {
+        for (let i = 0; i < 5; i++) {
+          await new Promise((r) => setTimeout(r, 2500));
+          if (!session()) break;
+          const r2 = await inv("fittings-api", { body: { action: "me" } });
+          if (r2.data && r2.data.ok && r2.data.verified) {
+            myMe = r2.data;
+            if (el) el.textContent = "내 등급: " + GRADE_NAMES[myMe.grade];
+            loadCloudList(); loadBrowse();
+            break;
+          }
+        }
+        loadMe._retrying = false;
+      })();
+    }
     if (el) el.textContent = myMe ? "내 등급: " + (myMe.verified ? GRADE_NAMES[myMe.grade] : "확인 중 · 4등급으로 취급") : "";
     return myMe;
   }
