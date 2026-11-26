@@ -59,7 +59,7 @@ Deno.serve(async (req) => {
     name?: string;
     payload?: unknown;
     visibility?: string;
-    max_grade?: number;
+    allowed_grades?: number[];
   } = {};
   try { body = await req.json(); } catch { /* 빈 본문 허용 */ }
   const action = body.action ?? "browse";
@@ -118,12 +118,12 @@ Deno.serve(async (req) => {
   }
 
   // ---- 2. 규칙 적용 ----
-  // 보임 = 숨김 아님 AND (일반 OR (보안 AND 재검증 통과 AND 등급<=3 AND 등급<=자료의 max_grade)).
+  // 보임 = 숨김 아님 AND (일반 OR (보안 AND 재검증 통과 AND 등급<=3 AND 등급이 자료의 허용 등급 집합에 포함)).
   // 작성자 예외 없음. 이전 'groups' 값은 보안으로 이관됐고, 남아 있어도 보이지 않는다.
   async function visibleFittingRows(rows: any[]) {
     return rows.filter((f) => !f.hidden && (
       f.visibility === "public" ||
-      (f.visibility === "security" && verified && grade <= 3 && grade <= (f.max_grade ?? 3))
+      (f.visibility === "security" && verified && grade <= 3 && (f.allowed_grades ?? [0, 1, 2, 3]).includes(grade))
     )).map((f) => {
       const { profiles, ...rest } = f;
       return { ...rest, author_name: profiles?.display_name ?? null };
@@ -137,6 +137,16 @@ Deno.serve(async (req) => {
     .from("profiles").select("site_role").eq("id", user.id).maybeSingle() : { data: null };
   const isAdmin = myProfile?.site_role === "admin";
 
+  // 허용 등급 집합: 0~3의 부분집합(비연속 가능), 비어 있으면 안 됨. 4는 불가.
+  function parseGrades(v: unknown): number[] | null {
+    if (!Array.isArray(v) || v.length === 0 || v.length > 4) return null;
+    const n = v.map((x) => Number(x));
+    if (n.some((x) => !Number.isInteger(x) || x < 0 || x > 3)) return null;
+    return [...new Set(n)].sort();
+  }
+  const sameSet = (a: number[], b: number[]) => a.length === b.length && a.every((x, i) => x === b[i]);
+  const ALL = [0, 1, 2, 3];
+
   if (action === "me") {
     if (!user) return json({ ok: true, verified, grade: 4, signed_in: false });
     return json({ ok: true, verified, signed_in: true, grade, can_create_security: canCreateSecurity, can_restrict: canRestrict });
@@ -146,22 +156,22 @@ Deno.serve(async (req) => {
   if (action === "set_exposure") {
     if (!user) return json({ error: "unauthorized" }, 401);
     if (!canRestrict) return json({ error: "forbidden" }, 403);
-    const mg = Number(body.max_grade);
-    if (![0, 1, 2, 3].includes(mg)) return json({ error: "invalid_max_grade" }, 400);
+    const mg = parseGrades(body.allowed_grades);
+    if (!mg) return json({ error: "invalid_allowed_grades" }, 400);
     const v = await visibleFitting(body.id);
     if (!("fitting" in v)) return json({ error: v.error }, v.status);
     if (v.fitting.visibility !== "security") return json({ error: "not_security" }, 400);
-    const { error } = await admin.from("fittings").update({ max_grade: mg, updated_at: new Date().toISOString() }).eq("id", body.id);
+    const { error } = await admin.from("fittings").update({ allowed_grades: mg, updated_at: new Date().toISOString() }).eq("id", body.id);
     if (error) return json({ error: error.message }, 500);
-    await admin.from("audit_log").insert({ actor_id: user.id, action: "fitting_exposure", target: body.id, detail: { max_grade: mg, actor_grade: grade } });
-    return json({ ok: true, max_grade: mg });
+    await admin.from("audit_log").insert({ actor_id: user.id, action: "fitting_exposure", target: body.id, detail: { allowed_grades: mg, actor_grade: grade } });
+    return json({ ok: true, allowed_grades: mg });
   }
 
   if (action === "list_mine") {
     if (!user) return json({ error: "unauthorized" }, 401);
     const { data, error } = await admin
       .from("fittings")
-      .select("id, ship_slug, name, visibility, max_grade, created_at, profiles!fittings_author_id_fkey(display_name)")
+      .select("id, ship_slug, name, visibility, allowed_grades, created_at, profiles!fittings_author_id_fkey(display_name)")
       .eq("author_id", user.id)
       .order("created_at", { ascending: false })
       .limit(50);
@@ -173,7 +183,7 @@ Deno.serve(async (req) => {
     if (!body.id) return json({ error: "id_required" }, 400);
     const { data, error } = await admin
       .from("fittings")
-      .select("id, ship_slug, name, visibility, max_grade, payload, created_at, profiles!fittings_author_id_fkey(display_name)")
+      .select("id, ship_slug, name, visibility, allowed_grades, payload, created_at, profiles!fittings_author_id_fkey(display_name)")
       .eq("id", body.id)
       .maybeSingle();
     if (error) return json({ error: error.message }, 500);
@@ -210,7 +220,7 @@ Deno.serve(async (req) => {
   async function visibleFitting(fittingId: string | undefined) {
     if (!fittingId) return { error: "id_required", status: 400 } as const;
     const { data } = await admin
-      .from("fittings").select("id, visibility, max_grade, hidden").eq("id", fittingId).maybeSingle();
+      .from("fittings").select("id, visibility, allowed_grades, hidden").eq("id", fittingId).maybeSingle();
     if (!data) return { error: "not_found", status: 404 } as const;
     const visible = await visibleFittingRows([data]);
     if (!visible.length) return { error: "not_found", status: 404 } as const;
@@ -291,7 +301,7 @@ Deno.serve(async (req) => {
   if (action === "browse") {
     const { data, error } = await admin
       .from("fittings")
-      .select("id, ship_slug, name, visibility, max_grade, created_at, profiles!fittings_author_id_fkey(display_name)")
+      .select("id, ship_slug, name, visibility, allowed_grades, created_at, profiles!fittings_author_id_fkey(display_name)")
       .eq("hidden", false)
       .order("created_at", { ascending: false })
       .limit(100);
@@ -312,42 +322,42 @@ Deno.serve(async (req) => {
       if (!canCreateSecurity) return json({ error: "grade_not_allowed" }, 403);
     }
     // 노출 등급 지정은 0~2등급만. 3등급이 지정하려 하면 거절, 미지정이면 기본/기존 유지.
-    let wantMax: number | null = null;
-    if (body.max_grade !== undefined && body.max_grade !== null) {
-      wantMax = Number(body.max_grade);
-      if (![0, 1, 2, 3].includes(wantMax)) return json({ error: "invalid_max_grade" }, 400);
+    let wantMax: number[] | null = null;
+    if (body.allowed_grades !== undefined && body.allowed_grades !== null) {
+      wantMax = parseGrades(body.allowed_grades);
+      if (!wantMax) return json({ error: "invalid_allowed_grades" }, 400);
     }
     let fittingId = body.id;
-    let maxGrade = 3;
+    let maxGrade: number[] = ALL;
     if (fittingId) {
       const { data: existing } = await admin
-        .from("fittings").select("author_id, visibility, max_grade").eq("id", fittingId).maybeSingle();
+        .from("fittings").select("author_id, visibility, allowed_grades").eq("id", fittingId).maybeSingle();
       if (!existing || existing.author_id !== user.id) return json({ error: "not_found" }, 404);
       // 기존이 보안 자료면 현재 열람 가능한 사람만 수정 가능 (작성자 예외 없음).
       if (existing.visibility === "security" || existing.visibility === "groups") {
         const v = await visibleFitting(fittingId);
         if (!("fitting" in v)) return json({ error: v.error }, v.status);
       }
-      maxGrade = existing.max_grade ?? 3;
-      if (wantMax !== null && wantMax !== maxGrade) {
+      maxGrade = existing.allowed_grades ?? ALL;
+      if (wantMax !== null && !sameSet(wantMax, maxGrade)) {
         if (!canRestrict) return json({ error: "forbidden" }, 403);
         maxGrade = wantMax;
       }
       const { error } = await admin.from("fittings").update({
         ship_slug: body.ship_slug, name: body.name, payload: body.payload,
-        visibility, max_grade: visibility === "security" ? maxGrade : 3,
+        visibility, allowed_grades: visibility === "security" ? maxGrade : ALL,
         updated_at: new Date().toISOString(),
       }).eq("id", fittingId);
       if (error) return json({ error: error.message }, 500);
     } else {
-      if (wantMax !== null && wantMax !== 3) {
+      if (wantMax !== null && !sameSet(wantMax, ALL)) {
         if (!canRestrict) return json({ error: "forbidden" }, 403);
         maxGrade = wantMax;
       }
       const { data, error } = await admin.from("fittings").insert({
         author_id: user.id, ship_slug: body.ship_slug, name: body.name,
         payload: body.payload, visibility,
-        max_grade: visibility === "security" ? maxGrade : 3,
+        allowed_grades: visibility === "security" ? maxGrade : ALL,
       }).select("id").single();
       if (error) return json({ error: error.message }, 500);
       fittingId = data.id;

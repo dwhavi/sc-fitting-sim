@@ -42,10 +42,20 @@
   const GRADE_NAMES = ["함장", "1등급 (항해사·전투원·상인)", "2등급 (베테랑 탐사원)", "3등급 (탐사원)", "4등급 (등급 미부여)"];
   function visLabel(f) {
     if (f.visibility === "public") return "일반";
-    return "보안 · " + (f.max_grade === 0 ? "함장만 열람" : "0~" + (f.max_grade == null ? 3 : f.max_grade) + "등급 열람");
+    const ag = (f.allowed_grades || [0, 1, 2, 3]).slice().sort();
+    return "보안 · " + (ag.length === 4 ? "0~3등급 모두 열람" : ag.join("·") + "등급만 열람");
   }
 
   // 서버가 Discord 역할을 즉시 재검증해 계산한 등급. 화면 표시용이며 권한은 서버가 다시 판단한다.
+  const GRADE_SHORT = ["0 함장", "1 항해사·전투원·상인", "2 베테랑 탐사원", "3 탐사원"];
+  // 열람 등급 체크박스: 0~3 개별 선택 (비연속 가능). 4등급은 보안 자료를 볼 수 없어 선택지에 없다.
+  function gradeBoxes(name, sel) {
+    const cur = sel || [0, 1, 2, 3];
+    return '<div class="gradeboxes" data-gb="' + name + '" style="display:flex;flex-direction:column;gap:3px;font-size:12px">' +
+      GRADE_SHORT.map((l, g) => '<label style="display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" value="' + g + '"' + (cur.includes(g) ? " checked" : "") + ' style="width:auto"> ' + l + "등급</label>").join("") + "</div>";
+  }
+  function readBoxes(root) { return [...root.querySelectorAll("input[type=checkbox]:checked")].map((c) => Number(c.value)).sort(); }
+
   let myMe = null;
   async function loadMe() {
     const el = $("cloudGrade");
@@ -64,7 +74,7 @@
       (me.can_create_security ? '<option value="security">보안 — 기본 0~3등급 열람</option>' : "") + "</select>" +
       (me.can_create_security ? "" : '<div class="dim" style="font-size:11px;margin-top:4px">보안 자료는 3등급 이상(0~3등급)만 만들 수 있어요.</div>');
     const expo = me.can_restrict
-      ? '<select id="cloudMax" style="width:auto"><option value="3">열람 등급: 0~3등급 (기본)</option><option value="2">열람 등급: 0~2등급</option><option value="1">열람 등급: 0~1등급</option><option value="0">열람 등급: 0등급(함장)만</option></select>'
+      ? '<div id="cloudMax"><div class="dim" style="font-size:11px;margin-bottom:4px">열람할 수 있는 등급 (기본: 모두)</div>' + gradeBoxes("save", [0, 1, 2, 3]) + '</div>'
       : "";
     ov.innerHTML =
       '<div class="modal" style="width:420px">' +
@@ -86,7 +96,7 @@
     const tgt = $("cloudTarget");
     if (tgt) tgt.onchange = () => {
       const f = myFits.find((x) => x.id === tgt.value);
-      if (f) { $("cloudName").value = f.name; visSel.value = f.visibility === "security" && me.can_create_security ? "security" : "public"; if ($("cloudMax") && f.max_grade) $("cloudMax").value = String(f.max_grade); syncPick(); }
+      if (f) { $("cloudName").value = f.name; visSel.value = f.visibility === "security" && me.can_create_security ? "security" : "public"; if ($("cloudMax")) { const ag = f.allowed_grades || [0, 1, 2, 3]; $("cloudMax").querySelectorAll("input").forEach((c) => { c.checked = ag.includes(Number(c.value)); }); } syncPick(); }
     };
     const syncPick = () => { pick.style.display = visSel.value === "security" ? "" : "none"; };
     visSel.onchange = syncPick; syncPick();
@@ -94,9 +104,10 @@
       const name = $("cloudName").value.trim();
       if (!name) { $("cloudDlgMsg").textContent = "이름을 입력하세요."; return; }
       const visibility = visSel.value;
-      if (visibility === "security" && $("cloudMax") && Number($("cloudMax").value) < (me.grade == null ? 9 : me.grade) && !confirm("내 등급이 열람 범위 밖이에요. 저장 후 나도 이 자료를 볼 수 없어요. 계속할까요?")) return;
       const maxSel = $("cloudMax");
-      const maxGrade = visibility === "security" && maxSel ? Number(maxSel.value) : undefined;
+      const maxGrade = visibility === "security" && maxSel ? readBoxes(maxSel) : undefined;
+      if (maxGrade && !maxGrade.length) { $("cloudDlgMsg").textContent = "열람할 등급을 하나 이상 고르세요."; return; }
+      if (maxGrade && me.grade != null && !maxGrade.includes(me.grade) && !confirm("내 등급(" + me.grade + ")이 열람 범위 밖이에요. 저장 후 나도 이 자료를 볼 수 없어요. 계속할까요?")) return;
       $("cloudDoSave").disabled = true;
       // 저장도 fittings-api 경유: 그룹 지정은 서버가 역할을 즉시 재검증한다.
       const { data, error } = await inv("fittings-api", {
@@ -107,7 +118,7 @@
           name: name,
           payload: currentPayload(),
           visibility: visibility,
-          max_grade: maxGrade,
+          allowed_grades: maxGrade,
         },
       });
       if (error || !data || !data.ok) {
@@ -226,7 +237,8 @@
         "<div class='row'><button id='discRecAdd' style='flex:1'>기록 추가</button></div></div>"
       : "";
     const expoCtl = (me.can_restrict && fit.visibility === "security")
-      ? "<div style='margin:0 0 10px;font-size:12px'><b>열람 등급</b> <select id='discExpo' style='width:auto;font-size:12px'><option value='3'" + (fit.max_grade === 3 ? " selected" : "") + ">0~3등급 (기본)</option><option value='2'" + (fit.max_grade === 2 ? " selected" : "") + ">0~2등급만</option></select></div>"
+      ? "<div id='discExpoBox' style='margin:0 0 10px;font-size:12px'><b>열람 등급</b>" + gradeBoxes("expo", fit.allowed_grades) +
+        "<button id='discExpoApply' style='margin-top:6px;padding:3px 10px;font-size:11px'>열람 등급 적용</button></div>"
       : "";
     ov.innerHTML =
       '<div class="modal" style="width:520px;max-height:80vh;overflow-y:auto">' +
@@ -246,12 +258,14 @@
     // 재랜더링: 겹친 패널이 남지 않게 모든 모달 오버레이를 닫고 다시 연다.
     // (모든 핸들러가 공유하도록 함수 최상위 범위에 둔다)
     const reload = () => { document.querySelectorAll(".modal-ov").forEach((o) => o.remove()); openDiscussion(fittingId); };
-    const expoSel = $("discExpo");
-    if (expoSel) expoSel.onchange = async () => {
-      if (me.grade != null && Number(expoSel.value) < me.grade && !confirm("내 등급(" + me.grade + ")이 열람 범위 밖이 돼요. 이 자료는 나도 더 이상 볼 수 없게 됩니다. 계속할까요?")) { expoSel.value = String(fit.max_grade); return; }
-      expoSel.disabled = true;
-      const { data: r, error: e } = await inv("fittings-api", { body: { action: "set_exposure", id: fittingId, max_grade: Number(expoSel.value) } });
-      if (e || !r || !r.ok) { $("discMsg").textContent = "열람 등급 변경 실패: " + (e ? e.message : (r && r.error) || "오류"); expoSel.disabled = false; return; }
+    const expoApply = $("discExpoApply");
+    if (expoApply) expoApply.onclick = async () => {
+      const sel = readBoxes($("discExpoBox"));
+      if (!sel.length) { $("discMsg").textContent = "열람할 등급을 하나 이상 고르세요."; return; }
+      if (me.grade != null && !sel.includes(me.grade) && !confirm("내 등급(" + me.grade + ")이 열람 범위 밖이 돼요. 이 자료는 나도 더 이상 볼 수 없게 됩니다. 계속할까요?")) return;
+      expoApply.disabled = true;
+      const { data: r, error: e } = await inv("fittings-api", { body: { action: "set_exposure", id: fittingId, allowed_grades: sel } });
+      if (e || !r || !r.ok) { $("discMsg").textContent = "열람 등급 변경 실패: " + (e ? e.message : (r && r.error) || "오류"); expoApply.disabled = false; return; }
       reload(); loadCloudList(); loadBrowse();
     };
     const cmtAdd = $("discCmtAdd");
