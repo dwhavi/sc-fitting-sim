@@ -102,7 +102,10 @@
       '<div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px">' +
       (myFits.length ? '<select id="cloudTarget" style="width:auto"><option value="">새 피팅으로 저장</option>' +
         myFits.map((f) => '<option value="' + escHtml(f.id) + '">덮어쓰기 · ' + escHtml(f.name) + ' (' + escHtml(shipName(f.ship_slug)) + ')</option>').join("") + "</select>" : "") +
-      '<input id="cloudName" placeholder="피팅 이름" value="' + escHtml(shipName(curShip) + " " + new Date().toLocaleDateString("ko-KR")) + '">' +
+      '<label class="dim" style="font-size:11px">저장명</label>' +
+      '<input id="cloudName" maxlength="100" placeholder="저장명 (피팅 이름)" value="' + escHtml(shipName(curShip) + " " + new Date().toLocaleDateString("ko-KR")) + '">' +
+      '<label class="dim" style="font-size:11px">메모 (선택)</label>' +
+      '<textarea id="cloudMemo" maxlength="500" rows="3" placeholder="간단한 메모 (최대 500자)" style="width:100%;resize:vertical;box-sizing:border-box"></textarea>' +
       "<div>" + vis + '</div>' +
       '<div id="cloudExpoPick" style="display:none">' + expo + "</div>" +
       '<div class="row"><button id="cloudDoSave" style="flex:1">저장</button></div>' +
@@ -115,7 +118,7 @@
     const tgt = $("cloudTarget");
     if (tgt) tgt.onchange = () => {
       const f = myFits.find((x) => x.id === tgt.value);
-      if (f) { $("cloudName").value = f.name; visSel.value = f.visibility === "security" && me.can_create_security ? "security" : "public"; if ($("cloudMax")) { const ag = f.allowed_grades || [0, 1, 2, 3]; $("cloudMax").querySelectorAll("input").forEach((c) => { c.checked = ag.includes(Number(c.value)); }); } syncPick(); }
+      if (f) { $("cloudName").value = f.name; $("cloudMemo").value = f.memo || ""; visSel.value = f.visibility === "security" && me.can_create_security ? "security" : "public"; if ($("cloudMax")) { const ag = f.allowed_grades || [0, 1, 2, 3]; $("cloudMax").querySelectorAll("input").forEach((c) => { c.checked = ag.includes(Number(c.value)); }); } syncPick(); }
     };
     const syncPick = () => { pick.style.display = visSel.value === "security" ? "" : "none"; };
     visSel.onchange = syncPick; syncPick();
@@ -135,6 +138,7 @@
           id: ($("cloudTarget") && $("cloudTarget").value) || undefined,
           ship_slug: curShip,
           name: name,
+          memo: $("cloudMemo").value.trim(),
           payload: currentPayload(),
           visibility: visibility,
           allowed_grades: maxGrade,
@@ -179,7 +183,8 @@
       const label = document.createElement("div");
       label.style.flex = "1";
       label.innerHTML = "<b>" + escHtml(f.name) + "</b> <span class='dim'>" + escHtml(shipName(f.ship_slug)) +
-        " · " + visLabel(f) + (f.author_name ? " · 작성 " + escHtml(f.author_name) : "") + " · " + new Date(f.created_at).toLocaleDateString("ko-KR") + "</span>";
+        " · " + visLabel(f) + (f.author_name ? " · 작성 " + escHtml(f.author_name) : "") + " · " + new Date(f.created_at).toLocaleDateString("ko-KR") + "</span>" +
+        (f.memo ? "<div class='dim' style='white-space:pre-wrap;margin-top:2px'>" + escHtml(f.memo) + "</div>" : "");
       const loadBtn = document.createElement("button");
       loadBtn.textContent = "불러오기";
       loadBtn.style.cssText = "padding:3px 8px;font-size:11px";
@@ -399,7 +404,8 @@
       const label = document.createElement("div");
       label.style.flex = "1";
       label.innerHTML = "<b>" + escHtml(f.name) + "</b> <span class='dim'>" + escHtml(shipName(f.ship_slug)) +
-        " · " + visLabel(f) + (f.author_name ? " · 작성 " + escHtml(f.author_name) : "") + " · " + new Date(f.created_at).toLocaleDateString("ko-KR") + "</span>";
+        " · " + visLabel(f) + (f.author_name ? " · 작성 " + escHtml(f.author_name) : "") + " · " + new Date(f.created_at).toLocaleDateString("ko-KR") + "</span>" +
+        (f.memo ? "<div class='dim' style='white-space:pre-wrap;margin-top:2px'>" + escHtml(f.memo) + "</div>" : "");
       const loadBtn = document.createElement("button");
       loadBtn.textContent = "불러오기";
       loadBtn.style.cssText = "padding:3px 8px;font-size:11px";

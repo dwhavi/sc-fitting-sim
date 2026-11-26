@@ -171,7 +171,7 @@ Deno.serve(async (req) => {
     if (!user) return json({ error: "unauthorized" }, 401);
     const { data, error } = await admin
       .from("fittings")
-      .select("id, ship_slug, name, visibility, allowed_grades, created_at, profiles!fittings_author_id_fkey(display_name)")
+      .select("id, ship_slug, name, memo, visibility, allowed_grades, created_at, profiles!fittings_author_id_fkey(display_name)")
       .eq("author_id", user.id)
       .order("created_at", { ascending: false })
       .limit(50);
@@ -183,7 +183,7 @@ Deno.serve(async (req) => {
     if (!body.id) return json({ error: "id_required" }, 400);
     const { data, error } = await admin
       .from("fittings")
-      .select("id, ship_slug, name, visibility, allowed_grades, payload, created_at, profiles!fittings_author_id_fkey(display_name)")
+      .select("id, ship_slug, name, memo, visibility, allowed_grades, payload, created_at, profiles!fittings_author_id_fkey(display_name)")
       .eq("id", body.id)
       .maybeSingle();
     if (error) return json({ error: error.message }, 500);
@@ -301,7 +301,7 @@ Deno.serve(async (req) => {
   if (action === "browse") {
     const { data, error } = await admin
       .from("fittings")
-      .select("id, ship_slug, name, visibility, allowed_grades, created_at, profiles!fittings_author_id_fkey(display_name)")
+      .select("id, ship_slug, name, memo, visibility, allowed_grades, created_at, profiles!fittings_author_id_fkey(display_name)")
       .eq("hidden", false)
       .order("created_at", { ascending: false })
       .limit(100);
@@ -327,6 +327,8 @@ Deno.serve(async (req) => {
       wantMax = parseGrades(body.allowed_grades);
       if (!wantMax) return json({ error: "invalid_allowed_grades" }, 400);
     }
+    const memo = typeof body.memo === "string" ? body.memo.trim().slice(0, 500) : "";
+    const memoVal = memo ? memo : null;
     let fittingId = body.id;
     let maxGrade: number[] = ALL;
     if (fittingId) {
@@ -344,7 +346,7 @@ Deno.serve(async (req) => {
         maxGrade = wantMax;
       }
       const { error } = await admin.from("fittings").update({
-        ship_slug: body.ship_slug, name: body.name, payload: body.payload,
+        ship_slug: body.ship_slug, name: String(body.name).trim().slice(0, 100), memo: memoVal, payload: body.payload,
         visibility, allowed_grades: visibility === "security" ? maxGrade : ALL,
         updated_at: new Date().toISOString(),
       }).eq("id", fittingId);
@@ -355,7 +357,7 @@ Deno.serve(async (req) => {
         maxGrade = wantMax;
       }
       const { data, error } = await admin.from("fittings").insert({
-        author_id: user.id, ship_slug: body.ship_slug, name: body.name,
+        author_id: user.id, ship_slug: body.ship_slug, name: String(body.name).trim().slice(0, 100), memo: memoVal,
         payload: body.payload, visibility,
         allowed_grades: visibility === "security" ? maxGrade : ALL,
       }).select("id").single();
