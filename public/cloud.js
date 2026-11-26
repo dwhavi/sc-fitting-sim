@@ -18,10 +18,12 @@
   let pending = 0;
   async function inv(name, opts) {
     const st = $("cloudStatus");
+    const prev = st ? st.textContent : "";
+    const prevColor = st ? st.style.color : "";
     pending++;
     if (st) { st.textContent = "⏳ 서버에서 확인 중… (최대 15초 걸릴 수 있어요)"; st.style.color = "var(--dim)"; }
     try { return await client().functions.invoke(name, opts); }
-    finally { pending--; if (!pending && st && st.textContent.startsWith("⏳")) st.textContent = ""; }
+    finally { pending--; if (!pending && st && st.textContent.startsWith("⏳")) { st.textContent = prev.startsWith("⏳") ? "" : prev; st.style.color = prevColor; } }
   }
   function shipName(slug) {
     const sh = (window.DB && DB.ships || (typeof DB !== "undefined" && DB.ships) || []).find((x) => x.slug === slug || x.class === slug);
