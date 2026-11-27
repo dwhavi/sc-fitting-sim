@@ -35,6 +35,7 @@
   const PF_ICON = { pistol: 'pistol', smg: 'smg', rifle: 'rifle', sniper: 'rifle', lmg: 'lmg' };
   const PF_KO = { pistol: '권총', smg: '기관단총', rifle: '라이플', sniper: '저격소총', lmg: 'LMG', knife: '나이프', other: '기타 (샷건·HMG·발사기 등)' };
   const pfNum = n => n == null ? '–' : (Math.round(n * 10) / 10).toLocaleString('en-US');
+  const pfNum2 = n => n == null ? '–' : (Math.round(n * 100) / 100).toLocaleString('en-US');
   function pfBar() {
     return `<div class="pf-tabs" id="pfTabs">${PF_TABS.map(([k, n]) => `<button class="chip${k === pfTab ? ' on' : ''}" data-pf="${k}">${n}${PERS ? ' <span class="pf-n">' + PERS.items.filter(it => k === 'all' || it.k === k).length + '</span>' : ''}</button>`).join('')}</div>`;
   }
@@ -60,15 +61,63 @@
     if (!h) h = '<div class="cx-empty">조건에 맞는 무기가 없습니다.</div>';
     h += `<div class="cx-sub pf-note" style="grid-column:1/-1;margin-top:4px">아이콘은 분류별 대표 도식이며 실제 모델의 외형이 아닙니다(저격소총은 라이플 도식 사용). 출처: star-citizen.wiki API (${esc(PERS.meta.version)}). 발당=소스 damage_per_shot(샷건은 펠릿 합산값), 탄창당=발당×탄창 수, 분당=발당×rpm. 분당 피해는 <b>재장전·반동·명중률을 뺀 이론값</b>이며(재장전 시간은 소스에 없음), rpm은 소스 최상위 값(점사·연사 모드가 있으면 빠른 쪽일 수 있음)입니다. 게임 내 측정값이 아닙니다.</div>`;
     g.innerHTML = h;
+    if (CRAFT) bindCraft(g); else if (!craftLoading) { craftLoading = true; fetch('crafting.json?v=1').then(r => r.json()).then(d => { CRAFT = d; if (cat === 'personal') renderPersonal(); }).catch(() => {}); }
+  }
+  let CRAFT = null, craftLoading = false;
+  const pfOpen = new Set(), pfQ = {};
+  const SLOT_KO = { FRAME: '프레임', BARREL: '총열', BARRELS: '총열', STOCK: '개머리판', GRIP: '그립', LENSES: '렌즈', WIRING: '배선', REGULATOR: '레귤레이터', CABLING: '케이블', 'PRECISION PARTS': '정밀 부품', CONDUIT: '도관', STABILIZER: '안정기', 'TENSIVE FIBRE': '인장 섬유' };
+  const STAT_KO = { weapon_damage: '피해(Impact Force)', weapon_firerate: '연사속도', weapon_recoil_smoothness: '반동 부드러움', weapon_recoil_handling: '반동 제어', weapon_recoil_kick: '반동 킥' };
+  function cmult(m, Q) {
+    if (m[3]) { for (const [q0, q1, a, b] of m[3]) if (Q >= q0 && Q <= q1) return q1 === q0 ? a : a + (b - a) * (Q - q0) / (q1 - q0); }
+    return m[1] + (m[2] - m[1]) * Q / 1000;
+  }
+  const mx = n => '×' + (Math.round(n * 1000) / 1000).toFixed(3).replace(/0+$/, '').replace(/\.$/, '');
+  function craftPanel(cn) {
+    const c = CRAFT.items[cn];
+    const q = pfQ[cn] || (pfQ[cn] = c.s.map(() => 500));
+    const rows = c.s.map((sl, i) => `<div class="cq-slot"><div class="cq-sh"><b>${esc(SLOT_KO[sl.n] || sl.n)}</b> <span class="cx-sub">${esc(sl.n)} · ${sl.m.map(m => esc(m[0]) + ' ' + m[1] + ' SCU').join(', ')}</span></div>
+      <div class="cq-sl"><input type="range" min="0" max="1000" step="10" value="${q[i]}" data-cqi="${i}" data-cn="${esc(cn)}"><b data-qv="${i}">${q[i]}</b></div>
+      ${sl.x.map((m, j) => `<div class="cq-m"><span>${esc(STAT_KO[m[0]] || m[0])}</span><span>${mx(m[1])} ~ ${mx(m[2])}${m[3] ? ' (구간식)' : ''}</span><b data-mv="${i}-${j}"></b></div>`).join('')}</div>`).join('');
+    return `<div class="cq" data-cqp="${esc(cn)}"><div class="cq-top"><span class="cx-sub">슬롯별 재료 품질(Q0~Q1000)을 움직이면 그 슬롯의 보정 배율이 바뀝니다. 각 줄: 스탯 · Q0~Q1000 배율 · 현재 배율.</span><span class="cq-btns"><button class="chip" data-cqset="0">전부 0</button><button class="chip" data-cqset="500">전부 500</button><button class="chip" data-cqset="1000">전부 1000</button></span></div>${rows}<div class="cq-est" data-est></div>
+      <div class="cx-sub cq-note">확인된 값: 슬롯별 배율(소스 <a href="${esc(c.u)}" target="_blank" rel="noopener">star-citizen.wiki 청사진</a>, ${esc(CRAFT.meta.gameVersion)}, 품질 0~1000, 선형 또는 구간 선형). 배율은 해당 스탯의 어떤 값에 곱해지는지 문서에 없습니다. <b>추정</b>: 아이템 API의 기본 스탯이 품질 500일 때 값이라고 가정(커뮤니티 도구 기반 추정, 공식 문서 아님)하고 배율 ÷ Q500 배율을 곱해 계산. 같은 스탯이 여러 슬롯에 있으면 합산 방식을 알 수 없어 슬롯별 값만 표시하며 절대값을 계산하지 않습니다(반동 3종은 항상 슬롯별). 청사진 데이터가 없는 무기는 "제작 불가"가 아니라 "데이터 없음"입니다.</div></div>`;
+  }
+  function craftFill(p) {
+    const cn = p.dataset.cqp, c = CRAFT.items[cn], q = pfQ[cn], it = PERS.items.find(x => x.cn === cn);
+    const cnt = {}; c.s.forEach(sl => sl.x.forEach(m => cnt[m[0]] = (cnt[m[0]] || 0) + 1));
+    const one = {}; c.s.forEach((sl, i) => sl.x.forEach(m => { if (cnt[m[0]] === 1) one[m[0]] = cmult(m, q[i]) / cmult(m, 500); }));
+    c.s.forEach((sl, i) => { p.querySelector(`[data-qv="${i}"]`).textContent = q[i]; sl.x.forEach((m, j) => { p.querySelector(`[data-mv="${i}-${j}"]`).textContent = mx(cmult(m, q[i])); }); });
+    let h = '';
+    const dm = one.weapon_damage, fm = one.weapon_firerate;
+    if (it && it.d != null) {
+      const d = it.d * (dm == null ? 1 : dm), r = it.r ? it.r * (fm == null ? 1 : fm) : null;
+      const rows = [];
+      if (dm != null) rows.push(`발당 피해 ${pfNum2(it.d)} → <b>${pfNum2(d)}</b>`);
+      if (fm != null && it.r) rows.push(`rpm ${pfNum2(it.r)} → <b>${pfNum2(r)}</b>`);
+      if (dm != null && it.c) rows.push(`탄창당 ${pfNum2(it.mag)} → <b>${pfNum2(d * it.c)}</b>`);
+      if ((dm != null || fm != null) && r && it.c > 1) rows.push(`분당(재장전 제외) ${pfNum2(it.dpm)} → <b>${pfNum2(d * r)}</b>`);
+      if (rows.length) h += `<b>추정(기본 스탯=Q500 가정)</b>: ` + rows.join(' · ');
+      if (cnt.weapon_damage > 1) h += `${h ? '<br>' : ''}피해 보정이 ${cnt.weapon_damage}개 슬롯에 있어 합산 방식 미확인: 절대 피해는 계산하지 않음(슬롯별 배율만 확인된 값).`;
+    }
+    p.querySelector('[data-est]').innerHTML = h || '<span class="cx-sub">이 무기는 절대값 추정이 가능한 단일 슬롯 스탯이 없습니다.</span>';
+  }
+  function bindCraft(g) {
+    g.querySelectorAll('[data-cqtoggle]').forEach(b => b.onclick = () => { const cn = b.dataset.cqtoggle; pfOpen.has(cn) ? pfOpen.delete(cn) : pfOpen.add(cn); renderPersonal(); });
+    g.querySelectorAll('[data-cqp]').forEach(p => {
+      craftFill(p);
+      p.querySelectorAll('input[type=range]').forEach(r => r.oninput = () => { pfQ[r.dataset.cn][+r.dataset.cqi] = +r.value; craftFill(p); });
+      p.querySelectorAll('[data-cqset]').forEach(b => b.onclick = () => { const cn = p.dataset.cqp; pfQ[cn] = pfQ[cn].map(() => +b.dataset.cqset); p.querySelectorAll('input[type=range]').forEach((r, i) => r.value = pfQ[cn][i]); craftFill(p); });
+    });
   }
   function pfCard(it, k) {
     const ico = k ? `<svg class="pf-ico sm" viewBox="0 0 160 72" aria-hidden="true">${PF_SVG[k]}</svg>` : '';
     const sub = (it.m && it.m !== 'Unknown' ? esc(it.m) : '제조사 미상') + (it.sub ? ' · ' + esc(KO_SUB[it.sub] || it.sub) : '');
     let st = '';
     if (it.d != null) {
-      st = `<div class="pf-stats"><div><span>발당</span><b>${pfNum(it.d)}</b></div><div><span>탄창당</span><b>${pfNum(it.mag)}</b></div><div><span>분당</span><b>${it.dpm != null ? pfNum(it.dpm) : '–'}</b></div></div><div class="cx-sub">${it.r ? pfNum(it.r) + ' rpm' : 'rpm 없음'} · 탄창 ${it.c != null ? it.c : '없음'}${it.c === 1 ? ' (1발 장전식, 분당 생략)' : ''}${it.t ? ' · 소진 ' + pfNum(it.t) + '초' : ''}</div>`;
+      st = `<div class="pf-stats"><div><span>발당 피해</span><b>${pfNum(it.d)}</b></div><div><span>탄창당 피해</span><b>${pfNum(it.mag)}</b></div><div><span>분당 피해</span><b>${it.dpm != null ? pfNum(it.dpm) : '–'}</b></div></div><div class="cx-sub">${it.r ? pfNum(it.r) + ' rpm' : 'rpm 없음'} · 탄창 ${it.c != null ? it.c : '없음'}${it.c === 1 ? ' (1발 장전식, 분당 생략)' : ''}${it.t ? ' · 소진 ' + pfNum(it.t) + '초' : ''}</div>`;
     } else if (it.k !== 'knife') st = '<div class="cx-sub">피해 수치 소스에 없음</div>';
-    return `<div class="cx-card pf-card" style="cursor:default">${ico}<div class="cx-name">${esc(it.n)}</div><div class="cx-sub">${sub}</div>${st}</div>`;
+    const has = CRAFT && it.cn && CRAFT.items[it.cn], open = has && pfOpen.has(it.cn);
+    const cb = has ? `<button class="chip pf-craft${open ? ' on' : ''}" data-cqtoggle="${esc(it.cn)}">🛠 제작 품질 ${open ? '닫기' : '보기'}</button>` : '';
+    return `<div class="cx-card pf-card" style="cursor:default${open ? ';grid-column:1/-1' : ''}">${ico}<div class="cx-name">${esc(it.n)}</div><div class="cx-sub">${sub}</div>${st}${cb}${open ? craftPanel(it.cn) : ''}</div>`;
   }
   const SORTS = { name: '이름순', size: '사이즈순', perf: '주요 수치순' };
   const CAREER_ICON = { 'Combat': '⚔️', 'Ground': '🛞', 'Industrial': '⛏️', 'Competition': '🏁', 'Transporter': '🚚', 'Exploration': '🔭', 'Support': '🛟', 'Multi-Role': '🔀', 'Personal Transport': '🚐', 'Starter': '🌱' };

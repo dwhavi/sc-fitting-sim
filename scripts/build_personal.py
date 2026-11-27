@@ -24,7 +24,7 @@ def build(L):
         knife = x.get('classification') == 'FPS.Weapon.Knife'
         if not (knife or ty in KIND or ty in OTHER): continue
         if 'reference' in (x.get('class_name') or '').lower(): continue  # 개발용 더미(탄창 99999)
-        it = {'n': x['name'], 'm': (x.get('manufacturer') or {}).get('name') or ''}
+        it = {'n': x['name'], 'cn': x.get('class_name') or '', 'm': (x.get('manufacturer') or {}).get('name') or ''}
         if knife:
             it['k'] = 'knife'; items.append(it); continue
         it['k'] = KIND.get(ty, 'other'); it['a'] = {'Ballistic': 'b', 'Energy': 'e'}.get(pw.get('class'), '')
