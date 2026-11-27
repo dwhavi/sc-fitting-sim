@@ -487,13 +487,14 @@
     go.disabled = false; go.textContent = '🎯 다시 만들기';
     drawResult();
   }
-  const dir = { dps: 1, dpsEff: 1, hp: 1, regen: 1, em: -1, ir: -1, t10: -1, short: -1 };
+  // Color tracks numeric direction only, not whether a metric's value is desirable.
+  const dir = { dps: 1, dpsEff: 1, hp: 1, regen: 1, em: 1, ir: 1, t10: 1, short: 1 };
   function deltaCell(k, a, b, fmtFn) {
     fmtFn = fmtFn || nf;
     if (a == null || b == null) return `<td>${b == null ? '—' : fmtFn(b)}</td>`;
     const d = b - a, rel = a ? d / a : 0;
     let cls = '';
-    if (Math.abs(rel) > 0.005 && dir[k]) cls = (d * dir[k] > 0) ? 'delta-up' : 'delta-down';
+    if (Math.abs(rel) > 0.005 && dir[k]) cls = d > 0 ? 'delta-up' : 'delta-down';
     return `<td class="${cls}">${fmtFn(b)}${Math.abs(rel) > 0.005 ? `<span class="fit-dim"> ${rel > 0 ? '+' : ''}${(rel * 100).toFixed(0)}%</span>` : ''}</td>`;
   }
   function drawResult() {
