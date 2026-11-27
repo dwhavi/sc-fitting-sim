@@ -1250,6 +1250,8 @@ function metricSnapshot(f) {
 }
 function renderDeltas(f) {
   const cur = metricSnapshot(f);
+  // 카드 글로우는 대표 수치(카드 첫 칩)의 방향만 따른다 — 한 카드에 오름/내림이 섞일 때 마지막 칩이 덮어쓰지 않게.
+  document.querySelectorAll('.stat.d-up, .stat.d-down').forEach(c => c.classList.remove('d-up', 'd-down'));
   document.querySelectorAll('[data-delta]').forEach(el => {
     const c = cur[el.dataset.delta];
     const b = deltaBase && deltaBase.m[el.dataset.delta];
@@ -1266,7 +1268,7 @@ function renderDeltas(f) {
     el.classList.remove('up', 'down');
     if (dir) el.classList.add(dir);
     const card = el.closest('.stat');
-    if (card) { card.classList.remove('d-up', 'd-down'); if (dir) card.classList.add(dir === 'up' ? 'd-up' : 'd-down'); }
+    if (card && dir && !card.classList.contains('d-up') && !card.classList.contains('d-down')) card.classList.add(dir === 'up' ? 'd-up' : 'd-down');
   });
   const lbl = $('deltaBaseName');
   if (lbl) lbl.textContent = deltaBase ? deltaBase.label : '—';
