@@ -28,11 +28,28 @@
     ['rifle-b', '라이플', '실탄'], ['rifle-e', '라이플', '에너지'],
     ['lmg-b', 'LMG', '실탄'], ['lmg-e', 'LMG', '에너지'],
   ];
+  let PERS = null;
+  const KO_SUB = { 'Pistol': '권총', 'SMG': '기관단총', 'Assault Rifle': '돌격소총', 'Rifle': '라이플', 'Sniper Rifle': '저격소총', 'LMG': 'LMG', 'Shotgun': '샷건', 'HMG': 'HMG', 'Railgun': '레일건', 'Grenade Launcher': '유탄발사기', 'Missile Launcher': '미사일 발사기', 'Launcher': '발사기', 'Crossbow': '석궁', 'Frag Pistol': '파편 권총' };
   function renderPersonal() {
     const g = $('cxGrid');
-    g.innerHTML = '<div class="cx-group-h" style="grid-column:1/-1">개인 화기 분류 <span>' + PF_CLASSES.length + '</span></div>' +
-      PF_CLASSES.map(([k, n, t]) => `<div class="cx-card pf-card" style="cursor:default"><svg class="pf-ico" viewBox="0 0 160 72" role="img" aria-label="${esc(n)} ${esc(t)}">${PF_SVG[k]}</svg><div class="cx-name">${esc(n)}</div><div class="cx-sub"><span class="pf-tag ${k.endsWith('-e') ? 'e' : k.endsWith('-b') ? 'b' : ''}">${esc(t)}</span></div></div>`).join('') +
-      '<div class="cx-sub" style="grid-column:1/-1;margin-top:4px">분류별 대표 도식입니다. 실제 모델의 외형이 아니며, 개별 무기 목록·수치는 아직 없습니다.</div>';
+    if (!PERS) { g.innerHTML = '<div class="cx-empty">불러오는 중…</div>'; return; }
+    const items = PERS.items.filter(it => !q || (it.n + ' ' + it.m).toLowerCase().includes(q));
+    const iconOf = it => it.k === 'knife' ? 'knife' : (it.k !== 'other' && it.a ? it.k + '-' + it.a : null);
+    let h = '';
+    for (const [k, n, t] of PF_CLASSES) {
+      const list = items.filter(it => iconOf(it) === k).sort((a, b) => a.n.localeCompare(b.n));
+      h += `<div class="cx-group-h" style="grid-column:1/-1">${esc(n)} · <span class="pf-tag ${k.endsWith('-e') ? 'e' : k.endsWith('-b') ? 'b' : ''}">${esc(t)}</span> <span>${list.length}</span></div>`;
+      h += list.length ? list.map(it => pfCard(it, k)).join('') : '<div class="cx-sub" style="grid-column:1/-1">해당 없음</div>';
+    }
+    const oth = items.filter(it => it.k === 'other').sort((a, b) => (a.sub + a.n).localeCompare(b.sub + b.n));
+    if (oth.length) h += `<div class="cx-group-h" style="grid-column:1/-1">기타 (샷건·HMG·발사기 등, 대표 도식 없음) <span>${oth.length}</span></div>` + oth.map(it => pfCard(it, null)).join('');
+    h += `<div class="cx-sub" style="grid-column:1/-1;margin-top:4px">아이콘은 분류별 대표 도식이며 실제 모델의 외형이 아닙니다. 목록·수치 출처: star-citizen.wiki API (${esc(PERS.meta.version)}). 수치는 소스 값 그대로이며 게임 내 측정값이 아닙니다.</div>`;
+    g.innerHTML = h;
+  }
+  function pfCard(it, k) {
+    const st = [it.d != null ? '피해 ' + it.d : '', it.r ? it.r + ' rpm' : '', it.c ? '탄창 ' + it.c : ''].filter(Boolean).join(' · ');
+    const ico = k ? `<svg class="pf-ico sm" viewBox="0 0 160 72" aria-hidden="true">${PF_SVG[k]}</svg>` : '';
+    return `<div class="cx-card pf-card" style="cursor:default">${ico}<div class="cx-name">${esc(it.n)}</div><div class="cx-sub">${esc(it.m)}${it.sub ? ' · ' + esc(KO_SUB[it.sub] || it.sub) : ''}</div>${st ? `<div class="cx-sub">${esc(st)}</div>` : ''}</div>`;
   }
   const SORTS = { name: '이름순', size: '사이즈순', perf: '주요 수치순' };
   const CAREER_ICON = { 'Combat': '⚔️', 'Ground': '🛞', 'Industrial': '⛏️', 'Competition': '🏁', 'Transporter': '🚚', 'Exploration': '🔭', 'Support': '🛟', 'Multi-Role': '🔀', 'Personal Transport': '🚐', 'Starter': '🌱' };
@@ -219,7 +236,7 @@
   function buildHead() {
     $('cxTabs').innerHTML = CATS.map(c => `<button class="chip${c.id === cat ? ' on' : ''}" data-cat="${c.id}">${c.label}</button>`).join('');
     $('cxTabs').querySelectorAll('[data-cat]').forEach(b => b.onclick = () => { cat = b.dataset.cat; selKey = null; fSize = ''; fGrade = ''; fMfr = ''; fCat = ''; fType = ''; fCls = ''; group = 'auto'; buildHead(); renderGrid(); closeModal(); });
-    if (cat === 'personal') { $('cxFilters').innerHTML = ''; return; }
+    if (cat === 'personal') { $('cxFilters').innerHTML = `<input id="cxQ" placeholder="검색 (이름·제조사)" value="${esc(q)}">`; $('cxQ').addEventListener('input', e => { q = e.target.value.toLowerCase().trim(); renderGrid(); }); if (!PERS) fetch('personal.json?v=1').then(r => r.json()).then(d => { PERS = d; if (cat === 'personal') renderGrid(); }).catch(() => { $('cxGrid').innerHTML = '<div class="cx-empty">목록을 불러오지 못했습니다.</div>'; }); return; }
     const arr = itemsOf(cat);
     const sizes = [...new Set(arr.map(it => String(it.size)))].sort((a, b) => Number(a) - Number(b));
     const grades = [...new Set(arr.map(it => it.grade).filter(g => g && g.length <= 2))].sort();
