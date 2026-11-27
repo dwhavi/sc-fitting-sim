@@ -493,7 +493,7 @@
     if (a == null || b == null) return `<td>${b == null ? '—' : fmtFn(b)}</td>`;
     const d = b - a, rel = a ? d / a : 0;
     let cls = '';
-    if (Math.abs(rel) > 0.005 && dir[k]) cls = (d * dir[k] > 0) ? 'ok' : 'bad';
+    if (Math.abs(rel) > 0.005 && dir[k]) cls = (d * dir[k] > 0) ? 'delta-up' : 'delta-down';
     return `<td class="${cls}">${fmtFn(b)}${Math.abs(rel) > 0.005 ? `<span class="fit-dim"> ${rel > 0 ? '+' : ''}${(rel * 100).toFixed(0)}%</span>` : ''}</td>`;
   }
   function drawResult() {
