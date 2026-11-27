@@ -43,7 +43,7 @@
     const g = $('cxGrid');
     if (!PERS) { g.innerHTML = '<div class="cx-empty">불러오는 중…</div>'; return; }
     const tb = $('pfTabsHost'); if (tb) { tb.innerHTML = pfBar(); tb.querySelectorAll('[data-pf]').forEach(b => b.onclick = () => { pfTab = b.dataset.pf; renderPersonal(); }); }
-    const items = PERS.items.filter(it => (pfTab === 'all' || it.k === pfTab) && (!q || (it.n + ' ' + it.m).toLowerCase().includes(q)));
+    const items = PERS.items.filter(it => (pfTab === 'all' || it.k === pfTab) && (!q || (it.n + ' ' + it.m + ' ' + (it.vn || []).join(' ')).toLowerCase().includes(q)));
     const cmp = pfSort === 'name' ? (a, b) => a.n.localeCompare(b.n) : (a, b) => (b[pfSort] || 0) - (a[pfSort] || 0) || a.n.localeCompare(b.n);
     const groups = pfTab === 'all' ? ['pistol', 'smg', 'rifle', 'sniper', 'lmg', 'knife', 'other'] : [pfTab];
     let h = '';
@@ -59,7 +59,7 @@
       }
     }
     if (!h) h = '<div class="cx-empty">조건에 맞는 무기가 없습니다.</div>';
-    h += `<div class="cx-sub pf-note" style="grid-column:1/-1;margin-top:4px">아이콘은 분류별 대표 도식이며 실제 모델의 외형이 아닙니다(저격소총은 라이플 도식 사용). 출처: star-citizen.wiki API (${esc(PERS.meta.version)}). 발당=소스 damage_per_shot(샷건은 펠릿 합산값), 탄창당=발당×탄창 수, 분당=발당×rpm. 분당 피해는 <b>재장전·반동·명중률을 뺀 이론값</b>이며(재장전 시간은 소스에 없음), rpm은 소스 최상위 값(점사·연사 모드가 있으면 빠른 쪽일 수 있음)입니다. 게임 내 측정값이 아닙니다.</div>`;
+    h += `<div class="cx-sub pf-note" style="grid-column:1/-1;margin-top:4px">닉네임·스킨만 다른 변형은 대표 모델 하나로 묶었습니다(제조사·분류·피해·rpm·탄창과 제작 보정이 모두 같을 때만). 아이콘은 분류별 대표 도식이며 실제 모델의 외형이 아닙니다(저격소총은 라이플 도식 사용). 출처: star-citizen.wiki API (${esc(PERS.meta.version)}). 발당=소스 damage_per_shot(샷건은 펠릿 합산값), 탄창당=발당×탄창 수, 분당=발당×rpm. 분당 피해는 <b>재장전·반동·명중률을 뺀 이론값</b>이며(재장전 시간은 소스에 없음), rpm은 소스 최상위 값(점사·연사 모드가 있으면 빠른 쪽일 수 있음)입니다. 게임 내 측정값이 아닙니다.</div>`;
     g.innerHTML = h;
     if (CRAFT) bindCraft(g); else if (!craftLoading) { craftLoading = true; fetch('crafting.json?v=1').then(r => r.json()).then(d => { CRAFT = d; if (cat === 'personal') renderPersonal(); }).catch(() => {}); }
   }
@@ -115,9 +115,10 @@
     if (it.d != null) {
       st = `<div class="pf-stats"><div><span>발당 피해</span><b>${pfNum(it.d)}</b></div><div><span>탄창당 피해</span><b>${pfNum(it.mag)}</b></div><div><span>분당 피해</span><b>${it.dpm != null ? pfNum(it.dpm) : '–'}</b></div></div><div class="cx-sub">${it.r ? pfNum(it.r) + ' rpm' : 'rpm 없음'} · 탄창 ${it.c != null ? it.c : '없음'}${it.c === 1 ? ' (1발 장전식, 분당 생략)' : ''}${it.t ? ' · 소진 ' + pfNum(it.t) + '초' : ''}</div>`;
     } else if (it.k !== 'knife') st = '<div class="cx-sub">피해 수치 소스에 없음</div>';
+    const vr = it.vn && it.vn.length ? `<details class="pf-var"><summary>닉네임·스킨 변형 ${it.vn.length}종 포함 (성능 동일)</summary><div class="cx-sub">${it.vn.map(esc).join('<br>')}</div></details>` : '';
     const has = CRAFT && it.cn && CRAFT.items[it.cn], open = has && pfOpen.has(it.cn);
     const cb = has ? `<button class="chip pf-craft${open ? ' on' : ''}" data-cqtoggle="${esc(it.cn)}">🛠 제작 품질 ${open ? '닫기' : '보기'}</button>` : '';
-    return `<div class="cx-card pf-card" style="cursor:default${open ? ';grid-column:1/-1' : ''}">${ico}<div class="cx-name">${esc(it.n)}</div><div class="cx-sub">${sub}</div>${st}${cb}${open ? craftPanel(it.cn) : ''}</div>`;
+    return `<div class="cx-card pf-card" style="cursor:default${open ? ';grid-column:1/-1' : ''}">${ico}<div class="cx-name">${esc(it.n)}</div><div class="cx-sub">${sub}</div>${st}${cb}${vr}${open ? craftPanel(it.cn) : ''}</div>`;
   }
   const SORTS = { name: '이름순', size: '사이즈순', perf: '주요 수치순' };
   const CAREER_ICON = { 'Combat': '⚔️', 'Ground': '🛞', 'Industrial': '⛏️', 'Competition': '🏁', 'Transporter': '🚚', 'Exploration': '🔭', 'Support': '🛟', 'Multi-Role': '🔀', 'Personal Transport': '🚐', 'Starter': '🌱' };
@@ -304,7 +305,7 @@
   function buildHead() {
     $('cxTabs').innerHTML = CATS.map(c => `<button class="chip${c.id === cat ? ' on' : ''}" data-cat="${c.id}">${c.label}</button>`).join('');
     $('cxTabs').querySelectorAll('[data-cat]').forEach(b => b.onclick = () => { cat = b.dataset.cat; selKey = null; fSize = ''; fGrade = ''; fMfr = ''; fCat = ''; fType = ''; fCls = ''; group = 'auto'; buildHead(); renderGrid(); closeModal(); });
-    if (cat === 'personal') { $('cxFilters').innerHTML = `<div id="pfTabsHost" style="flex:1 1 100%"></div><input id="cxQ" placeholder="검색 (이름·제조사)" value="${esc(q)}"><select id="pfSort"><option value="name">이름순</option><option value="dpm">분당 피해순</option><option value="mag">탄창당 피해순</option><option value="d">발당 피해순</option></select>`; $('pfSort').value = pfSort; $('pfSort').onchange = e => { pfSort = e.target.value; renderPersonal(); }; $('cxQ').addEventListener('input', e => { q = e.target.value.toLowerCase().trim(); renderGrid(); }); if (!PERS) fetch('personal.json?v=2').then(r => r.json()).then(d => { PERS = d; if (cat === 'personal') renderGrid(); }).catch(() => { $('cxGrid').innerHTML = '<div class="cx-empty">목록을 불러오지 못했습니다.</div>'; }); else renderPersonal(); return; }
+    if (cat === 'personal') { $('cxFilters').innerHTML = `<div id="pfTabsHost" style="flex:1 1 100%"></div><input id="cxQ" placeholder="검색 (이름·제조사)" value="${esc(q)}"><select id="pfSort"><option value="name">이름순</option><option value="dpm">분당 피해순</option><option value="mag">탄창당 피해순</option><option value="d">발당 피해순</option></select>`; $('pfSort').value = pfSort; $('pfSort').onchange = e => { pfSort = e.target.value; renderPersonal(); }; $('cxQ').addEventListener('input', e => { q = e.target.value.toLowerCase().trim(); renderGrid(); }); if (!PERS) fetch('personal.json?v=3').then(r => r.json()).then(d => { PERS = d; if (cat === 'personal') renderGrid(); }).catch(() => { $('cxGrid').innerHTML = '<div class="cx-empty">목록을 불러오지 못했습니다.</div>'; }); else renderPersonal(); return; }
     const arr = itemsOf(cat);
     const sizes = [...new Set(arr.map(it => String(it.size)))].sort((a, b) => Number(a) - Number(b));
     const grades = [...new Set(arr.map(it => it.grade).filter(g => g && g.length <= 2))].sort();
