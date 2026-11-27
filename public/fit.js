@@ -412,7 +412,6 @@
       <div class="modal-h"><b>🎯 최적 피팅 템플릿</b><span class="sub">${esc((DB.ships.find(s => s.slug === curShip) || {}).name || curShip)}</span><button class="modal-x" id="mx">✕</button></div>
       <div class="fit-body" id="fitBody"></div></div></div>`;
     $q('mx').onclick = closeModal;
-    $q('mov').addEventListener('click', e => { if (e.target.id === 'mov') closeModal(); });
     drawFitForm();
   }
   function pinListHTML() {

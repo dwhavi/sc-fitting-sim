@@ -58,7 +58,6 @@ async function init() {
   renderShipList(ships);
   $('status').textContent = `DB 로드 완료 — 함선 ${DB.meta.ships} · 무기 ${DB.meta.weapons} · 실드 ${DB.meta.shields} · 파워 ${DB.meta.powerplants}`;
   $('shipBtn').addEventListener('click', openShipModal);
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
   $('saveBtn').onclick = saveBuild; $('loadBtn').onclick = loadBuild; $('resetBtn').onclick = resetBuild;
   // 변화량 기준 다시 잡기 (기획안 1)
   const dr = $('deltaReset'); if (dr) dr.onclick = () => deltaSetBaseline('현재 화면');
@@ -145,7 +144,6 @@ function openShipModal(){
     <div class="chips" id="mShipChips"></div>
     <div class="modal-list" id="mShipList"></div></div></div>`;
   $('mx').onclick=closeModal;
-  $('mov').addEventListener('click',e=>{ if(e.target.id==='mov') closeModal(); });
   $('mShipQ').addEventListener('input',e=>{ shipFQ=e.target.value.toLowerCase().trim(); renderShipModalList(); });
   $('mShipQ').focus();
   renderShipModalList();
@@ -219,7 +217,6 @@ function openCompModal(slotId, kind, opts){
     <div class="modal-count" id="mCompCount"></div>
     <div class="modal-list" id="mCompList"></div></div></div>`;
   $('mx').onclick=closeModal;
-  $('mov').addEventListener('click',e=>{ if(e.target.id==='mov') closeModal(); });
   let compFCls='ALL', compFSz='ALL', compFGr='ALL', compSort='';
   const SORTS={
     '':['이름 순',(a,b)=>(a.name||'').localeCompare(b.name||'')],

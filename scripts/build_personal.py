@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """star-citizen.wiki API -> public/personal.json (개인 화기).
-필드: n 이름, m 제조사, k 분류(pistol/smg/rifle/sniper/lmg/knife/other), a 탄종(b실탄/e에너지),
+필드: n 이름, m 제조사, k 분류(pistol/smg/rifle/sniper/lmg/shotgun/knife/other), a 탄종(b실탄/e에너지),
 sub 소스 Item Type, d 발당 피해(damage_per_shot, 샷건은 소스가 펠릿 합산), r rpm(소스 top-level),
 c 탄창, mag 탄창당 피해(d*c), dpm 분당 피해(d*r, 재장전 제외 이론값), t 탄창 소진 시간(초, c/r*60).
 재장전 시간은 API에 없으므로 분당 피해는 재장전 제외."""
@@ -14,8 +14,8 @@ def fetch():
         out += d
         if len(d) < 100: return out
         n += 1
-KIND = {'Pistol': 'pistol', 'SMG': 'smg', 'Assault Rifle': 'rifle', 'Rifle': 'rifle', 'Sniper Rifle': 'sniper', 'LMG': 'lmg'}
-OTHER = {'Shotgun', 'HMG', 'Railgun', 'Grenade Launcher', 'Missile Launcher', 'Launcher', 'Crossbow', 'Frag Pistol'}
+KIND = {'Pistol': 'pistol', 'SMG': 'smg', 'Assault Rifle': 'rifle', 'Rifle': 'rifle', 'Sniper Rifle': 'sniper', 'LMG': 'lmg', 'Shotgun': 'shotgun'}
+OTHER = {'HMG', 'Railgun', 'Grenade Launcher', 'Missile Launcher', 'Launcher', 'Crossbow', 'Frag Pistol'}
 def build(L):
     items = []
     for x in L:
