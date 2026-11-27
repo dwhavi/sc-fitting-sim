@@ -17,6 +17,7 @@ main{display:grid;grid-template-columns:340px minmax(0,1fr);gap:12px;padding:12p
 #fittingView[hidden]{display:none}
 .col-left{display:flex;flex-direction:column;gap:12px;min-width:0;position:sticky;top:12px;max-height:calc(100vh - 24px);overflow-y:auto;scrollbar-width:thin}
 .col-right{display:flex;flex-direction:column;gap:12px;min-width:0}
+#summaryPanel .stats{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px}
 .panel h2{font-size:13px;margin:0 0 8px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
 select,input{width:100%;background:#0e141c;color:var(--txt);border:1px solid var(--line);border-radius:6px;padding:6px 7px;font-size:12px}
@@ -146,6 +147,9 @@ main>*{min-width:0}.stat{min-width:0;overflow-wrap:anywhere}
   main{grid-template-columns:minmax(0,1fr)}
   #fittingView{align-items:stretch}
   .col-left{position:static;max-height:none;overflow:visible}
+  #fittingView{display:flex;flex-direction:column;gap:12px}
+  .col-left,.col-right{display:contents}
+  #shipPanel{order:0}#summaryPanel{order:1}#fittingView [data-mtab]:not(#shipPanel):not(#summaryPanel){order:2}
   #msticky{display:block;position:sticky;top:0;z-index:21;background:var(--bg)}
   #mstats{display:grid;grid-template-columns:1.2fr 1fr 1.2fr;gap:6px;padding:6px 12px;border-bottom:1px solid var(--line)}
   #mstats .ms{background:#0e141c;border:1px solid var(--line);border-radius:8px;padding:4px 8px;min-width:0}
@@ -170,7 +174,7 @@ main>*{min-width:0}.stat{min-width:0;overflow-wrap:anywhere}
 .cx-filters{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
 .cx-filters input{flex:1 1 180px;min-width:0}
 .cx-filters select{flex:0 1 auto;width:auto;min-width:110px}
-#cxBody{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:12px;padding:12px;align-items:start}
+#cxBody{display:block;gap:12px;padding:12px;align-items:start}
 #cxGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;min-width:0}
 .cx-card{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;color:var(--txt);text-align:left;display:flex;flex-direction:column;gap:6px;transition:border-color .12s}
 .cx-card:hover{border-color:var(--acc)}
@@ -197,13 +201,29 @@ main>*{min-width:0}.stat{min-width:0;overflow-wrap:anywhere}
 .cx-shop{margin-top:8px;font-size:12px;line-height:1.6}
 .cx-shop .pr{color:var(--warn);white-space:nowrap}
 .cx-empty{color:var(--dim);font-size:12px;padding:18px;text-align:center;grid-column:1/-1}
-.cx-close{display:none}
+.cx-group-h{grid-column:1/-1;font-size:13px;font-weight:700;color:var(--acc);padding:8px 2px 2px;border-bottom:1px solid var(--line)}
+.cx-group-h span{color:var(--dim);font-weight:400;font-size:11px;margin-left:4px}
+.cx-thumb{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;background:#0e141c;display:block}
+.cx-thumb.none{display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--dim)}
+.cx-cat{font-size:11px;color:var(--acc)}
+.cx-modal-back{position:fixed;inset:0;background:rgba(3,7,12,.72);z-index:60;display:flex;align-items:center;justify-content:center;padding:16px}
+.cx-modal{width:min(560px,100%);max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.cx-modal h3{margin:0 0 6px;font-size:16px;display:flex;align-items:center;gap:6px}
+.cx-modal .cx-close{display:inline-block;margin-left:auto}
+.cx-m-img{width:100%;border-radius:10px;display:block;margin-bottom:2px;background:#0e141c}
+.cx-m-img.none{padding:22px;text-align:center;color:var(--dim);font-size:12px}
+.cx-m-cred{font-size:10px;color:var(--dim);text-align:right;margin-bottom:6px}
+body.cx-modal-open{overflow:hidden}
+.mi-wrap{margin:8px 0}.mi-h{font-weight:700;font-size:13px;margin-bottom:4px}.mi-h span{font-weight:400;font-size:10px;color:var(--dim);margin-left:6px}
+.mi-svg{width:100%;height:auto;display:block}
+.mi-dm{display:grid;grid-template-columns:110px minmax(0,1fr) 70px;gap:6px;align-items:center;font-size:11px;margin-top:4px}
+.mi-bar{height:6px;background:#0e141c;border-radius:3px;overflow:hidden}.mi-bar i{display:block;height:100%;background:#ff8a3d}.mi-bar i.Energy{background:#4cc2ff}.mi-bar i.Distortion{background:#b592ff}
+.mi-dm b{text-align:right;font-variant-numeric:tabular-nums}
+.mi-list{margin:8px 0 0;padding-left:16px;font-size:11px;line-height:1.7;color:var(--dim)}.mi-list b{color:var(--txt)}
 @media(max-width:860px){
   #cxBody{grid-template-columns:minmax(0,1fr);padding:8px}
   #cxGrid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
-  #cxDetail{position:fixed;left:0;right:0;bottom:0;top:auto;max-height:72vh;z-index:45;border-radius:14px 14px 0 0;box-shadow:0 -12px 40px rgba(0,0,0,.55);display:none}
-  #cxDetail.open{display:block}
-  .cx-close{display:inline-block;margin-left:auto}
+  .cx-modal-back{align-items:flex-end;padding:0}.cx-modal{border-radius:14px 14px 0 0;max-height:88vh}
 }
 </style>
 </head>
@@ -232,25 +252,13 @@ main>*{min-width:0}.stat{min-width:0;overflow-wrap:anywhere}
 </div>
 <main id="fittingView">
 <div class="col-left">
-  <div class="panel" data-mtab="summary">
+  <div class="panel" id="shipPanel" data-mtab="summary">
     <h2>함선 선택</h2>
     <button id="shipBtn" class="ship-btn">🚀 함선 선택</button>
     <div id="shipCur" class="ship-cur">함선을 선택하세요.</div>
     <select id="shipSel" style="display:none"></select>
     <div id="status">DB 로딩 중…</div>
     <details id="patchPanel" class="patch-panel"><summary id="patchSummary">패치 정보 확인 중…</summary><div id="patchInfo"></div></details>
-  </div>
-  <div class="panel" data-mtab="summary">
-    <h2>요약</h2>
-    <div class="delta-bar" id="deltaBar">비교 기준: <b id="deltaBaseName">스톡</b><button id="deltaReset" class="delta-reset" title="지금 화면의 수치를 새 비교 기준으로 저장">기준 다시 잡기</button><span>오름 ▲ 빨강 · 내림 ▼ 파랑</span></div>
-    <div class="stats" id="stats"></div>
-    <div class="sec-h">🛡️ 실드 실효 탱킹 (지연 기반)</div>
-    <div class="stats" id="shieldTank"></div>
-    <div class="sec-h">🚀 미사일 합산 (Erkul fn — 랙 capacity × 대표 미사일 추정)</div>
-    <div class="stats" id="mslPanel"></div>
-    <div class="sec-h">📡 시그니처 · 기동 (게임 덤프 스톡값)</div>
-    <div class="stats" id="sigPanel"></div>
-    <div id="powerBar" style="margin-top:8px"></div>
   </div>
   <div class="panel" data-mtab="summary">
     <h2>최적 피팅 템플릿</h2>
@@ -279,6 +287,18 @@ main>*{min-width:0}.stat{min-width:0;overflow-wrap:anywhere}
   </div>
 </div>
 <div class="col-right">
+  <div class="panel" id="summaryPanel" data-mtab="summary">
+    <h2>요약</h2>
+    <div class="delta-bar" id="deltaBar">비교 기준: <b id="deltaBaseName">스톡</b><button id="deltaReset" class="delta-reset" title="지금 화면의 수치를 새 비교 기준으로 저장">기준 다시 잡기</button><span>오름 ▲ 빨강 · 내림 ▼ 파랑</span></div>
+    <div class="stats" id="stats"></div>
+    <div class="sec-h">🛡️ 실드 실효 탱킹 (지연 기반)</div>
+    <div class="stats" id="shieldTank"></div>
+    <div class="sec-h">🚀 미사일 합산 (Erkul fn — 랙 capacity × 대표 미사일 추정)</div>
+    <div class="stats" id="mslPanel"></div>
+    <div class="sec-h">📡 시그니처 · 기동 (게임 덤프 스톡값)</div>
+    <div class="stats" id="sigPanel"></div>
+    <div id="powerBar" style="margin-top:8px"></div>
+  </div>
   <div class="panel" data-mtab="power">
     <h2>⚡ PWR 패널 — 전력 관리 <span style="font-size:11px;color:var(--acc);font-weight:400">비행 모드 기준</span></h2>
     <div style="font-size:11px;color:var(--dim);margin-bottom:6px">계통 핍 블럭 — 칸 클릭=<b>그 칸까지 배분</b>(아래부터), 같은 칸 재클릭=1핍 감소, 아이콘=계통 전체 ON·OFF<br><span style="color:var(--acc)">핍 = 게임 실제값</span> — 비행 모드 기준(퀀텀 드라이브는 게임 데이터상 두 모드 모두 세그먼트 집계 없음 → 컬럼 제외, 양자항행 정보는 요약 스탯에 유지) · 추진·생명유지·유틸은 함선 고정 세그먼트값 · 실드는 함선 풀 상한까지 · 복수 파워플랜트는 게임 결합식 · 쿨러는 슬롯마다 개별 컬럼 · 미사일은 전력 계통 없음</div>
@@ -306,7 +326,6 @@ main>*{min-width:0}.stat{min-width:0;overflow-wrap:anywhere}
   </div>
   <div id="cxBody">
     <div id="cxGrid"></div>
-    <div id="cxDetail" class="panel"></div>
   </div>
 </main>
 <div id="mbbar">
@@ -322,6 +341,6 @@ main>*{min-width:0}.stat{min-width:0;overflow-wrap:anywhere}
 <script src="app.js?v=150"></script>
 <script src="fit.js?v=11"></script>
 <script src="cloud.js?v=5"></script>
-<script src="codex.js?v=2"></script>
+<script src="codex.js?v=3"></script>
 </body>
 </html>
