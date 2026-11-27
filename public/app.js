@@ -70,7 +70,7 @@ function weaponByClass(cls) {
 
 async function init() {
   $('status').textContent = 'DB 로딩 중…';
-  const r = await fetch('db.json?v=148', {cache:'no-store'});
+  const r = await fetch('db.json?v=149', {cache:'no-store'});
   if (!r.ok) throw new Error('DB HTTP ' + r.status);
   DB = await r.json();
   buildWeaponAliases();
