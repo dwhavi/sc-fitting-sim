@@ -66,8 +66,8 @@
   let cat = 'ships', q = '', fSize = '', fGrade = '', fMfr = '', sort = 'name';
   let fCat = '', fType = '', fCls = '', group = 'auto';
   let SMETA = null, MMETA = null;
-  // 라이선스 확인 전까지 FleetYards 유래 이미지는 숨김 (파일·코드는 보존). 복원: true 로 변경.
-  const SHOW_SHIP_IMAGES = false;
+  // 함선 이미지는 RSI 공식 스토어 공개 URL(ship_meta.json의 img)을 원본 그대로 연결. 매칭 없는 함선은 자리표시자.
+  const SHOW_SHIP_IMAGES = true;
   let built = false, selKey = null;
 
   const isPlaceholder = it => !it || !it.name || /PLACEHOLDER/i.test(it.name);
@@ -413,7 +413,7 @@
     if (!it) { document.body.classList.remove('cx-modal-open'); return; }
     const ssm = shipStatusMap(); const badge = it.kind === 'ship' && ssm && ssm.ships && ssm.ships[it.raw.class] && ssm.ships[it.raw.class].st === 'special'
       ? ' <span class="badge" style="color:var(--warn)">⚠ 특수</span>' : '';
-    const img = it.kind === 'ship' ? (it.img ? `<img class="cx-m-img" src="${esc(it.img)}" alt="${esc(it.name)}"><div class="cx-m-cred">이미지: FleetYards</div>` : '<div class="cx-m-img none">이미지 준비 중</div>') : '';
+    const img = it.kind === 'ship' ? (it.img ? `<img class="cx-m-img" src="${esc(it.img)}" alt="${esc(it.name)}"><div class="cx-m-cred">이미지: RSI 공식 스토어</div>` : '<div class="cx-m-img none">이미지 준비 중</div>') : '';
     const extra = it.kind === 'missile' ? missileInfographic(it) : '';
     const head = it.kind === 'ship' ? `<div class="cx-d-sub"><b>${esc(it.cat)}</b>${it.large ? ' · 대형함(S5+ 임시 기준)' : ''} · ${esc(it.sub || '')}${it.mfr ? ` · <b style="color:${mfrColor(it.mfr)}">${esc(it.mfr)}</b>` : ''}</div>`
       : `<div class="cx-d-sub">${esc(it.sub || '')}${it.mfr ? ` · <b style="color:${mfrColor(it.mfr)}">${esc(it.mfr)}</b>` : ''}</div>`;
@@ -434,7 +434,7 @@
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
   async function ensureMeta() {
-    try { const r = await fetch('ship_meta.json?v=1'); if (r.ok) SMETA = await r.json(); } catch (e) { /* 이미지·제조사 없음 */ }
+    try { const r = await fetch('ship_meta.json?v=6'); if (r.ok) SMETA = await r.json(); } catch (e) { /* 이미지·제조사 없음 */ }
     try { const r = await fetch('missile_meta.json?v=1'); if (r.ok) MMETA = await r.json(); } catch (e) { /* */ }
   }
   async function build() {

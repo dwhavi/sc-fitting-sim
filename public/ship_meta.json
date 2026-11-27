@@ -1,1 +1,1404 @@
-{"meta": {"source": "FleetYards API (api.fleetyards.net/v1/models) 2026-11-27: 제조사명, 함선 이미지(angledView)", "mfrBy": "클래스 접두사(코드)->FleetYards 제조사"}, "ships": {"AEGS_Avenger_Stalker": {"mfr": "Aegis Dynamics", "src": null, "img": "img/ships/aegs-avenger-stalker.jpg", "fy": "aegs-avenger-stalker"}, "AEGS_Avenger_Titan": {"mfr": "Aegis Dynamics", "src": null, "img": "img/ships/aegs-avenger-titan.jpg", "fy": "aegs-avenger-titan"}, "AEGS_Avenger_Titan_Renegade": {"mfr": "Aegis Dynamics", "src": null, "img": "img/ships/aegs-avenger-titan-renegade.jpg", "fy": "aegs-avenger-titan-renegade"}, "AEGS_Avenger_Warlock": {"mfr": "Aegis Dynamics", "src": null, "img": "img/ships/aegs-avenger-warlock.jpg", "fy": "aegs-avenger-warlock"}, "AEGS_Eclipse": {"mfr": "Aegis Dynamics", "src": null, "img": "img/ships/aegs-eclipse.jpg", "fy": "aegs-eclipse"}, "AEGS_Gladius": {"mfr": "Aegis Dynamics", "src": null, "img": "img/ships/aegs-gladius.jpg", "fy": "aegs-gladius"}, "AEGS_Gladius_Valiant": {"mfr": "Aegis Dynamics", "src": null, "img": "img/ships/aegs-gladius-valiant.jpg", "fy": "aegs-gladius-valiant"}, "AEGS_Hammerhead": {"mfr": "Aegis Dynamics", "src": null, "img": "img/ships/aegs-hammerhead.jpg", "fy": "aegs-hammerhead"}, "AEGS_Idris": {"mfr": "Aegis Dynamics", "src": null, "img": "img/ships/aegs-idris.jpg", "fy": "aegs-idris-m"}, "AEGS_Idris_P": {"mfr": "Aegis Dynamics", "src": null, "img": "img/ships/aegs-idris-p.jpg", "fy": "aegs-idris-p"}, "AEGS_Javelin": {"mfr": "Aegis Dynamics", "src": null, "img": "img/ships/aegs-javelin.jpg", "fy": "aegs-javelin"}, "AEGS_Reclaimer": {"mfr": "Aegis Dynamics", "src": null, "img": "img/ships/aegs-reclaimer.jpg", "fy": "aegs-reclaimer"}, "AEGS_Redeemer": {"mfr": "Aegis Dynamics", "src": null, "img": "img/ships/aegs-redeemer.jpg", "fy": "aegs-redeemer"}, "AEGS_Retaliator": {"mfr": "Aegis Dynamics", "src": null, "img": "img/ships/aegs-retaliator.jpg", "fy": "aegs-retaliator"}, "AEGS_Sabre": {"mfr": "Aegis Dynamics", "src": null, "img": "img/ships/aegs-sabre.jpg", "fy": "aegs-sabre"}, "AEGS_Sabre_Comet": {"mfr": "Aegis Dynamics", "src": null, "img": "img/ships/aegs-sabre-comet.jpg", "fy": "aegs-sabre-comet"}, "AEGS_Sabre_Firebird": {"mfr": "Aegis Dynamics", "src": null, "img": "img/ships/aegs-sabre-firebird.jpg", "fy": "aegs-sabre-firebird"}, "AEGS_Sabre_Peregrine": {"mfr": "Aegis Dynamics", "src": null, "img": "img/ships/aegs-sabre-peregrine.jpg", "fy": "aegs-sabre-peregrine"}, "AEGS_Sabre_Raven": {"mfr": "Aegis Dynamics", "src": null, "img": "img/ships/aegs-sabre-raven.jpg", "fy": "aegs-sabre-raven"}, "AEGS_Sabre_Raven_EX": {"mfr": "Aegis Dynamics", "src": null, "img": "img/ships/aegs-sabre-raven-ex.jpg", "fy": "aegs-sabre-raven-ex"}, "AEGS_Tiburon": {"mfr": "Aegis Dynamics", "src": null, "img": "img/ships/aegs-tiburon.jpg", "fy": "aegs-tiburon"}, "AEGS_Vanguard_Harbinger": {"mfr": "Aegis Dynamics", "src": null, "img": "img/ships/aegs-vanguard-harbinger.jpg", "fy": "aegs-vanguard-harbinger"}, "AEGS_Vanguard_Hoplite": {"mfr": "Aegis Dynamics", "src": null, "img": "img/ships/aegs-vanguard-hoplite.jpg", "fy": "aegs-vanguard-hoplite"}, "AEGS_Vanguard_Sentinel": {"mfr": "Aegis Dynamics", "src": null, "img": "img/ships/aegs-vanguard-sentinel.jpg", "fy": "aegs-vanguard-sentinel"}, "AEGS_Vanguard": {"mfr": "Aegis Dynamics", "src": null, "img": "img/ships/aegs-vanguard.jpg", "fy": "aegs-vanguard-warden"}, "ANVL_Arrow": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-arrow.jpg", "fy": "anvl-arrow"}, "ANVL_Asgard": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-asgard.jpg", "fy": "anvl-asgard"}, "ANVL_C8_Pisces": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-c8-pisces.jpg", "fy": "anvl-c8-pisces"}, "ANVL_C8R_Pisces": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-c8r-pisces.jpg", "fy": "anvl-c8r-pisces"}, "ANVL_C8X_Pisces_Expedition": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-c8x-pisces-expedition.jpg", "fy": "anvl-c8x-pisces-expedition"}, "ANVL_Carrack": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-carrack.jpg", "fy": "anvl-carrack"}, "ANVL_Carrack_Expedition": {"mfr": "Anvil Aerospace", "src": null}, "ANVL_Hornet_F7A": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-hornet-f7a.jpg", "fy": "anvl-f7a-hornet-mk-i"}, "ANVL_Hornet_F7A_Mk2": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-hornet-f7a-mk2.jpg", "fy": "anvl-f7a-hornet-mk-ii"}, "ANVL_Hornet_F7C": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-hornet-f7c.jpg", "fy": "anvl-f7c-hornet-mk-i"}, "ANVL_Hornet_F7C_Mk2": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-hornet-f7c-mk2.jpg", "fy": "anvl-f7c-hornet-mk-ii"}, "ANVL_Hornet_F7C_Wildfire": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-hornet-f7c-wildfire.jpg", "fy": "anvl-f7c-hornet-wildfire-mk-i"}, "ANVL_Hornet_F7CM_Heartseeker": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-hornet-f7cm-heartseeker.jpg", "fy": "anvl-f7c-m-super-hornet-heartseeker-mk-i"}, "ANVL_Hornet_F7CM_Mk2_Heartseeker": {"mfr": "Anvil Aerospace", "src": null}, "ANVL_Hornet_F7CM": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-hornet-f7cm.jpg", "fy": "anvl-f7c-m-super-hornet-mk-i"}, "ANVL_Hornet_F7CM_Mk2": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-hornet-f7cm-mk2.jpg", "fy": "anvl-f7c-m-super-hornet-mk-ii"}, "ANVL_Hornet_F7CR": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-hornet-f7cr.jpg", "fy": "anvl-f7c-r-hornet-tracker-mk-i"}, "ANVL_Hornet_F7CR_Mk2": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-hornet-f7cr-mk2.jpg", "fy": "anvl-f7c-r-hornet-tracker-mk-ii"}, "ANVL_Hornet_F7CS": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-hornet-f7cs.jpg", "fy": "anvl-f7c-s-hornet-ghost-mk-i"}, "ANVL_Hornet_F7CS_Mk2": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-hornet-f7cs-mk2.jpg", "fy": "anvl-f7c-s-hornet-ghost-mk-ii"}, "ANVL_Lightning_F8": {"mfr": "Anvil Aerospace", "src": null}, "ANVL_Lightning_F8C": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-lightning-f8c.jpg", "fy": "anvl-f8c-lightning"}, "ANVL_Gladiator": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-gladiator.jpg", "fy": "anvl-gladiator"}, "ANVL_Ballista": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-ballista.jpg", "fy": "anvl-ballista"}, "ANVL_Centurion": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-centurion.jpg", "fy": "anvl-centurion"}, "ANVL_Spartan": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-spartan.jpg", "fy": "anvl-spartan"}, "ANVL_Hawk": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-hawk.jpg", "fy": "anvl-hawk"}, "ANVL_Hurricane": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-hurricane.jpg", "fy": "anvl-hurricane"}, "ANVL_Liberator": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-liberator.jpg", "fy": "anvl-liberator"}, "ANVL_Paladin": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-paladin.jpg", "fy": "anvl-paladin"}, "ANVL_Terrapin": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-terrapin.jpg", "fy": "anvl-terrapin"}, "ANVL_Terrapin_Medic": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-terrapin-medic.jpg", "fy": "anvl-terrapin-medic"}, "ANVL_Valkyrie": {"mfr": "Anvil Aerospace", "src": null, "img": "img/ships/anvl-valkyrie.jpg", "fy": "anvl-valkyrie"}, "XIAN_Scout": {"mfr": null, "src": null, "img": "img/ships/xian-scout.jpg", "fy": "xnaa-khartu-al"}, "XIAN_Nox": {"mfr": null, "src": null, "img": "img/ships/xian-nox.jpg", "fy": "xnaa-nox"}, "XIAN_Nox_Kue": {"mfr": null, "src": null, "img": "img/ships/xian-nox-kue.jpg", "fy": "xnaa-nox-kue"}, "XNAA_SanTokYai": {"mfr": "Aopoa", "src": null, "img": "img/ships/xnaa-santokyai.jpg", "fy": "xnaa-san-tok-yai"}, "ARGO_MOLE": {"mfr": "Argo Astronautics", "src": null, "img": "img/ships/argo-mole.jpg", "fy": "argo-mole"}, "ARGO_MOTH": {"mfr": "Argo Astronautics", "src": null, "img": "img/ships/argo-moth.jpg", "fy": "argo-moth"}, "ARGO_MPUV": {"mfr": "Argo Astronautics", "src": null, "img": "img/ships/argo-mpuv.jpg", "fy": "argo-mpuv-cargo"}, "ARGO_MPUV_Transport": {"mfr": "Argo Astronautics", "src": null, "img": "img/ships/argo-mpuv-transport.jpg", "fy": "argo-mpuv-personnel"}, "ARGO_MPUV_1T": {"mfr": "Argo Astronautics", "src": null, "img": "img/ships/argo-mpuv-1t.jpg", "fy": "argo-mpuv-tractor"}, "ARGO_RAFT": {"mfr": "Argo Astronautics", "src": null, "img": "img/ships/argo-raft.jpg", "fy": "argo-raft"}, "ARGO_SRV": {"mfr": "Argo Astronautics", "src": null, "img": "img/ships/argo-srv.jpg", "fy": "argo-srv"}, "BANU_Defender": {"mfr": "Banu", "src": null, "img": "img/ships/banu-defender.jpg", "fy": "banu-defender"}, "CNOU_HoverQuad": {"mfr": "Consolidated Outland", "src": null, "img": "img/ships/cnou-hoverquad.jpg", "fy": "cnou-hoverquad"}, "CNOU_Mustang_Alpha": {"mfr": "Consolidated Outland", "src": null, "img": "img/ships/cnou-mustang-alpha.jpg", "fy": "cnou-mustang-alpha"}, "CNOU_Mustang_Beta": {"mfr": "Consolidated Outland", "src": null, "img": "img/ships/cnou-mustang-beta.jpg", "fy": "cnou-mustang-beta"}, "CNOU_Mustang_Delta": {"mfr": "Consolidated Outland", "src": null, "img": "img/ships/cnou-mustang-delta.jpg", "fy": "cnou-mustang-delta"}, "CNOU_Mustang_Gamma": {"mfr": "Consolidated Outland", "src": null, "img": "img/ships/cnou-mustang-gamma.jpg", "fy": "cnou-mustang-gamma"}, "CNOU_Mustang_Omega": {"mfr": "Consolidated Outland", "src": null, "img": "img/ships/cnou-mustang-omega.jpg", "fy": "cnou-mustang-omega"}, "CNOU_Nomad": {"mfr": "Consolidated Outland", "src": null, "img": "img/ships/cnou-nomad.jpg", "fy": "cnou-nomad"}, "CRUS_Spirit_A1": {"mfr": "Crusader Industries", "src": null, "img": "img/ships/crus-spirit-a1.jpg", "fy": "crus-a1-spirit"}, "CRUS_Starlifter_A2": {"mfr": "Crusader Industries", "src": null, "img": "img/ships/crus-starlifter-a2.jpg", "fy": "crus-a2-hercules"}, "CRUS_Starfighter_Inferno": {"mfr": "Crusader Industries", "src": null, "img": "img/ships/crus-starfighter-inferno.jpg", "fy": "crus-ares-inferno"}, "CRUS_Starfighter_Ion": {"mfr": "Crusader Industries", "src": null, "img": "img/ships/crus-starfighter-ion.jpg", "fy": "crus-ares-ion"}, "CRUS_Spirit_C1": {"mfr": "Crusader Industries", "src": null, "img": "img/ships/crus-spirit-c1.jpg", "fy": "crus-c1-spirit"}, "CRUS_Starlifter_C2": {"mfr": "Crusader Industries", "src": null, "img": "img/ships/crus-starlifter-c2.jpg", "fy": "crus-c2-hercules"}, "CRUS_Intrepid": {"mfr": "Crusader Industries", "src": null, "img": "img/ships/crus-intrepid.jpg", "fy": "crus-intrepid"}, "CRUS_Starlifter_M2": {"mfr": "Crusader Industries", "src": null, "img": "img/ships/crus-starlifter-m2.jpg", "fy": "crus-m2-hercules"}, "CRUS_Star_Runner": {"mfr": "Crusader Industries", "src": null, "img": "img/ships/crus-star-runner.jpg", "fy": "crus-mercury-star-runner"}, "DRAK_Buccaneer": {"mfr": "Drake Interplanetary", "src": null, "img": "img/ships/drak-buccaneer.jpg", "fy": "drak-buccaneer"}, "DRAK_Caterpillar": {"mfr": "Drake Interplanetary", "src": null, "img": "img/ships/drak-caterpillar.jpg", "fy": "drak-caterpillar"}, "DRAK_Clipper": {"mfr": "Drake Interplanetary", "src": null, "img": "img/ships/drak-clipper.jpg", "fy": "drak-clipper"}, "DRAK_Command_Module": {"mfr": "Drake Interplanetary", "src": null}, "DRAK_Corsair": {"mfr": "Drake Interplanetary", "src": null, "img": "img/ships/drak-corsair.jpg", "fy": "drak-corsair"}, "DRAK_Cutlass_Black": {"mfr": "Drake Interplanetary", "src": null, "img": "img/ships/drak-cutlass-black.jpg", "fy": "drak-cutlass-black"}, "DRAK_Cutlass_Blue": {"mfr": "Drake Interplanetary", "src": null, "img": "img/ships/drak-cutlass-blue.jpg", "fy": "drak-cutlass-blue"}, "DRAK_Cutlass_Red": {"mfr": "Drake Interplanetary", "src": null, "img": "img/ships/drak-cutlass-red.jpg", "fy": "drak-cutlass-red"}, "DRAK_Cutlass_Steel": {"mfr": "Drake Interplanetary", "src": null, "img": "img/ships/drak-cutlass-steel.jpg", "fy": "drak-cutlass-steel"}, "DRAK_Cutter": {"mfr": "Drake Interplanetary", "src": null, "img": "img/ships/drak-cutter.jpg", "fy": "drak-cutter"}, "DRAK_Cutter_Rambler": {"mfr": "Drake Interplanetary", "src": null, "img": "img/ships/drak-cutter-rambler.jpg", "fy": "drak-cutter-rambler"}, "DRAK_Cutter_Scout": {"mfr": "Drake Interplanetary", "src": null, "img": "img/ships/drak-cutter-scout.jpg", "fy": "drak-cutter-scout"}, "DRAK_Dragonfly": {"mfr": "Drake Interplanetary", "src": null, "img": "img/ships/drak-dragonfly.jpg", "fy": "drak-dragonfly-black"}, "DRAK_Golem": {"mfr": "Drake Interplanetary", "src": null, "img": "img/ships/drak-golem.jpg", "fy": "drak-golem"}, "DRAK_Golem_OX": {"mfr": "Drake Interplanetary", "src": null, "img": "img/ships/drak-golem-ox.jpg", "fy": "drak-golem-ox"}, "DRAK_Herald": {"mfr": "Drake Interplanetary", "src": null, "img": "img/ships/drak-herald.jpg", "fy": "drak-herald"}, "DRAK_Ironclad": {"mfr": "Drake Interplanetary", "src": null, "img": "img/ships/drak-ironclad.jpg", "fy": "drak-ironclad"}, "DRAK_Ironclad_Assault": {"mfr": "Drake Interplanetary", "src": null, "img": "img/ships/drak-ironclad-assault.jpg", "fy": "drak-ironclad-assault"}, "DRAK_Marauder": {"mfr": "Drake Interplanetary", "src": null, "img": "img/ships/drak-marauder.jpg", "fy": "drak-marauder"}, "DRAK_Mule": {"mfr": "Drake Interplanetary", "src": null, "img": "img/ships/drak-mule.jpg", "fy": "drak-mule"}, "DRAK_Pitbull": {"mfr": "Drake Interplanetary", "src": null, "img": "img/ships/drak-pitbull.jpg", "fy": "drak-pitbull"}, "DRAK_Vulture": {"mfr": "Drake Interplanetary", "src": null, "img": "img/ships/drak-vulture.jpg", "fy": "drak-vulture"}, "VNCL_Blade": {"mfr": "Vanduul", "src": null, "img": "img/ships/vncl-blade.jpg", "fy": "espr-blade"}, "VNCL_Glaive": {"mfr": "Vanduul", "src": null, "img": "img/ships/vncl-glaive.jpg", "fy": "espr-glaive"}, "ESPR_Prowler": {"mfr": "Esperia", "src": null, "img": "img/ships/espr-prowler.jpg", "fy": "espr-prowler"}, "ESPR_Prowler_Utility": {"mfr": "Esperia", "src": null, "img": "img/ships/espr-prowler-utility.jpg", "fy": "espr-prowler-utility"}, "ESPR_Talon": {"mfr": "Esperia", "src": null, "img": "img/ships/espr-talon.jpg", "fy": "espr-talon"}, "ESPR_Talon_Shrike": {"mfr": "Esperia", "src": null, "img": "img/ships/espr-talon-shrike.jpg", "fy": "espr-talon-shrike"}, "GAMA_Railen": {"mfr": "Gatac Manufacture", "src": null, "img": "img/ships/gama-railen.jpg", "fy": "gama-railen"}, "GAMA_Syulen": {"mfr": "Gatac Manufacture", "src": null, "img": "img/ships/gama-syulen.jpg", "fy": "gama-syulen"}, "GAMA_Tyilui": {"mfr": "Gatac Manufacture", "src": null, "img": "img/ships/gama-tyilui.jpg", "fy": "gama-tyilui"}, "GLSN_Basher": {"mfr": null, "src": null, "img": "img/ships/glsn-basher.jpg", "fy": "grey-basher"}, "GLSN_Shiv": {"mfr": null, "src": null, "img": "img/ships/glsn-shiv.jpg", "fy": "grey-shiv"}, "GRIN_PTV": {"mfr": "Greycat Industrial", "src": null, "img": "img/ships/grin-ptv.jpg", "fy": "grin-ptv"}, "GRIN_ROC": {"mfr": "Greycat Industrial", "src": null, "img": "img/ships/grin-roc.jpg", "fy": "grin-roc"}, "GRIN_ROC_DS": {"mfr": "Greycat Industrial", "src": null, "img": "img/ships/grin-roc-ds.jpg", "fy": "grin-roc-ds"}, "GRIN_STV": {"mfr": "Greycat Industrial", "src": null, "img": "img/ships/grin-stv.jpg", "fy": "grin-stv"}, "KRIG_L21_Wolf": {"mfr": "Kruger Intergalactic", "src": null, "img": "img/ships/krig-l21-wolf.jpg", "fy": "krig-l-21-wolf"}, "KRIG_L22_AlphaWolf": {"mfr": "Kruger Intergalactic", "src": null, "img": "img/ships/krig-l22-alphawolf.jpg", "fy": "krig-l-22-alpha-wolf"}, "KRIG_P52_Merlin": {"mfr": "Kruger Intergalactic", "src": null, "img": "img/ships/krig-p52-merlin.jpg", "fy": "krig-p-52-merlin"}, "KRIG_P72_Archimedes": {"mfr": "Kruger Intergalactic", "src": null, "img": "img/ships/krig-p72-archimedes.jpg", "fy": "krig-p-72-archimedes"}, "KRIG_S65_Stingray": {"mfr": "Kruger Intergalactic", "src": null, "img": "img/ships/krig-s65-stingray.jpg", "fy": "krig-s-65-stingray"}, "MISC_Fortune": {"mfr": "MISC", "src": null, "img": "img/ships/misc-fortune.jpg", "fy": "misc-fortune"}, "MISC_Freelancer": {"mfr": "MISC", "src": null, "img": "img/ships/misc-freelancer.jpg", "fy": "misc-freelancer"}, "MISC_Freelancer_DUR": {"mfr": "MISC", "src": null, "img": "img/ships/misc-freelancer-dur.jpg", "fy": "misc-freelancer-dur"}, "MISC_Freelancer_MAX": {"mfr": "MISC", "src": null, "img": "img/ships/misc-freelancer-max.jpg", "fy": "misc-freelancer-max"}, "MISC_Freelancer_MIS": {"mfr": "MISC", "src": null, "img": "img/ships/misc-freelancer-mis.jpg", "fy": "misc-freelancer-mis"}, "MISC_Hull_A": {"mfr": "MISC", "src": null, "img": "img/ships/misc-hull-a.jpg", "fy": "misc-hull-a"}, "MISC_Hull_B": {"mfr": "MISC", "src": null, "img": "img/ships/misc-hull-b.jpg", "fy": "misc-hull-b"}, "MISC_Hull_C": {"mfr": "MISC", "src": null, "img": "img/ships/misc-hull-c.jpg", "fy": "misc-hull-c"}, "MISC_Prospector": {"mfr": "MISC", "src": null, "img": "img/ships/misc-prospector.jpg", "fy": "misc-prospector"}, "MISC_Reliant": {"mfr": "MISC", "src": null, "img": "img/ships/misc-reliant.jpg", "fy": "misc-reliant-kore"}, "MISC_Reliant_Mako": {"mfr": "MISC", "src": null, "img": "img/ships/misc-reliant-mako.jpg", "fy": "misc-reliant-mako"}, "MISC_Reliant_Sen": {"mfr": "MISC", "src": null, "img": "img/ships/misc-reliant-sen.jpg", "fy": "misc-reliant-sen"}, "MISC_Reliant_Tana": {"mfr": "MISC", "src": null, "img": "img/ships/misc-reliant-tana.jpg", "fy": "misc-reliant-tana"}, "MISC_Starfarer": {"mfr": "MISC", "src": null, "img": "img/ships/misc-starfarer.jpg", "fy": "misc-starfarer"}, "MISC_Starfarer_Gemini": {"mfr": "MISC", "src": null, "img": "img/ships/misc-starfarer-gemini.jpg", "fy": "misc-starfarer-gemini"}, "MISC_Starlancer_Max": {"mfr": "MISC", "src": null, "img": "img/ships/misc-starlancer-max.jpg", "fy": "misc-starlancer-max"}, "MISC_Starlancer_TAC": {"mfr": "MISC", "src": null, "img": "img/ships/misc-starlancer-tac.jpg", "fy": "misc-starlancer-tac"}, "MISC_Starlite": {"mfr": "MISC", "src": null, "img": "img/ships/misc-starlite.jpg", "fy": "misc-starlite"}, "MISC_Fury": {"mfr": "MISC", "src": null, "img": "img/ships/misc-fury.jpg", "fy": "mrai-fury"}, "MISC_Fury_LX": {"mfr": "MISC", "src": null, "img": "img/ships/misc-fury-lx.jpg", "fy": "mrai-fury-lx"}, "MISC_Fury_Miru": {"mfr": "MISC", "src": null, "img": "img/ships/misc-fury-miru.jpg", "fy": "mrai-fury-mx"}, "MRAI_Guardian": {"mfr": "Mirai", "src": null, "img": "img/ships/mrai-guardian.jpg", "fy": "mrai-guardian"}, "MRAI_Guardian_MX": {"mfr": "Mirai", "src": null, "img": "img/ships/mrai-guardian-mx.jpg", "fy": "mrai-guardian-mx"}, "MRAI_Guardian_QI": {"mfr": "Mirai", "src": null, "img": "img/ships/mrai-guardian-qi.jpg", "fy": "mrai-guardian-qi"}, "MRAI_Pulse": {"mfr": "Mirai", "src": null, "img": "img/ships/mrai-pulse.jpg", "fy": "mrai-pulse"}, "MISC_Razor": {"mfr": "MISC", "src": null, "img": "img/ships/misc-razor.jpg", "fy": "mrai-razor"}, "MISC_Razor_EX": {"mfr": "MISC", "src": null, "img": "img/ships/misc-razor-ex.jpg", "fy": "mrai-razor-ex"}, "MISC_Razor_LX": {"mfr": "MISC", "src": null, "img": "img/ships/misc-razor-lx.jpg", "fy": "mrai-razor-lx"}, "ORIG_100i": {"mfr": "Origin Jumpworks", "src": null, "img": "img/ships/orig-100i.jpg", "fy": "orig-100i"}, "ORIG_125a": {"mfr": "Origin Jumpworks", "src": null, "img": "img/ships/orig-125a.jpg", "fy": "orig-125a"}, "ORIG_135c": {"mfr": "Origin Jumpworks", "src": null, "img": "img/ships/orig-135c.jpg", "fy": "orig-135c"}, "ORIG_300i": {"mfr": "Origin Jumpworks", "src": null, "img": "img/ships/orig-300i.jpg", "fy": "orig-300i"}, "ORIG_315p": {"mfr": "Origin Jumpworks", "src": null, "img": "img/ships/orig-315p.jpg", "fy": "orig-315p"}, "ORIG_325a": {"mfr": "Origin Jumpworks", "src": null, "img": "img/ships/orig-325a.jpg", "fy": "orig-325a"}, "ORIG_350r": {"mfr": "Origin Jumpworks", "src": null, "img": "img/ships/orig-350r.jpg", "fy": "orig-350r"}, "ORIG_400i": {"mfr": "Origin Jumpworks", "src": null, "img": "img/ships/orig-400i.jpg", "fy": "orig-400i"}, "ORIG_600i": {"mfr": "Origin Jumpworks", "src": null, "img": "img/ships/orig-600i.jpg", "fy": "orig-600i-explorer"}, "ORIG_600i_Executive_Edition": {"mfr": "Origin Jumpworks", "src": null, "img": "img/ships/orig-600i-executive-edition.jpg", "fy": "orig-600i-executive-edition"}, "ORIG_600i_Touring": {"mfr": "Origin Jumpworks", "src": null, "img": "img/ships/orig-600i-touring.jpg", "fy": "orig-600i-touring"}, "ORIG_85X": {"mfr": "Origin Jumpworks", "src": null, "img": "img/ships/orig-85x.jpg", "fy": "orig-85x"}, "ORIG_890Jump": {"mfr": "Origin Jumpworks", "src": null, "img": "img/ships/orig-890jump.jpg", "fy": "orig-890-jump"}, "ORIG_m50": {"mfr": "Origin Jumpworks", "src": null, "img": "img/ships/orig-m50.jpg", "fy": "orig-m50"}, "ORIG_m80": {"mfr": "Origin Jumpworks", "src": null, "img": "img/ships/orig-m80.jpg", "fy": "orig-m80"}, "ORIG_X1": {"mfr": "Origin Jumpworks", "src": null, "img": "img/ships/orig-x1.jpg", "fy": "orig-x1"}, "RSI_Apollo_Medivac": {"mfr": "Roberts Space Industries", "src": null, "img": "img/ships/rsi-apollo-medivac.jpg", "fy": "rsi-apollo-medivac"}, "RSI_Apollo_Triage": {"mfr": "Roberts Space Industries", "src": null, "img": "img/ships/rsi-apollo-triage.jpg", "fy": "rsi-apollo-triage"}, "RSI_Aurora_LX": {"mfr": "Roberts Space Industries", "src": null, "img": "img/ships/rsi-aurora-lx.jpg", "fy": "rsi-aurora-mk-i-lx"}, "RSI_Aurora_CL": {"mfr": "Roberts Space Industries", "src": null, "img": "img/ships/rsi-aurora-cl.jpg", "fy": "rsi-aurora-mk-i-cl"}, "RSI_Aurora_ES": {"mfr": "Roberts Space Industries", "src": null, "img": "img/ships/rsi-aurora-es.jpg", "fy": "rsi-aurora-mk-i-es"}, "RSI_Aurora_LN": {"mfr": "Roberts Space Industries", "src": null, "img": "img/ships/rsi-aurora-ln.jpg", "fy": "rsi-aurora-mk-i-ln"}, "RSI_Aurora_MR": {"mfr": "Roberts Space Industries", "src": null, "img": "img/ships/rsi-aurora-mr.jpg", "fy": "rsi-aurora-mk-i-mr"}, "RSI_Aurora_GS_SE": {"mfr": "Roberts Space Industries", "src": null, "img": "img/ships/rsi-aurora-gs-se.jpg", "fy": "rsi-aurora-mk-i-se"}, "RSI_Aurora_Mk2": {"mfr": "Roberts Space Industries", "src": null, "img": "img/ships/rsi-aurora-mk2.jpg", "fy": "rsi-aurora-mk-ii"}, "RSI_Constellation_Andromeda": {"mfr": "Roberts Space Industries", "src": null, "img": "img/ships/rsi-constellation-andromeda.jpg", "fy": "rsi-constellation-mk-iv-andromeda"}, "RSI_Constellation_Aquila": {"mfr": "Roberts Space Industries", "src": null, "img": "img/ships/rsi-constellation-aquila.jpg", "fy": "rsi-constellation-mk-iv-aquila"}, "RSI_Constellation_Phoenix": {"mfr": "Roberts Space Industries", "src": null, "img": "img/ships/rsi-constellation-phoenix.jpg", "fy": "rsi-constellation-mk-iv-phoenix"}, "RSI_Constellation_Taurus": {"mfr": "Roberts Space Industries", "src": null, "img": "img/ships/rsi-constellation-taurus.jpg", "fy": "rsi-constellation-mk-iv-taurus"}, "RSI_Constellation_Mk5_Centaurus": {"mfr": "Roberts Space Industries", "src": null, "img": "img/ships/rsi-constellation-mk5-centaurus.jpg", "fy": "rsi-constellation-mk-v-centaurus"}, "RSI_Galaxy": {"mfr": "Roberts Space Industries", "src": null, "img": "img/ships/rsi-galaxy.jpg", "fy": "rsi-galaxy"}, "RSI_Hermes": {"mfr": "Roberts Space Industries", "src": null, "img": "img/ships/rsi-hermes.jpg", "fy": "rsi-hermes"}, "RSI_Mantis": {"mfr": "Roberts Space Industries", "src": null, "img": "img/ships/rsi-mantis.jpg", "fy": "rsi-mantis"}, "RSI_Meteor": {"mfr": "Roberts Space Industries", "src": null, "img": "img/ships/rsi-meteor.jpg", "fy": "rsi-meteor"}, "RSI_Perseus": {"mfr": "Roberts Space Industries", "src": null, "img": "img/ships/rsi-perseus.jpg", "fy": "rsi-perseus"}, "RSI_Polaris": {"mfr": "Roberts Space Industries", "src": null, "img": "img/ships/rsi-polaris.jpg", "fy": "rsi-polaris"}, "RSI_Salvation": {"mfr": "Roberts Space Industries", "src": null, "img": "img/ships/rsi-salvation.jpg", "fy": "rsi-salvation"}, "RSI_Scorpius": {"mfr": "Roberts Space Industries", "src": null, "img": "img/ships/rsi-scorpius.jpg", "fy": "rsi-scorpius"}, "RSI_Scorpius_Antares": {"mfr": "Roberts Space Industries", "src": null, "img": "img/ships/rsi-scorpius-antares.jpg", "fy": "rsi-scorpius-antares"}, "RSI_Skylark": {"mfr": "Roberts Space Industries", "src": null, "img": "img/ships/rsi-skylark.jpg", "fy": "rsi-skylark"}, "RSI_Ursa_Rover": {"mfr": "Roberts Space Industries", "src": null, "img": "img/ships/rsi-ursa-rover.jpg", "fy": "rsi-ursa"}, "RSI_Zeus_CL": {"mfr": "Roberts Space Industries", "src": null, "img": "img/ships/rsi-zeus-cl.jpg", "fy": "rsi-zeus-mk-ii-cl"}, "RSI_Zeus_ES": {"mfr": "Roberts Space Industries", "src": null, "img": "img/ships/rsi-zeus-es.jpg", "fy": "rsi-zeus-mk-ii-es"}, "TMBL_Cyclone": {"mfr": "Tumbril", "src": null, "img": "img/ships/tmbl-cyclone.jpg", "fy": "tmbl-cyclone"}, "TMBL_Cyclone_AA": {"mfr": "Tumbril", "src": null, "img": "img/ships/tmbl-cyclone-aa.jpg", "fy": "tmbl-cyclone-aa"}, "TMBL_Cyclone_MT": {"mfr": "Tumbril", "src": null, "img": "img/ships/tmbl-cyclone-mt.jpg", "fy": "tmbl-cyclone-mt"}, "TMBL_Cyclone_RC": {"mfr": "Tumbril", "src": null, "img": "img/ships/tmbl-cyclone-rc.jpg", "fy": "tmbl-cyclone-rc"}, "TMBL_Cyclone_RN": {"mfr": "Tumbril", "src": null, "img": "img/ships/tmbl-cyclone-rn.jpg", "fy": "tmbl-cyclone-rn"}, "TMBL_Cyclone_TR": {"mfr": "Tumbril", "src": null, "img": "img/ships/tmbl-cyclone-tr.jpg", "fy": "tmbl-cyclone-tr"}, "TMBL_Nova": {"mfr": "Tumbril", "src": null, "img": "img/ships/tmbl-nova.jpg", "fy": "tmbl-nova"}, "VNCL_Scythe": {"mfr": "Vanduul", "src": null, "img": "img/ships/vncl-scythe.jpg", "fy": "vncl-scythe"}}}
+{
+ "meta": {
+  "source": "제조사명: FleetYards API. 함선 이미지: RSI 공식 스토어(robertsspaceindustries.com/pledge/ships) 목록의 공개 이미지 URL을 원본 그대로 연결(복사·변형 없음), 2026-11-27 조회. 이름이 정확히 일치한 함선만 연결",
+  "mfrBy": "클래스 접두사(코드)->FleetYards 제조사"
+ },
+ "ships": {
+  "AEGS_Avenger_Stalker": {
+   "mfr": "Aegis Dynamics",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/7afe635976092764f6650e2a38a3824a677de7f5/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReseTiozZrGUkBP1KS3PKvYPfJfezfDBTyiE)/source.webp",
+   "fy": "aegs-avenger-stalker",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/aegis-avenger/Avenger-Stalker"
+  },
+  "AEGS_Avenger_Titan": {
+   "mfr": "Aegis Dynamics",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/4cddca806932fe6d4e4e8dc6f9e3d908e81cf46e/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResivggYNE4eG6QvxjvFyCFYpGdCAjcE8FWN)/source.webp",
+   "fy": "aegs-avenger-titan",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/aegis-avenger/Avenger-Titan"
+  },
+  "AEGS_Avenger_Titan_Renegade": {
+   "mfr": "Aegis Dynamics",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/25d4100099aa5f87bb7b36e06056bc4861ab28b8/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjvbX7PuKjrhqxjGg8vwDFs77Wp7ieLKNv)/source.webp",
+   "fy": "aegs-avenger-titan-renegade",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/aegis-avenger/Avenger-Titan-Renegade"
+  },
+  "AEGS_Avenger_Warlock": {
+   "mfr": "Aegis Dynamics",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/b93bc9789afd0d3c79061582aeeb15fe84f6851e/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjdrHki5t8uUHTq8X74sN2QBB2BhVkJE8e)/source.webp",
+   "fy": "aegs-avenger-warlock",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/aegis-avenger/Avenger-Warlock"
+  },
+  "AEGS_Eclipse": {
+   "mfr": "Aegis Dynamics",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/26b4339b2c3abfe986b38bcdb6f3394573891b8e/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResj1s8gewpqUNmaY5rDCxpDUA1NhMoiVrHt)/source.webp",
+   "fy": "aegs-eclipse",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/eclipse/Eclipse"
+  },
+  "AEGS_Gladius": {
+   "mfr": "Aegis Dynamics",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/60415cc9954828896ce4495b34885d7e3a6951d9/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResieuRXVexPTjwdpMHEWo3saH7q2zcqCJWS)/source.webp",
+   "fy": "aegs-gladius",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/gladius/Gladius"
+  },
+  "AEGS_Gladius_Valiant": {
+   "mfr": "Aegis Dynamics",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/536842fae187ad4bf028eb9f912db297e41c917a/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjHxYqZhkCGAu3JFrXyZrgxc2yximhqvWa)/source.webp",
+   "fy": "aegs-gladius-valiant",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/gladius/Gladius-Valiant"
+  },
+  "AEGS_Hammerhead": {
+   "mfr": "Aegis Dynamics",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/2d1133694e11b92d0b4d3bc89887c2ce3c5dc403/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskw8pF3smytMEoihUHnd7hNxebuVtB4znz)/source.webp",
+   "fy": "aegs-hammerhead",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/hammerhead/Hammerhead"
+  },
+  "AEGS_Idris": {
+   "mfr": "Aegis Dynamics",
+   "src": null,
+   "img": null,
+   "fy": "aegs-idris-m"
+  },
+  "AEGS_Idris_P": {
+   "mfr": "Aegis Dynamics",
+   "src": null,
+   "img": null,
+   "fy": "aegs-idris-p"
+  },
+  "AEGS_Javelin": {
+   "mfr": "Aegis Dynamics",
+   "src": null,
+   "img": null,
+   "fy": "aegs-javelin"
+  },
+  "AEGS_Reclaimer": {
+   "mfr": "Aegis Dynamics",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/c276a1f24d7d800bc3ab5811beca9f940cc15522/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResejKHgGFVcRTa6LWffpgGvv5iyU1wLPm6v)/source.webp",
+   "fy": "aegs-reclaimer",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/reclaimer/Reclaimer"
+  },
+  "AEGS_Redeemer": {
+   "mfr": "Aegis Dynamics",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/fe03b51830cefdc04ea512f9b6887837d02a52a6/resize(1820,1024,cover,hgjbks2vRxvijgZCkcudyey3yf2YnBqfanX6U636vzzNeeFdx43A2FpAtr4dce6zL9JH9YZyXwhA4VkD1n3fdHWi5t)/source.webp",
+   "fy": "aegs-redeemer",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/redeemer/Redeemer"
+  },
+  "AEGS_Retaliator": {
+   "mfr": "Aegis Dynamics",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/1a646c4576c46cfd44475278449298ec4fb5f25d/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjNv4KwaBqDGvjSL5M7EKut5GxBYigSFWe)/source.webp",
+   "fy": "aegs-retaliator",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/aegis-retaliator/Retaliator"
+  },
+  "AEGS_Sabre": {
+   "mfr": "Aegis Dynamics",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/e780fce7b5bc3aef5d54ae873d1ae4ddbdadbbf6/resize(1820,1024,cover,hgjbks2vRxvijgZCkcudyey3yf2YnBqfanX6U636vzzNeeFdx43A2FpAZ7nnvLVtpHFMFWL7o7nMwTrRFj5ZVqWmvn)/source.webp",
+   "fy": "aegs-sabre",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/sabre/Sabre"
+  },
+  "AEGS_Sabre_Comet": {
+   "mfr": "Aegis Dynamics",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/e0ba58229607b2f143a3413a60a115b37f154bda/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResejaqZiWqzJk1v9rhSh93faaUuRM5WPM98)/source.webp",
+   "fy": "aegs-sabre-comet",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/sabre/Sabre-Comet"
+  },
+  "AEGS_Sabre_Firebird": {
+   "mfr": "Aegis Dynamics",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/c8b1528bc54295f637a01cdefed3c0636abb3760/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjUDiEYSBALs6yedyxGzGSVc2cmH9NMTQS)/source.webp",
+   "fy": "aegs-sabre-firebird",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/sabre/Sabre-Firebird"
+  },
+  "AEGS_Sabre_Peregrine": {
+   "mfr": "Aegis Dynamics",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/ab19d87116cec68ccd59e321cf45e26c5de1e0ae/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResf1BKnZCNwtwtiEVV4sdSVRU8ypLsXQNGN)/source.webp",
+   "fy": "aegs-sabre-peregrine",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/sabre/Sabre-Peregrine"
+  },
+  "AEGS_Sabre_Raven": {
+   "mfr": "Aegis Dynamics",
+   "src": null,
+   "img": null,
+   "fy": "aegs-sabre-raven"
+  },
+  "AEGS_Sabre_Raven_EX": {
+   "mfr": "Aegis Dynamics",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/dbdbd61fddf17f33512d21338dd973df82ad9a8b/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskZruzT2iDpEhpSXJdwBNuvmPWixU8CaLn)/source.webp",
+   "fy": "aegs-sabre-raven-ex",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/sabre/Sabre-Raven-EX"
+  },
+  "AEGS_Tiburon": {
+   "mfr": "Aegis Dynamics",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/5034074196874f129f3ff25d93d39d678b8de317/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskqmGWrWP9M7s4Xy6L8YgJQs18r4iARWYW)/source.webp",
+   "fy": "aegs-tiburon",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/tiburon/Tiburon"
+  },
+  "AEGS_Vanguard_Harbinger": {
+   "mfr": "Aegis Dynamics",
+   "src": null,
+   "img": null,
+   "fy": "aegs-vanguard-harbinger"
+  },
+  "AEGS_Vanguard_Hoplite": {
+   "mfr": "Aegis Dynamics",
+   "src": null,
+   "img": null,
+   "fy": "aegs-vanguard-hoplite"
+  },
+  "AEGS_Vanguard_Sentinel": {
+   "mfr": "Aegis Dynamics",
+   "src": null,
+   "img": null,
+   "fy": "aegs-vanguard-sentinel"
+  },
+  "AEGS_Vanguard": {
+   "mfr": "Aegis Dynamics",
+   "src": null,
+   "img": null,
+   "fy": "aegs-vanguard-warden"
+  },
+  "ANVL_Arrow": {
+   "mfr": "Anvil Aerospace",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/9861febc81cadf49dfe3010d59d270f64385c6b6/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjUCY424inopgLKcxbZLVecByFWiDge1gS)/source.webp",
+   "fy": "anvl-arrow",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/anvil-arrow/Arrow"
+  },
+  "ANVL_Asgard": {
+   "mfr": "Anvil Aerospace",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/a534a200823b9611e943853e2796b99b9eae7138/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjHqQ7nzeWKNJC9PZ799uzA3LV8x15ssJv)/source.webp",
+   "fy": "anvl-asgard",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/anvil-asgard/Asgard"
+  },
+  "ANVL_C8_Pisces": {
+   "mfr": "Anvil Aerospace",
+   "src": null,
+   "img": null,
+   "fy": "anvl-c8-pisces"
+  },
+  "ANVL_C8R_Pisces": {
+   "mfr": "Anvil Aerospace",
+   "src": null,
+   "img": null,
+   "fy": "anvl-c8r-pisces"
+  },
+  "ANVL_C8X_Pisces_Expedition": {
+   "mfr": "Anvil Aerospace",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/69de38cb76d9cf625fa4ec27ba9bf741e6598e32/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjZbCSUWdnfpmEffJvwzU9skusSz6GzjN6)/source.webp",
+   "fy": "anvl-c8x-pisces-expedition",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/anvil-pisces/C8X-Pisces-Expedition"
+  },
+  "ANVL_Carrack": {
+   "mfr": "Anvil Aerospace",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/5a176dc57589f18effd841146ef5a37e88892aee/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResijpd9a1QppWGLqGr3g6nG4GJrw2mPpW4n)/source.webp",
+   "fy": "anvl-carrack",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/carrack/Carrack"
+  },
+  "ANVL_Carrack_Expedition": {
+   "mfr": "Anvil Aerospace",
+   "src": null,
+   "img": null
+  },
+  "ANVL_Hornet_F7A": {
+   "mfr": "Anvil Aerospace",
+   "src": null,
+   "img": null,
+   "fy": "anvl-f7a-hornet-mk-i"
+  },
+  "ANVL_Hornet_F7A_Mk2": {
+   "mfr": "Anvil Aerospace",
+   "src": null,
+   "img": null,
+   "fy": "anvl-f7a-hornet-mk-ii"
+  },
+  "ANVL_Hornet_F7C": {
+   "mfr": "Anvil Aerospace",
+   "src": null,
+   "img": null,
+   "fy": "anvl-f7c-hornet-mk-i"
+  },
+  "ANVL_Hornet_F7C_Mk2": {
+   "mfr": "Anvil Aerospace",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/11898460f6c81a86b36767241e96326ebd7e300f/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjHymPx8r84PH9pB8dHUfSKxtsuxz3EFJE)/source.webp",
+   "fy": "anvl-f7c-hornet-mk-ii",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/anvil-hornet-mkii/F7C-Hornet-Mk-II"
+  },
+  "ANVL_Hornet_F7C_Wildfire": {
+   "mfr": "Anvil Aerospace",
+   "src": null,
+   "img": null,
+   "fy": "anvl-f7c-hornet-wildfire-mk-i"
+  },
+  "ANVL_Hornet_F7CM_Heartseeker": {
+   "mfr": "Anvil Aerospace",
+   "src": null,
+   "img": null,
+   "fy": "anvl-f7c-m-super-hornet-heartseeker-mk-i"
+  },
+  "ANVL_Hornet_F7CM_Mk2_Heartseeker": {
+   "mfr": "Anvil Aerospace",
+   "src": null,
+   "img": null
+  },
+  "ANVL_Hornet_F7CM": {
+   "mfr": "Anvil Aerospace",
+   "src": null,
+   "img": null,
+   "fy": "anvl-f7c-m-super-hornet-mk-i"
+  },
+  "ANVL_Hornet_F7CM_Mk2": {
+   "mfr": "Anvil Aerospace",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/aa2b3c767c2555caa89b0a0239aca9e63ef07a23/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResedtCVBuvj4aJo1EBhKirGcWN1xxtKGk8n)/source.webp",
+   "fy": "anvl-f7c-m-super-hornet-mk-ii",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/anvil-hornet-mkii/F7C-M-Super-Hornet-Mk-II"
+  },
+  "ANVL_Hornet_F7CR": {
+   "mfr": "Anvil Aerospace",
+   "src": null,
+   "img": null,
+   "fy": "anvl-f7c-r-hornet-tracker-mk-i"
+  },
+  "ANVL_Hornet_F7CR_Mk2": {
+   "mfr": "Anvil Aerospace",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/2198f6c499469932595835e2d8847d6196b4d891/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReseoZyePfkFJQygvJqE4MocwJAuyLYM1rKG)/source.webp",
+   "fy": "anvl-f7c-r-hornet-tracker-mk-ii",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/anvil-hornet-mkii/F7C-R-Hornet-Tracker-Mk-II"
+  },
+  "ANVL_Hornet_F7CS": {
+   "mfr": "Anvil Aerospace",
+   "src": null,
+   "img": null,
+   "fy": "anvl-f7c-s-hornet-ghost-mk-i"
+  },
+  "ANVL_Hornet_F7CS_Mk2": {
+   "mfr": "Anvil Aerospace",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/5bd5643f5e6da6ee50f799fc5dcbe7e5e752a7cb/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskP9BJt5yvdnBYhrcDfrunYJdqg3dVC6yC)/source.webp",
+   "fy": "anvl-f7c-s-hornet-ghost-mk-ii",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/anvil-hornet-mkii/F7C-S-Hornet-Ghost-Mk-II"
+  },
+  "ANVL_Lightning_F8": {
+   "mfr": "Anvil Aerospace",
+   "src": null,
+   "img": null
+  },
+  "ANVL_Lightning_F8C": {
+   "mfr": "Anvil Aerospace",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/dbe4048cfde01b6851a2dc6b5a3403139c9aa3ef/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjTEWFCBvRCcApL8QwcPy9mPPcUhEbyN9c)/source.webp",
+   "fy": "anvl-f8c-lightning",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/lightning/F8C-Lightning"
+  },
+  "ANVL_Gladiator": {
+   "mfr": "Anvil Aerospace",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/24c3aeaad34e328fac28c068188be4d2be8485ea/resize(1820,1024,cover,hgjbks2vRxvijgZCkcudyey3yf2YnBqfanX6U636vzzNeeFdx43A2FpAz62LgThdv7L26Mnnv9U1c1Ci2MqadbqDiE)/source.webp",
+   "fy": "anvl-gladiator",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/anvil-gladiator/Gladiator"
+  },
+  "ANVL_Ballista": {
+   "mfr": "Anvil Aerospace",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/004b56fd94e9224b95646f683ac234cab884ee06/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResj76XQUHMro7sbhMTSrhqtrQngyMgUY8aA)/source.webp",
+   "fy": "anvl-ballista",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/anvil-ballista/Ballista"
+  },
+  "ANVL_Centurion": {
+   "mfr": "Anvil Aerospace",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/a4a0559e83591728407a892cd21076bfc8982d88/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskZee9JyWzsJsLzWu91ohmowddjhZycyVx)/source.webp",
+   "fy": "anvl-centurion",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/centurion/Centurion"
+  },
+  "ANVL_Spartan": {
+   "mfr": "Anvil Aerospace",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/caec1a43fe808311ca492c51002e9a3bf585393c/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResj1kD3WpJBNCfd4f5GV9y4U6tFzGqUJY7Q)/source.webp",
+   "fy": "anvl-spartan",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/spartan/Spartan"
+  },
+  "ANVL_Hawk": {
+   "mfr": "Anvil Aerospace",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/5f4d482dbcafa31057856651b99bb9121bb2dc7b/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskqofk6iAEkXWjQtqfG1dYTrB2yze2VMN6)/source.webp",
+   "fy": "anvl-hawk",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/hawk/Hawk"
+  },
+  "ANVL_Hurricane": {
+   "mfr": "Anvil Aerospace",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/41d76881a5a0bb0ac3f6500a2ee18c661089f92d/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskGn8CGG5chJtVrZgvDP76ztQKVMaPHKiN)/source.webp",
+   "fy": "anvl-hurricane",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/hurricane/Hurricane"
+  },
+  "ANVL_Liberator": {
+   "mfr": "Anvil Aerospace",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/df6804227ef63bab4d1273dd729ed70b26a1d309/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjfC7s94cLpmdtoTVjPpssihH9CD2uwTqG)/source.webp",
+   "fy": "anvl-liberator",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/liberator/Liberator"
+  },
+  "ANVL_Paladin": {
+   "mfr": "Anvil Aerospace",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/8e8ccf69652bbd98c01d29a4028e4978919c1fee/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResee2dEjRP4VR3V37tM6e6iSziURZYpVtxN)/source.webp",
+   "fy": "anvl-paladin",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/paladin/Paladin"
+  },
+  "ANVL_Terrapin": {
+   "mfr": "Anvil Aerospace",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/e226b9dfb09a0db6118b9793e84d91f7c396ce6b/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResipCJvtQrx1nD2gTpcswfhjvPdK8qy1NUN)/source.webp",
+   "fy": "anvl-terrapin",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/terrapin/Terrapin"
+  },
+  "ANVL_Terrapin_Medic": {
+   "mfr": "Anvil Aerospace",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/aadfc2da19a89ba896cc52e26bb07bfcc1ae5189/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjHj8xR4rP6MGNoTFJM2eRJvjY1XGnBt9k)/source.webp",
+   "fy": "anvl-terrapin-medic",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/terrapin/Terrapin-Medic"
+  },
+  "ANVL_Valkyrie": {
+   "mfr": "Anvil Aerospace",
+   "src": null,
+   "img": null,
+   "fy": "anvl-valkyrie"
+  },
+  "XIAN_Scout": {
+   "mfr": null,
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/ae9dcbe03c30fbba78b1b90d9933894c54cd6986/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskvn8skBeKZhhvnJJ7SbDADp1YRPHK4jLS)/source.webp",
+   "fy": "xnaa-khartu-al",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/khartu/Khartu-Al"
+  },
+  "XIAN_Nox": {
+   "mfr": null,
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/77be8ac04eac10f2d96cbb48db56bff76a108c20/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResez6iKCpgqqXaiP49xWFzmKVJNb993smQJ)/source.webp",
+   "fy": "xnaa-nox",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/nox/Nox"
+  },
+  "XIAN_Nox_Kue": {
+   "mfr": null,
+   "src": null,
+   "img": null,
+   "fy": "xnaa-nox-kue"
+  },
+  "XNAA_SanTokYai": {
+   "mfr": "Aopoa",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/07f8b3fb66e8bf1fc56eed1e889c80510960b9ef/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReseYxnLDbRvYcbdtzQnz5YTiGVWt6gxEs8r)/source.webp",
+   "fy": "xnaa-san-tok-yai",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/aopoa-santokyai/Santoky-i"
+  },
+  "ARGO_MOLE": {
+   "mfr": "Argo Astronautics",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/09d0d3d126a43e1747e391213f50f1da3c39684b/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskeyuh2th2hpj2ey5zJ3ucQ9vcbaskWmxA)/source.webp",
+   "fy": "argo-mole",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/argo-mole/MOLE"
+  },
+  "ARGO_MOTH": {
+   "mfr": "Argo Astronautics",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/727f9141d6fb066fcecc44baafade227c430a57f/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResizo7zmGtBQxP3GqDdxi4jhpFuvLzU2iqC)/source.webp",
+   "fy": "argo-moth",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/moth/MOTH"
+  },
+  "ARGO_MPUV": {
+   "mfr": "Argo Astronautics",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/81e713f8e644c1e857f81447c80c99adb34aeb68/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskqS72thXJhruiyZdkAUXoWmCbfrFo9axn)/source.webp",
+   "fy": "argo-mpuv-cargo",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/argo/MPUV-Cargo"
+  },
+  "ARGO_MPUV_Transport": {
+   "mfr": "Argo Astronautics",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/a4531abec711e22d8da468f488c9f8cea63cbe42/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResj1m9L4rmH61jLubjuLTYqftH8J2JTVpsQ)/source.webp",
+   "fy": "argo-mpuv-personnel",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/argo/MPUV-Personnel"
+  },
+  "ARGO_MPUV_1T": {
+   "mfr": "Argo Astronautics",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/3efa976ce798a11fe92d75c28eb6e22ed863d15a/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskqfGEtBqch5Ac8LmFbX21URShPfQgHAna)/source.webp",
+   "fy": "argo-mpuv-tractor",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/argo/MPUV-Tractor"
+  },
+  "ARGO_RAFT": {
+   "mfr": "Argo Astronautics",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/331d7c983e19ac25dff367e870e8c924f239da17/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskjDVZ1oPzGecgpKE4TU2z95zVFTwWYAhk)/source.webp",
+   "fy": "argo-raft",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/raft/RAFT"
+  },
+  "ARGO_SRV": {
+   "mfr": "Argo Astronautics",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/1d508b10efc1d044d96c19c2120f7b55c09c1f10/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskvzMkR86na9QbqH7S5iyoVoKe6QYJ5fD8)/source.webp",
+   "fy": "argo-srv",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/argo-srv/SRV"
+  },
+  "BANU_Defender": {
+   "mfr": "Banu",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/517c98661fe71f5627dec6ff7fcaed61b0da2da3/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjqYDYeRY8q9ugefhioggnXHfpwouJVn3p)/source.webp",
+   "fy": "banu-defender",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/defender/Defender"
+  },
+  "CNOU_HoverQuad": {
+   "mfr": "Consolidated Outland",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/e3df0092087fa6d51c2a49da55dc76169d53ae42/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskqwnrzVEUwLuvjuAagqGwGWYcwadhu4jQ)/source.webp",
+   "fy": "cnou-hoverquad",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/hoverquad/HoverQuad"
+  },
+  "CNOU_Mustang_Alpha": {
+   "mfr": "Consolidated Outland",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/56e5d9360c19539d341a3b50a9a26c808daaf255/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjBFG9qk5KAVGU3wTFxrTvN1xmVan4nf7U)/source.webp",
+   "fy": "cnou-mustang-alpha",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/mustang/Mustang-Alpha"
+  },
+  "CNOU_Mustang_Beta": {
+   "mfr": "Consolidated Outland",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/350dbb5a00529914c2a50752b9e455000ab41e94/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjGdyC4SvNZEPGqps3S9SJexi4jB6ztz22)/source.webp",
+   "fy": "cnou-mustang-beta",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/mustang/Mustang-Beta"
+  },
+  "CNOU_Mustang_Delta": {
+   "mfr": "Consolidated Outland",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/3a0e3ce4ced9f3767ac5b51c74fdba79d99e7709/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResepafddG3GYsbfAVx7hbw9Xwjpyuw5z22a)/source.webp",
+   "fy": "cnou-mustang-delta",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/mustang/Mustang-Delta"
+  },
+  "CNOU_Mustang_Gamma": {
+   "mfr": "Consolidated Outland",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/2aea9e952009e457566cd38f1698e4864bdeed37/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReseBSrAv4osfDsR17X1NzWhg5MhDW1neGwx)/source.webp",
+   "fy": "cnou-mustang-gamma",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/mustang/Mustang-Gamma"
+  },
+  "CNOU_Mustang_Omega": {
+   "mfr": "Consolidated Outland",
+   "src": null,
+   "img": null,
+   "fy": "cnou-mustang-omega"
+  },
+  "CNOU_Nomad": {
+   "mfr": "Consolidated Outland",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/98e79e8d66280cfbd42ed67c81edfc759a79ec83/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjP6uiDaGZDAiDD1wpjtMms52A8twLXjMQ)/source.webp",
+   "fy": "cnou-nomad",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/nomad/Nomad"
+  },
+  "CRUS_Spirit_A1": {
+   "mfr": "Crusader Industries",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/a4a1c63711e1757d6cd71312d2b969902eff38a5/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjqeH5Syrkjvs1ARQzHr1K5xByXfMTgZrN)/source.webp",
+   "fy": "crus-a1-spirit",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/spirit/A1-Spirit"
+  },
+  "CRUS_Starlifter_A2": {
+   "mfr": "Crusader Industries",
+   "src": null,
+   "img": null,
+   "fy": "crus-a2-hercules"
+  },
+  "CRUS_Starfighter_Inferno": {
+   "mfr": "Crusader Industries",
+   "src": null,
+   "img": null,
+   "fy": "crus-ares-inferno"
+  },
+  "CRUS_Starfighter_Ion": {
+   "mfr": "Crusader Industries",
+   "src": null,
+   "img": null,
+   "fy": "crus-ares-ion"
+  },
+  "CRUS_Spirit_C1": {
+   "mfr": "Crusader Industries",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/bac6648185eab3ca89a9b859d6092c81fe337587/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjfBqExzNdjFYFntDZSQvoviQmVRUrSXUz)/source.webp",
+   "fy": "crus-c1-spirit",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/spirit/C1-Spirit"
+  },
+  "CRUS_Starlifter_C2": {
+   "mfr": "Crusader Industries",
+   "src": null,
+   "img": null,
+   "fy": "crus-c2-hercules"
+  },
+  "CRUS_Intrepid": {
+   "mfr": "Crusader Industries",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/f40c300182f77dd980ab6afd98e60fd5392495c2/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReseTjyXQamnTyUNx1E4Cd8m3Qux8Q6gA2mL)/source.webp",
+   "fy": "crus-intrepid",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/intrepid/Intrepid"
+  },
+  "CRUS_Starlifter_M2": {
+   "mfr": "Crusader Industries",
+   "src": null,
+   "img": null,
+   "fy": "crus-m2-hercules"
+  },
+  "CRUS_Star_Runner": {
+   "mfr": "Crusader Industries",
+   "src": null,
+   "img": null,
+   "fy": "crus-mercury-star-runner"
+  },
+  "DRAK_Buccaneer": {
+   "mfr": "Drake Interplanetary",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/ce397ce5177b61e3c698eac1667c7982fc0333a0/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResezCh7hqEM1ouaaszB9mDc2C9vpC1wGmhp)/source.webp",
+   "fy": "drak-buccaneer",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/drake-buccaneer/Buccaneer"
+  },
+  "DRAK_Caterpillar": {
+   "mfr": "Drake Interplanetary",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/5d38be418f6393b3a97d5341ddf6dcc866f92048/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReseBYkxomy2F5nsE4C5GSarCBzaijFs8Gdk)/source.webp",
+   "fy": "drak-caterpillar",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/drake-caterpillar/Caterpillar"
+  },
+  "DRAK_Clipper": {
+   "mfr": "Drake Interplanetary",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/0a1dfa00589e8928d43a75fc69f10cdaba212ae3/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskdzBZyYCJeJt12AGHtbTGJ4EVBTfcuJLe)/source.webp",
+   "fy": "drak-clipper",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/clipper/Clipper"
+  },
+  "DRAK_Command_Module": {
+   "mfr": "Drake Interplanetary",
+   "src": null,
+   "img": null
+  },
+  "DRAK_Corsair": {
+   "mfr": "Drake Interplanetary",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/f254322de966a6c59fa992181e8fb0cd9922f597/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResf1XMP49iifJEdNC1Y2F1c43JdmfwrQHre)/source.webp",
+   "fy": "drak-corsair",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/drake-corsair/Corsair"
+  },
+  "DRAK_Cutlass_Black": {
+   "mfr": "Drake Interplanetary",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/23b7d89ec0b391d6ed79e7169c133ecbce5153b3/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReseczedehU6DiyGVBJrQEkLAao6v8XpwcvS)/source.webp",
+   "fy": "drak-cutlass-black",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/drake-cutlass/Cutlass-Black"
+  },
+  "DRAK_Cutlass_Blue": {
+   "mfr": "Drake Interplanetary",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/9b80c3b6ee3520252d93a03a5d62d37dd67db76c/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReseNAXvbPq3dAF8iYwuSZSHMTy24T75fkeA)/source.webp",
+   "fy": "drak-cutlass-blue",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/drake-cutlass/Cutlass-Blue"
+  },
+  "DRAK_Cutlass_Red": {
+   "mfr": "Drake Interplanetary",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/fac734628c93a3bc5163570403de8d6008b22439/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskfBtT1vzYFaw6fbz4Ly8762W5tPFVNwTc)/source.webp",
+   "fy": "drak-cutlass-red",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/drake-cutlass/Cutlass-Red"
+  },
+  "DRAK_Cutlass_Steel": {
+   "mfr": "Drake Interplanetary",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/61ac64d9c5804064a47bd94e0550ab1499b3cb26/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjk8SgXwmm29ZdPPy1wDcMYUbd9Bq6m2W2)/source.webp",
+   "fy": "drak-cutlass-steel",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/drake-cutlass/Cutlass-Steel"
+  },
+  "DRAK_Cutter": {
+   "mfr": "Drake Interplanetary",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/0394ab32c1b435db8eec143ff91ae468f1af4c20/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResj5ym2DKsq5cBCWrdebV79wxvB4CrVzUzi)/source.webp",
+   "fy": "drak-cutter",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/cutter/Cutter"
+  },
+  "DRAK_Cutter_Rambler": {
+   "mfr": "Drake Interplanetary",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/b9bc6bb3312e830db0bef2a729917a915668c5b1/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResepw8aT4Fei7123y9mJC4z9zyacUBP5Snr)/source.webp",
+   "fy": "drak-cutter-rambler",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/cutter/Cutter-Rambler"
+  },
+  "DRAK_Cutter_Scout": {
+   "mfr": "Drake Interplanetary",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/857bf4b03b55d8c6caf5dfdf0aaad8f7a990572e/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResezCiG492YM3jcP1NHchGCbHDScAAMrK82)/source.webp",
+   "fy": "drak-cutter-scout",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/cutter/Cutter-Scout"
+  },
+  "DRAK_Dragonfly": {
+   "mfr": "Drake Interplanetary",
+   "src": null,
+   "img": null,
+   "fy": "drak-dragonfly-black"
+  },
+  "DRAK_Golem": {
+   "mfr": "Drake Interplanetary",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/9a1744357e6a391c84bcc9e214bc73de9b5b8539/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskqx8QbDKyKvq57QLarN7q9v5Jm4q5hBWn)/source.webp",
+   "fy": "drak-golem",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/golem/Golem"
+  },
+  "DRAK_Golem_OX": {
+   "mfr": "Drake Interplanetary",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/9d691bd124472c3fa415e32ea09c44613de87952/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskvvn85TqHb5e13wJvTuggwxw45XVqmdZx)/source.webp",
+   "fy": "drak-golem-ox",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/golem/Golem-OX"
+  },
+  "DRAK_Herald": {
+   "mfr": "Drake Interplanetary",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/8632c51efb3ab9c8fdc2cddef7ab0eeca8faaf49/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResj21mVS6o1YrzqWhXT7tPnLa7wSa8Z5Cr2)/source.webp",
+   "fy": "drak-herald",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/herald/Herald"
+  },
+  "DRAK_Ironclad": {
+   "mfr": "Drake Interplanetary",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/79c2890918f2e461d5efdb5163601adb41ae9798/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjBRnDkC8Kj8kBx7gMqyTifAKL11mBV28n)/source.webp",
+   "fy": "drak-ironclad",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/ironclad/Ironclad"
+  },
+  "DRAK_Ironclad_Assault": {
+   "mfr": "Drake Interplanetary",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/172de807df1bf74970c20598551cee089cc62834/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjevU14S3KdkuyAVKx5Q3ogZ3ZYNvZsqzE)/source.webp",
+   "fy": "drak-ironclad-assault",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/ironclad/Ironclad-Assault"
+  },
+  "DRAK_Marauder": {
+   "mfr": "Drake Interplanetary",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/cd24842e4dc484fc40537f1bffab9637d0df279f/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskwEiEdYN6XMaZt7LnRjmz53SawsAVAkzi)/source.webp",
+   "fy": "drak-marauder",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/marauder/Marauder"
+  },
+  "DRAK_Mule": {
+   "mfr": "Drake Interplanetary",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/2ba95c78be656fd8f4c16b64c0367405f83fce82/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjZdarzsBbDcn1GYaeu1WNwbzqtAK8bU9C)/source.webp",
+   "fy": "drak-mule",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/mule/Mule"
+  },
+  "DRAK_Pitbull": {
+   "mfr": "Drake Interplanetary",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/cf4ab5f90eb2490242e6a8670b22fc2144292292/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResf1DcG12iRoYRPjpwhoiJMRNPTw3ti3ZH8)/source.webp",
+   "fy": "drak-pitbull",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/pitbull/Pitbull"
+  },
+  "DRAK_Vulture": {
+   "mfr": "Drake Interplanetary",
+   "src": null,
+   "img": null,
+   "fy": "drak-vulture"
+  },
+  "VNCL_Blade": {
+   "mfr": "Vanduul",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/b04d825a1a9581f6aed49a82c9993b9cc4bec858/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReseBp7yuysMv26jp9p5LodLWy2NVMYvDzpn)/source.webp",
+   "fy": "espr-blade",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/vanduul-blade/Blade"
+  },
+  "VNCL_Glaive": {
+   "mfr": "Vanduul",
+   "src": null,
+   "img": null,
+   "fy": "espr-glaive"
+  },
+  "ESPR_Prowler": {
+   "mfr": "Esperia",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/7f3bf5d9149c8b966011e50998a8efdf19acb583/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjNqLCYXQvhiupHum3Mu6UnYgMrvnMPs8z)/source.webp",
+   "fy": "espr-prowler",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/prowler/Prowler"
+  },
+  "ESPR_Prowler_Utility": {
+   "mfr": "Esperia",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/2955623dbe8739f5d423ad6cd327b400001303c9/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjPJqkqGhW28TSCZajqTSMx4cEmBCqXx3g)/source.webp",
+   "fy": "espr-prowler-utility",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/prowler/Prowler-Utility"
+  },
+  "ESPR_Talon": {
+   "mfr": "Esperia",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/b65ccb7e424a05c2f0f2fc1a5c488a9cdeeb43f9/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResee7KFjLApo7TLv6HYPxWKPfdQBFRWWScW)/source.webp",
+   "fy": "espr-talon",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/talon/Talon"
+  },
+  "ESPR_Talon_Shrike": {
+   "mfr": "Esperia",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/f15eeab670096bb3d2b00bfbe7cbae21c633ddcb/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskP6himk2e2VKuzMZPqXMRLUttTqURu3Ca)/source.webp",
+   "fy": "espr-talon-shrike",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/talon/Talon-Shrike"
+  },
+  "GAMA_Railen": {
+   "mfr": "Gatac Manufacture",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/814fff8c9d31e1cf93ba5efcf80613b48ee17d11/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReseTTD86BH2Gw4skew2DH3pUqVeAkxazv2a)/source.webp",
+   "fy": "gama-railen",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/railen/Railen"
+  },
+  "GAMA_Syulen": {
+   "mfr": "Gatac Manufacture",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/11c4dccf824516cd0fd1231fc1dc25169ddfb1e2/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResevDjh8NbxfyAnM6defNpFEAzcGPsCoH9x)/source.webp",
+   "fy": "gama-syulen",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/syulen/Syulen"
+  },
+  "GAMA_Tyilui": {
+   "mfr": "Gatac Manufacture",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/09b0a3491d5a1421486bf7240461baee182c9aa8/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResj7G3jRHM4erCJCZ7ARPLZhmgvxFifvJtn)/source.webp",
+   "fy": "gama-tyilui",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/tyilui/Tyilui"
+  },
+  "GLSN_Basher": {
+   "mfr": null,
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/0b9fe8e5f747566daf22edfd015122cb496ea3c0/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjGhFzCnTPqyCWJEeaDBNB3oWvoHiUuXfc)/source.webp",
+   "fy": "grey-basher",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/basher/Basher"
+  },
+  "GLSN_Shiv": {
+   "mfr": null,
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/83496eb7312353e165beff60ddab7e534950beee/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskfNjJxzLeJBQNwz8hZnHvXvcMscGngw4S)/source.webp",
+   "fy": "grey-shiv",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/shiv/Shiv"
+  },
+  "GRIN_PTV": {
+   "mfr": "Greycat Industrial",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/229633d3eb47dcb6f98174212101c3f5889f5c1b/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResejJxgowdjCH26GobvfhugVXpDwAgduSyt)/source.webp",
+   "fy": "grin-ptv",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/ptv/PTV"
+  },
+  "GRIN_ROC": {
+   "mfr": "Greycat Industrial",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/d61d296bca87d8ee1ec5f320e0a181b635eac966/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjZpg3TvUXzoPPWHyznxuewoEwZYPpvQLe)/source.webp",
+   "fy": "grin-roc",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/roc/ROC"
+  },
+  "GRIN_ROC_DS": {
+   "mfr": "Greycat Industrial",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/055eb7e8be37bbbe2762bdf80eed176f623245e1/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResf1KiRdFjoqLzFeGUNcHcx8G7544GVQBqg)/source.webp",
+   "fy": "grin-roc-ds",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/roc/ROC-DS"
+  },
+  "GRIN_STV": {
+   "mfr": "Greycat Industrial",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/83719471984714efdde559b6f9e936bcf86845ba/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskCv7m8TiAMkonNjPhXV8R6Hb67RxWnqo4)/source.webp",
+   "fy": "grin-stv",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/stv/STV"
+  },
+  "KRIG_L21_Wolf": {
+   "mfr": "Kruger Intergalactic",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/037324cea60c33e19a6c05ebbf85b97a124596e8/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResj21WaUxWbKR9SuaMi6kvW7goytjDLbo58)/source.webp",
+   "fy": "krig-l-21-wolf",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/wolf/L-21-Wolf"
+  },
+  "KRIG_L22_AlphaWolf": {
+   "mfr": "Kruger Intergalactic",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/deddca4440013e52e9db2df4806ad7ab9e7b4812/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResivS471eTgnjhZtB5WJnDZYBgSEvw8UDCJ)/source.webp",
+   "fy": "krig-l-22-alpha-wolf",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/wolf/L-22-Alpha-Wolf"
+  },
+  "KRIG_P52_Merlin": {
+   "mfr": "Kruger Intergalactic",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/8dececc4f3eb9aef6528e9787a901282df35efb9/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResivhwGVUftNgJ5wypSvobRWnKmXUmmce4E)/source.webp",
+   "fy": "krig-p-52-merlin",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/p52-merlin/P-52-Merlin"
+  },
+  "KRIG_P72_Archimedes": {
+   "mfr": "Kruger Intergalactic",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/c4136eb7b9a090dbd6417e2c7cef5b449cb7da85/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResev3uj33ZcSyfFgcyVdQoGyjUZdtCF4h4a)/source.webp",
+   "fy": "krig-p-72-archimedes",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/p72-archimedes/P-72-Archimedes"
+  },
+  "KRIG_S65_Stingray": {
+   "mfr": "Kruger Intergalactic",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/8eee5a24a3b6a24b534d8343d19178e080a6b9dc/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReseBmydRynzG69P9jdjWbkRG8UiSt8BLr6i)/source.webp",
+   "fy": "krig-s-65-stingray",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/s-65-stingray/S-65-Stingray"
+  },
+  "MISC_Fortune": {
+   "mfr": "MISC",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/9bef3b1724f71a08838f376b1fa96e5407ad62dc/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskpZqbdWXd8HG1RfFhL49HBbLmi7dh7Vee)/source.webp",
+   "fy": "misc-fortune",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/fortune/Fortune"
+  },
+  "MISC_Freelancer": {
+   "mfr": "MISC",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/eae94400f321ac79b60801b8f638b59b014596c0/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskumhWA6r5nzPt54RLffKr4yti7fDf58wp)/source.webp",
+   "fy": "misc-freelancer",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/misc-freelancer/Freelancer"
+  },
+  "MISC_Freelancer_DUR": {
+   "mfr": "MISC",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/49129d4e9916265c0325843551f8847756ce967e/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjHjQ9eeqVBo9t4wNhofoBkZk9Sug6dE8n)/source.webp",
+   "fy": "misc-freelancer-dur",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/misc-freelancer/Freelancer-DUR"
+  },
+  "MISC_Freelancer_MAX": {
+   "mfr": "MISC",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/c23c58b95e29c3f0ffb1c5173d5239aa5d807990/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjkUnT3YrmhSyyU6ENLFpx76knojsTnvj8)/source.webp",
+   "fy": "misc-freelancer-max",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/misc-freelancer/Freelancer-MAX"
+  },
+  "MISC_Freelancer_MIS": {
+   "mfr": "MISC",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/c51bfec4cc0e06835e221a7948ce37c0c7e4732b/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskqTKQ9TNTVk76eayuSkChr5ez3c36SSp6)/source.webp",
+   "fy": "misc-freelancer-mis",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/misc-freelancer/Freelancer-MIS"
+  },
+  "MISC_Hull_A": {
+   "mfr": "MISC",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/a9ba88708475a069e74c3ebd44840f1568730111/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReseTiWv14XfeGqkvh7qGGd8PsbT6CXSrQ9c)/source.webp",
+   "fy": "misc-hull-a",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/hull/Hull-A"
+  },
+  "MISC_Hull_B": {
+   "mfr": "MISC",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/99d96fdd7645655fe468d1e8abd8adee2f41d55a/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjYWtrqicNfAfeCx7Rw15U61TYsubvDxFG)/source.webp",
+   "fy": "misc-hull-b",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/hull/Hull-B"
+  },
+  "MISC_Hull_C": {
+   "mfr": "MISC",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/6e75777fcd9e8bcbae39dd3eb95a759f56a83331/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReseBmyghnVEmRQ1qGWVhGUthYBC5hxK5Cb8)/source.webp",
+   "fy": "misc-hull-c",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/hull/Hull-C"
+  },
+  "MISC_Prospector": {
+   "mfr": "MISC",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/2400ab1c3df122ca6fc1d885bd23534cee75e33f/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResepos4wbPX17Jsm7jZA9AnYMPMXZ1WqAyc)/source.webp",
+   "fy": "misc-prospector",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/misc-prospector/Prospector"
+  },
+  "MISC_Reliant": {
+   "mfr": "MISC",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/ea8fae7b43c8a7bb81b4eb5f64276dffb7b95a2f/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReseBjYH9QwVxcVgKCkZxHJedxrQx8RoML7Y)/source.webp",
+   "fy": "misc-reliant-kore",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/reliant/Reliant-Kore"
+  },
+  "MISC_Reliant_Mako": {
+   "mfr": "MISC",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/4fe83bc8bd0ca21b363933b7076f7ecad9e7dbff/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReseYhDYcqx9rCA8CHExTvxfzFUwTV8KX6aA)/source.webp",
+   "fy": "misc-reliant-mako",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/reliant/Reliant-Mako"
+  },
+  "MISC_Reliant_Sen": {
+   "mfr": "MISC",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/a0c8760ad893f497848212da9c6ef5cb961d5aee/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResivYNEWLCG5JLAJtqdn4Cb7S72x3g5YDhp)/source.webp",
+   "fy": "misc-reliant-sen",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/reliant/Reliant-Sen"
+  },
+  "MISC_Reliant_Tana": {
+   "mfr": "MISC",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/ac002421bd885da62fee1a11ebfe83462d109d9a/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskui898hucVaGeAWgdEYuL85w4WovbbF9G)/source.webp",
+   "fy": "misc-reliant-tana",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/reliant/Reliant-Tana"
+  },
+  "MISC_Starfarer": {
+   "mfr": "MISC",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/d7cca35b46beb48d4aa013980371233603508c4c/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskeuE137p6bgGaeFYoGULZMUFr7x7b2ztE)/source.webp",
+   "fy": "misc-starfarer",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/misc-starfarer/Starfarer"
+  },
+  "MISC_Starfarer_Gemini": {
+   "mfr": "MISC",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/e1e68c92930b8985842f5296f437a725430badab/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResipDV185foxRnreqU2TUBknDwpWfUB7q6N)/source.webp",
+   "fy": "misc-starfarer-gemini",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/misc-starfarer/Starfarer-Gemini"
+  },
+  "MISC_Starlancer_Max": {
+   "mfr": "MISC",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/70bd03150fd18ccdd3a90791aedd912e00f48aee/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResipCJwypqKtuy2Y6vsjsgLF8i1vVmY9EVC)/source.webp",
+   "fy": "misc-starlancer-max",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/starlancer/Starlancer-MAX"
+  },
+  "MISC_Starlancer_TAC": {
+   "mfr": "MISC",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/800c29a211e6ec9ac5ae9573cc867bbe312f8470/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResj1w3KASs6Cf5fSBCJYkGF9z5AWrGMdiWJ)/source.webp",
+   "fy": "misc-starlancer-tac",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/starlancer/Starlancer-TAC"
+  },
+  "MISC_Starlite": {
+   "mfr": "MISC",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/4b55d090cff9c6187184a8b61dc85f5920dcb800/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResejDD8DR6RJg56rg7iLsnFCgXVsS6vHmTc)/source.webp",
+   "fy": "misc-starlite",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/starlite/Starlite"
+  },
+  "MISC_Fury": {
+   "mfr": "MISC",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/1aeead1c6c8a81986b915ea67f9dc113e5eb1cb1/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjNsitwktGuZ1F2jyemypwgMsPr4K8FxaJ)/source.webp",
+   "fy": "mrai-fury",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/fury/Fury"
+  },
+  "MISC_Fury_LX": {
+   "mfr": "MISC",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/a907809ebb4a81e050de8bc0cca43e28f2f04d09/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResipDUniadrxVqFV8Exc6F8gdxmNfxCBMqQ)/source.webp",
+   "fy": "mrai-fury-lx",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/fury/Fury-LX"
+  },
+  "MISC_Fury_Miru": {
+   "mfr": "MISC",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/8a355f968a9fb8a7a1561f09594de5a53bb520ef/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResiedrpVbiTc8HyRzgMr7wjGhHFaUNQBefx)/source.webp",
+   "fy": "mrai-fury-mx",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/fury/Fury-MX"
+  },
+  "MRAI_Guardian": {
+   "mfr": "Mirai",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/478b410c55f539921aa64243ac35830b4df781f8/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjNyeyi5nsV2JkpuiqKNKw4cqRkqD2mEox)/source.webp",
+   "fy": "mrai-guardian",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/guardian/Guardian"
+  },
+  "MRAI_Guardian_MX": {
+   "mfr": "Mirai",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/309b117069175079c3ffd10bdd2d049f3ec21109/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResizrRM5jTxuTFgo1xHQEuf9mLWkSATDWeJ)/source.webp",
+   "fy": "mrai-guardian-mx",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/guardian/Guardian-MX"
+  },
+  "MRAI_Guardian_QI": {
+   "mfr": "Mirai",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/2483ec23739aa394061b277527f6e3e7f5c5f9f7/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResj1ndf4manLs7oQb2QBDyvNe2nWg187tCW)/source.webp",
+   "fy": "mrai-guardian-qi",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/guardian/Guardian-QI"
+  },
+  "MRAI_Pulse": {
+   "mfr": "Mirai",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/9eee2b9ab23671035bcab7f3a050655a2c7ce66d/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskUYxVZhzfpkNjYHgySR3bPtREywmuoPXL)/source.webp",
+   "fy": "mrai-pulse",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/mirai-pulse/Pulse"
+  },
+  "MISC_Razor": {
+   "mfr": "MISC",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/05119ac86d6039b68c9c646f4818bbc4d22bb377/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskCv7hJjwnYXcXYGeFkG5AEgr5jvsY61hY)/source.webp",
+   "fy": "mrai-razor",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/razor/Razor"
+  },
+  "MISC_Razor_EX": {
+   "mfr": "MISC",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/bf2b52f15d4d9a58e95d3350a8e985e6ef456d5e/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResepoxDo1odgZbP1T6ityiJ87KEdH4JYGC6)/source.webp",
+   "fy": "mrai-razor-ex",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/razor/Razor-EX"
+  },
+  "MISC_Razor_LX": {
+   "mfr": "MISC",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/584ae93b7df23c90b8d1c8ac880b4c0acf7478c5/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjYZbU7YRbY39aKhXriPkhsMyLYc2GruWE)/source.webp",
+   "fy": "mrai-razor-lx",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/razor/Razor-LX"
+  },
+  "ORIG_100i": {
+   "mfr": "Origin Jumpworks",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/7f9004f2c94c4156d17c76945d93da1a9166f4cb/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjvfQvZTLBeqr7nxsoca56jsfVMy1KQ5YS)/source.webp",
+   "fy": "orig-100i",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/origin-100/100i"
+  },
+  "ORIG_125a": {
+   "mfr": "Origin Jumpworks",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/4edda30724031a5f9d8bd270d13f83e92814a058/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResizfriBj3nFqAvDHZZ7vuSG3tmn1HdLmoL)/source.webp",
+   "fy": "orig-125a",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/origin-100/125a"
+  },
+  "ORIG_135c": {
+   "mfr": "Origin Jumpworks",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/d82a70ea48ad88833fe5628c57d70b3b120c7940/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResj7MzgYTNGKKhv6Hd1NXeTyZyYemNiKSyt)/source.webp",
+   "fy": "orig-135c",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/origin-100/135c"
+  },
+  "ORIG_300i": {
+   "mfr": "Origin Jumpworks",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/83865eedb618a5d2b0cb32e517cf46e7349fb1d6/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReseTbcEcvfVXUA2L4LQquCBv3XRgSGhs5Zg)/source.webp",
+   "fy": "orig-300i",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/origin-300/300i"
+  },
+  "ORIG_315p": {
+   "mfr": "Origin Jumpworks",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/0c33cf326d2d140c2103355c1015a8c5cb638ec3/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskP39C2qja4a1SCcPpLtdNcx7BhDJFUZmx)/source.webp",
+   "fy": "orig-315p",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/origin-300/315p"
+  },
+  "ORIG_325a": {
+   "mfr": "Origin Jumpworks",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/5de627d4948ba4767cb81eff709a5c241ba9b1e9/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskJ23FWYyJEzadrDtKz87mfAEoQDHWvg2S)/source.webp",
+   "fy": "orig-325a",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/origin-300/325a"
+  },
+  "ORIG_350r": {
+   "mfr": "Origin Jumpworks",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/c53b0b87bd3e60484b0e2b5630dfdf99be81de11/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjqRzd4VcczH8KK3H3SAgsMrj6ExxrMpge)/source.webp",
+   "fy": "orig-350r",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/origin-300/350r"
+  },
+  "ORIG_400i": {
+   "mfr": "Origin Jumpworks",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/9d14626a2e20de191de73a4b3343b14141df9647/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskjDaVPsYfVMpaEXu82p8NG94e9gDqqSYW)/source.webp",
+   "fy": "orig-400i",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/400i/400i"
+  },
+  "ORIG_600i": {
+   "mfr": "Origin Jumpworks",
+   "src": null,
+   "img": null,
+   "fy": "orig-600i-explorer"
+  },
+  "ORIG_600i_Executive_Edition": {
+   "mfr": "Origin Jumpworks",
+   "src": null,
+   "img": null,
+   "fy": "orig-600i-executive-edition"
+  },
+  "ORIG_600i_Touring": {
+   "mfr": "Origin Jumpworks",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/34bd9cbbe87a33a675aa9dc003a93f3149eb9a3b/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReseiKhuNbUh3JWvLgcSm4Ly5DZPG3eT58cW)/source.webp",
+   "fy": "orig-600i-touring",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/600i/600i-Touring"
+  },
+  "ORIG_85X": {
+   "mfr": "Origin Jumpworks",
+   "src": null,
+   "img": null,
+   "fy": "orig-85x"
+  },
+  "ORIG_890Jump": {
+   "mfr": "Origin Jumpworks",
+   "src": null,
+   "img": null,
+   "fy": "orig-890-jump"
+  },
+  "ORIG_m50": {
+   "mfr": "Origin Jumpworks",
+   "src": null,
+   "img": null,
+   "fy": "orig-m50"
+  },
+  "ORIG_m80": {
+   "mfr": "Origin Jumpworks",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/cf696d91c715b0c5a8472f896a5bc17c6ddfb2af/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjqVqT85kcsZpHEV6eiFpyd6TUUKqDwvk6)/source.webp",
+   "fy": "orig-m80",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/m80/M80"
+  },
+  "ORIG_X1": {
+   "mfr": "Origin Jumpworks",
+   "src": null,
+   "img": null,
+   "fy": "orig-x1"
+  },
+  "RSI_Apollo_Medivac": {
+   "mfr": "Roberts Space Industries",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/baa6a8ec3521f6e6c6e4b45cf85a5f15cfb442f9/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskGqmqTJ5KSQvunQtqCc1bKDiTMYMHJ31x)/source.webp",
+   "fy": "rsi-apollo-medivac",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/rsi-apollo/Apollo-Medivac"
+  },
+  "RSI_Apollo_Triage": {
+   "mfr": "Roberts Space Industries",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/75e7620239879387759ede2122949589112d1d14/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReseGytXKJM7qV2ksMdJL29f5yVDK18S6uFt)/source.webp",
+   "fy": "rsi-apollo-triage",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/rsi-apollo/Apollo-Triage"
+  },
+  "RSI_Aurora_LX": {
+   "mfr": "Roberts Space Industries",
+   "src": null,
+   "img": null,
+   "fy": "rsi-aurora-mk-i-lx"
+  },
+  "RSI_Aurora_CL": {
+   "mfr": "Roberts Space Industries",
+   "src": null,
+   "img": null,
+   "fy": "rsi-aurora-mk-i-cl"
+  },
+  "RSI_Aurora_ES": {
+   "mfr": "Roberts Space Industries",
+   "src": null,
+   "img": null,
+   "fy": "rsi-aurora-mk-i-es"
+  },
+  "RSI_Aurora_LN": {
+   "mfr": "Roberts Space Industries",
+   "src": null,
+   "img": null,
+   "fy": "rsi-aurora-mk-i-ln"
+  },
+  "RSI_Aurora_MR": {
+   "mfr": "Roberts Space Industries",
+   "src": null,
+   "img": null,
+   "fy": "rsi-aurora-mk-i-mr"
+  },
+  "RSI_Aurora_GS_SE": {
+   "mfr": "Roberts Space Industries",
+   "src": null,
+   "img": null,
+   "fy": "rsi-aurora-mk-i-se"
+  },
+  "RSI_Aurora_Mk2": {
+   "mfr": "Roberts Space Industries",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/2977e4a9d9f3c907f9422c6264c2f78489b025e5/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskCZWkFFmT8GizYVjNCLrLANTnxxhrj9Qr)/source.webp",
+   "fy": "rsi-aurora-mk-ii",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/aurora-mk-ii/Aurora-Mk-II"
+  },
+  "RSI_Constellation_Andromeda": {
+   "mfr": "Roberts Space Industries",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/0fbfee17b2bae365cd5ab9e7d9441c1eb9b2196f/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskj9ttp7XXgtHcy38CS9NBZHAKXeVYNAKQ)/source.webp",
+   "fy": "rsi-constellation-mk-iv-andromeda",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/rsi-constellation/Constellation-Mk-IV-Andromeda"
+  },
+  "RSI_Constellation_Aquila": {
+   "mfr": "Roberts Space Industries",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/fcfd1ae05d35f21bd3fa6d72042d9f5744279dc2/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskTHwgUVJoAa33Yovz7yaSJ1DKCRaxmBoc)/source.webp",
+   "fy": "rsi-constellation-mk-iv-aquila",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/rsi-constellation/Constellation-Mk-IV-Aquila"
+  },
+  "RSI_Constellation_Phoenix": {
+   "mfr": "Roberts Space Industries",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/de12bc2d0869631061515afcb4d0faab4268c67b/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjUL2eASUiAi8vcmYQ2MGKTpPxWxMSR3Jv)/source.webp",
+   "fy": "rsi-constellation-mk-iv-phoenix",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/rsi-constellation/Constellation-Mk-IV-Phoenix"
+  },
+  "RSI_Constellation_Taurus": {
+   "mfr": "Roberts Space Industries",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/30976bbcf88aef9986e8eeebae4a208100b8088a/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjkS7XpkFPAkxxXZWS9prx9VUShxcyG3p2)/source.webp",
+   "fy": "rsi-constellation-mk-iv-taurus",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/rsi-constellation/Constellation-Mk-IV-Taurus"
+  },
+  "RSI_Constellation_Mk5_Centaurus": {
+   "mfr": "Roberts Space Industries",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/a687712ffe8e5f84db687a24326e7fa8431eaa37/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReseNTM6iYNW7UxgeT8qdJn43WmCM2S1RKKk)/source.webp",
+   "fy": "rsi-constellation-mk-v-centaurus",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/constellation-mk-v/Constellation-Mk-V-Centaurus"
+  },
+  "RSI_Galaxy": {
+   "mfr": "Roberts Space Industries",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/2a077dd2d8675f0c7dad2ef8f861dad6da1fc62f/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResijqXbycyoJkTahE9HzA6LeP5vvkkkvu5Q)/source.webp",
+   "fy": "rsi-galaxy",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/galaxy/Galaxy"
+  },
+  "RSI_Hermes": {
+   "mfr": "Roberts Space Industries",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/761fdbdce3185a8656d0bd68e7d52add8780728b/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjfAeaU4TWFf3CESU2jzn6jRiAFDA6vV6W)/source.webp",
+   "fy": "rsi-hermes",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/hermes/Hermes"
+  },
+  "RSI_Mantis": {
+   "mfr": "Roberts Space Industries",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/bae32e21338b5dd958fbf9b8ae516b8306c20d17/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjvhkJQG2Y479fwUAWMsuScdWNqgyWMtVt)/source.webp",
+   "fy": "rsi-mantis",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/rsi-mantis/Mantis"
+  },
+  "RSI_Meteor": {
+   "mfr": "Roberts Space Industries",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/7e690bc04bfb59a9d2ee0e6d5c28102fc9b12bbe/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskpRTAcUsSFGgN36fmGpUihpCzS388kP8r)/source.webp",
+   "fy": "rsi-meteor",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/rsi-meteor/Meteor"
+  },
+  "RSI_Perseus": {
+   "mfr": "Roberts Space Industries",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/78e2a9e7ea9067314be83fd9057949496b48c1c1/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReseHFRPfQtzPkgVSiq2SXDbBKM2vp5SvuoL)/source.webp",
+   "fy": "rsi-perseus",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/perseus/Perseus"
+  },
+  "RSI_Polaris": {
+   "mfr": "Roberts Space Industries",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/8ae451b8e7c2f23574df93fbac8a5dc94df688fb/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjvdsuj4E1TBxYPCwNKBaHDZUcJ54bNLc6)/source.webp",
+   "fy": "rsi-polaris",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/polaris/Polaris"
+  },
+  "RSI_Salvation": {
+   "mfr": "Roberts Space Industries",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/a0eb12e661ae1fe6ae7d2bba68d808b0e37fc4b4/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResepsDgaUQ5J3cukigDedHMktGzghD5k3Ev)/source.webp",
+   "fy": "rsi-salvation",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/salvation/Salvation"
+  },
+  "RSI_Scorpius": {
+   "mfr": "Roberts Space Industries",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/3e91bdb7e1292eb7d8f07b87073b616f6c08355d/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResepsDwQ9u3J1woX35mi3qGoXbvfB38svXg)/source.webp",
+   "fy": "rsi-scorpius",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/scorpius/Scorpius"
+  },
+  "RSI_Scorpius_Antares": {
+   "mfr": "Roberts Space Industries",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/086a250b405bd1cda9ca40831a0ead40d38c48c7/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjNrErHqkcicxt9k7X9SsCAMJUprHF2BQ2)/source.webp",
+   "fy": "rsi-scorpius-antares",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/scorpius/Scorpius-Antares"
+  },
+  "RSI_Skylark": {
+   "mfr": "Roberts Space Industries",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/fb8d3913088cc4a8ceaef8cabc703855f8b1db0e/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReseBWTQeKrGpaCBQxBoUdbb3mPhCZRor73L)/source.webp",
+   "fy": "rsi-skylark",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/skylark/Skylark"
+  },
+  "RSI_Ursa_Rover": {
+   "mfr": "Roberts Space Industries",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/1baa93c6a56786b022de6b46c1a8c33fa36da6b6/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReseM3uUcugp2674rcRWSAagpPVa9SbEyUCE)/source.webp",
+   "fy": "rsi-ursa",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/ursa/Ursa"
+  },
+  "RSI_Zeus_CL": {
+   "mfr": "Roberts Space Industries",
+   "src": null,
+   "img": null,
+   "fy": "rsi-zeus-mk-ii-cl"
+  },
+  "RSI_Zeus_ES": {
+   "mfr": "Roberts Space Industries",
+   "src": null,
+   "img": null,
+   "fy": "rsi-zeus-mk-ii-es"
+  },
+  "TMBL_Cyclone": {
+   "mfr": "Tumbril",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/90ee2ba95dfca0184aa3a1aa948db503dd2174f8/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskZg8zCsGLYa78po64VaYqfsbxjnkciD9p)/source.webp",
+   "fy": "tmbl-cyclone",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/cyclone/Cyclone"
+  },
+  "TMBL_Cyclone_AA": {
+   "mfr": "Tumbril",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/8076b3936abd56c5909191a8f450287f63fa22c4/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResf1QQPcJ8reL5taVHdPd12jHTinHiBkZLa)/source.webp",
+   "fy": "tmbl-cyclone-aa",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/cyclone/Cyclone-AA"
+  },
+  "TMBL_Cyclone_MT": {
+   "mfr": "Tumbril",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/e078279a4adc38c2427c14aa8b6b599232a03bd9/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReska4sF4Jmjthby3oaWfcGp3RAXZ2sXnnfG)/source.webp",
+   "fy": "tmbl-cyclone-mt",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/cyclone/Cyclone-MT"
+  },
+  "TMBL_Cyclone_RC": {
+   "mfr": "Tumbril",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/1d773625ba8047879f39f6dbac1d2d3c80466877/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResepucMVaYKd2nZAKmJ9a9UQ9PC9TKzeEeS)/source.webp",
+   "fy": "tmbl-cyclone-rc",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/cyclone/Cyclone-RC"
+  },
+  "TMBL_Cyclone_RN": {
+   "mfr": "Tumbril",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/34660754908d54903e9a25325d181f248c1a67d7/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResf17RScbHmhZMW5NVt2e2sixTQaHNZYva2)/source.webp",
+   "fy": "tmbl-cyclone-rn",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/cyclone/Cyclone-RN"
+  },
+  "TMBL_Cyclone_TR": {
+   "mfr": "Tumbril",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/2cd0f0ef302a104e9049f8580ecc6247295a82f6/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjHeMX4KQtubs1ft9UxmncipirctWZtmSv)/source.webp",
+   "fy": "tmbl-cyclone-tr",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/cyclone/Cyclone-TR"
+  },
+  "TMBL_Nova": {
+   "mfr": "Tumbril",
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/2db9fbed233bbd51205c211f1598543a1137e302/resize(1820,1024,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReseiLgxb3pQ5gbyGvNcvnTjqpEMtxrbTXzv)/source.webp",
+   "fy": "tmbl-nova",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/nova-tank/Nova"
+  },
+  "VNCL_Scythe": {
+   "mfr": "Vanduul",
+   "src": null,
+   "img": null,
+   "fy": "vncl-scythe"
+  }
+ }
+}
