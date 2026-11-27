@@ -366,6 +366,7 @@
     }
     renderSlots();
     updateStats();
+    if (window.deltaSetBaseline) window.deltaSetBaseline('서버 피팅: ' + (fit.name || fit.ship_slug)); // 변화량 비교 기준 = 불러온 피팅
     setStatus("서버 피팅 불러옴 — " + fit.ship_slug);
   }
 

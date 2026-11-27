@@ -5,11 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SC Fitting Sim — Star Citizen 함선 피팅 시뮬레이터</title>
 <style>
-:root{--bg:#0b0f14;--panel:#131a23;--line:#233041;--txt:#d7e1ec;--dim:#8aa0b4;--acc:#4cc2ff;--warn:#ffb454;--bad:#ff6b6b;--ok:#51d88a}
+:root{--bg:#0b0f14;--panel:#131a23;--line:#233041;--txt:#d7e1ec;--dim:#8aa0b4;--acc:#4cc2ff;--warn:#ffb454;--bad:#ff6b6b;--ok:#51d88a;--down:#5aa9ff}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:-apple-system,system-ui,"Noto Sans KR",sans-serif;font-size:14px}
 header{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 header h1{font-size:17px;margin:0}header small{color:var(--dim)}
-main{display:grid;grid-template-columns:340px minmax(0,1fr);gap:12px;padding:12px;max-width:1280px;margin:0 auto}
+.main-nav{display:flex;gap:6px}
+.main-nav button{font-size:13px;padding:7px 14px;font-weight:700}
+.main-nav button.active{background:#12314a;color:var(--acc);border-color:var(--acc)}
+main{display:grid;grid-template-columns:340px minmax(0,1fr);gap:12px;padding:12px;max-width:1760px;margin:0 auto}
+#fittingView{align-items:start}
+#fittingView[hidden]{display:none}
+.col-left{display:flex;flex-direction:column;gap:12px;min-width:0;position:sticky;top:12px;max-height:calc(100vh - 24px);overflow-y:auto;scrollbar-width:thin}
+.col-right{display:flex;flex-direction:column;gap:12px;min-width:0}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px}
 .panel h2{font-size:13px;margin:0 0 8px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
 select,input{width:100%;background:#0e141c;color:var(--txt);border:1px solid var(--line);border-radius:6px;padding:6px 7px;font-size:12px}
@@ -60,7 +67,6 @@ button.on:hover{background:#134d2e}
 .auth-msg{font-size:11px;color:var(--bad);flex-basis:100%}
 @media(max-width:600px){.slot .meta{flex-basis:105px}}
 main>*{min-width:0}.stat{min-width:0;overflow-wrap:anywhere}
-@media(max-width:860px){main{grid-template-columns:minmax(0,1fr)}}
 .ship-btn{width:100%;font-size:14px;padding:9px}
 .ship-cur{margin-top:8px;font-size:12px;color:var(--txt);background:#0e141c;border:1px solid var(--line);border-radius:8px;padding:8px 10px;line-height:1.5}
 .modal-ov{position:fixed;inset:0;background:rgba(4,8,13,.72);backdrop-filter:blur(3px);z-index:50;display:flex;align-items:center;justify-content:center;padding:16px}
@@ -91,7 +97,6 @@ main>*{min-width:0}.stat{min-width:0;overflow-wrap:anywhere}
 .comp-row .nm{font-size:12px;font-weight:600;line-height:1.4}.comp-row .mt{font-size:11px;color:var(--dim);margin-top:2px}
 .comp-btn{flex:1;min-width:0;text-align:left;background:#0e141c;border:1px solid var(--line);color:var(--txt);border-radius:6px;padding:6px 8px;font-size:12px;cursor:pointer;line-height:1.4}
 .comp-btn:hover{border-color:var(--acc)}.comp-btn .ph{color:var(--dim)}
-@media(max-width:860px){.modal{max-height:90vh}}
 
 /* 최적 피팅 템플릿 / 구매처 */
 .fit-dim{color:var(--dim);font-size:11px}
@@ -119,16 +124,95 @@ main>*{min-width:0}.stat{min-width:0;overflow-wrap:anywhere}
 .fit-lock{margin-top:10px;padding:10px 12px;border:1px solid #2b4560;border-radius:10px;background:rgba(80,150,220,.07)}.fit-lock-h{font-weight:700;margin-bottom:2px}.chip.lk.on{background:#d9a441;color:#1a1200;border-color:#d9a441;font-weight:700}
 .pin-box{margin-top:8px}.pin-box summary{cursor:pointer;padding:8px 10px;border-radius:8px;background:rgba(217,164,65,.12);border:1px solid #6b5420}.pin-list{max-height:240px;overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px}.pin-row{display:flex;gap:8px;align-items:center;text-align:left;padding:6px 8px;border-radius:8px;border:1px solid #2b4560;background:transparent;color:inherit;font:inherit;font-size:12px;cursor:pointer}.pin-row.on{background:#d9a441;color:#1a1200;border-color:#d9a441}.pin-row.on .fit-dim{color:#3b2c00}
 .patch-panel{margin-top:12px;padding:10px;border:1px solid #2b4560;border-radius:8px;font-size:12px;line-height:1.6;overflow-wrap:anywhere}.patch-panel summary{cursor:pointer;color:var(--acc);font-weight:600}.patch-panel p{margin:7px 0}.patch-panel a{color:var(--acc)}
+
+/* 변화량 표시 (기획안 1): 오름 ▲ 빨강 / 내림 ▼ 파랑, 좋고 나쁨과 무관하게 방향 고정 */
+.delta-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:11px;color:var(--dim);background:#0e141c;border:1px solid var(--line);border-radius:8px;padding:6px 9px;margin-bottom:8px}
+.delta-bar b{color:var(--txt)}
+.delta-reset{padding:2px 8px;font-size:11px}
+.dlt{font-size:11px;font-weight:700;margin-left:4px;white-space:nowrap}
+.k .dlt{margin-left:2px}
+.dlt.up{color:var(--bad)}.dlt.down{color:var(--down)}
+.stat.d-up{border-color:rgba(255,107,107,.6);box-shadow:0 0 0 1px rgba(255,107,107,.22)}
+.stat.d-down{border-color:rgba(90,169,255,.6);box-shadow:0 0 0 1px rgba(90,169,255,.22)}
+
+/* 모바일 섹션 탭 (기획안 6-1): 요약·전력·무장·시스템·구매 */
+#mtabbar{display:none;gap:4px;padding:8px 12px;background:var(--bg);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;overflow-x:auto}
+#mtabbar button{flex:1 0 auto;font-size:12px;padding:7px 8px;white-space:nowrap}
+#mtabbar button.active{background:#12314a;color:var(--acc);border-color:var(--acc);font-weight:700}
+@media(max-width:860px){
+  main{grid-template-columns:minmax(0,1fr)}
+  #fittingView{align-items:stretch}
+  .col-left{position:static;max-height:none;overflow:visible}
+  #mtabbar{display:flex}
+  #fittingView [data-mtab]{display:none}
+  #fittingView [data-mtab].mtab-on{display:block}
+  .modal{max-height:90vh}
+}
+
+/* 스타도감 (기획안 3·4) */
+#codexView{display:block;max-width:1760px}
+#codexView[hidden]{display:none}
+.cx-head{padding:12px 12px 0}
+.cx-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.cx-filters{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.cx-filters input{flex:1 1 180px;min-width:0}
+.cx-filters select{flex:0 1 auto;width:auto;min-width:110px}
+#cxBody{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:12px;padding:12px;align-items:start}
+#cxGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;min-width:0}
+.cx-card{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;color:var(--txt);text-align:left;display:flex;flex-direction:column;gap:6px;transition:border-color .12s}
+.cx-card:hover{border-color:var(--acc)}
+.cx-card.sel{border-color:var(--acc);background:#101b28}
+.cx-card .cx-top{display:flex;justify-content:space-between;align-items:flex-start;gap:6px}
+.cx-sz{background:#0e141c;border:1px solid var(--line);border-radius:4px;padding:1px 6px;font-size:10px;color:var(--acc);font-weight:700}
+.cx-gr{font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;border:1px solid var(--line);background:#0e141c}
+.cx-gr.A{color:#4cc2ff;border-color:#1e4a6e}.cx-gr.B{color:#51d88a;border-color:#1e6e42}.cx-gr.C{color:#ffb454;border-color:#6e5a1e}.cx-gr.D{color:#ff6b6b;border-color:#6e1e1e}
+.cx-name{font-size:13px;font-weight:700;line-height:1.35}
+.cx-mfr{font-size:10px;color:var(--dim)}
+.cx-sub{font-size:11px;color:var(--dim);line-height:1.45}
+.cx-bars{display:flex;flex-direction:column;gap:4px;margin-top:2px}
+.cx-bar-row{display:grid;grid-template-columns:64px minmax(0,1fr) 64px;gap:6px;align-items:center;font-size:10px;color:var(--dim)}
+.cx-bar-row .v{text-align:right;color:var(--txt);font-variant-numeric:tabular-nums}
+.cx-bar{height:5px;background:#0e141c;border-radius:3px;overflow:hidden}
+.cx-bar i{display:block;height:100%;background:var(--acc);border-radius:3px}
+#cxDetail{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow-y:auto;min-width:0}
+#cxDetail h3{margin:0 0 4px;font-size:15px}
+#cxDetail .cx-d-sub{font-size:11px;color:var(--dim);margin-bottom:8px}
+.cx-d-table{width:100%;border-collapse:collapse;font-size:12px}
+.cx-d-table td{padding:5px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+.cx-d-table td:first-child{color:var(--dim);width:38%;white-space:nowrap}
+.cx-fit-btn{width:100%;margin-top:10px;padding:10px;font-size:14px;font-weight:700}
+.cx-shop{margin-top:8px;font-size:12px;line-height:1.6}
+.cx-shop .pr{color:var(--warn);white-space:nowrap}
+.cx-empty{color:var(--dim);font-size:12px;padding:18px;text-align:center;grid-column:1/-1}
+.cx-close{display:none}
+@media(max-width:860px){
+  #cxBody{grid-template-columns:minmax(0,1fr);padding:8px}
+  #cxGrid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+  #cxDetail{position:fixed;left:0;right:0;bottom:0;top:auto;max-height:72vh;z-index:45;border-radius:14px 14px 0 0;box-shadow:0 -12px 40px rgba(0,0,0,.55);display:none}
+  #cxDetail.open{display:block}
+  .cx-close{display:inline-block;margin-left:auto}
+}
 </style>
 </head>
 <body>
 <header>
 <h1>🚀 SC Fitting Sim</h1><small>Star Citizen 함선 피팅 시뮬레이터 (MVP · 데이터: scunpacked + FleetYards)</small>
+<nav class="main-nav" id="mainNav">
+  <button data-view="fitting" class="active">함선피팅</button>
+  <button data-view="codex">스타도감</button>
+</nav>
 <div id="authArea" class="auth-area"></div>
 </header>
-<main>
-<div>
-  <div class="panel">
+<div id="mtabbar">
+  <button data-mtab="summary" class="active">요약</button>
+  <button data-mtab="power">전력</button>
+  <button data-mtab="weapons">무장</button>
+  <button data-mtab="systems">시스템</button>
+  <button data-mtab="shop">구매</button>
+</div>
+<main id="fittingView">
+<div class="col-left">
+  <div class="panel" data-mtab="summary">
     <h2>함선 선택</h2>
     <button id="shipBtn" class="ship-btn">🚀 함선 선택</button>
     <div id="shipCur" class="ship-cur">함선을 선택하세요.</div>
@@ -136,7 +220,7 @@ main>*{min-width:0}.stat{min-width:0;overflow-wrap:anywhere}
     <div id="status">DB 로딩 중…</div>
     <details id="patchPanel" class="patch-panel"><summary id="patchSummary">패치 정보 확인 중…</summary><div id="patchInfo"></div></details>
   </div>
-  <div class="panel" style="margin-top:12px">
+  <div class="panel" data-mtab="summary">
     <h2>최적 피팅 템플릿</h2>
     <button id="fitBtn" class="fit-btn" disabled>🎯 취향별 추천 피팅 (전투·스텔스·이동…)</button>
     <button id="fitUndo" style="display:none;width:100%;margin-top:6px">↩︎ 추천 적용 되돌리기</button>
@@ -144,7 +228,7 @@ main>*{min-width:0}.stat{min-width:0;overflow-wrap:anywhere}
     <div class="sec-h">내 템플릿 (이 함선)</div>
     <div id="tplPanel"></div>
   </div>
-  <div class="panel" style="margin-top:12px">
+  <div class="panel" data-mtab="summary">
     <h2>빌드 관리</h2>
     <div class="row">
       <button id="saveBtn">💾 저장</button>
@@ -161,10 +245,9 @@ main>*{min-width:0}.stat{min-width:0;overflow-wrap:anywhere}
     <input id="browseSearch" placeholder="이름·함선 검색" style="width:100%;font-size:12px;margin-bottom:4px">
     <div id="browseList"></div>
   </div>
-</div>
-<div>
-  <div class="panel">
+  <div class="panel" data-mtab="summary">
     <h2>요약</h2>
+    <div class="delta-bar" id="deltaBar">비교 기준: <b id="deltaBaseName">스톡</b><button id="deltaReset" class="delta-reset" title="지금 화면의 수치를 새 비교 기준으로 저장">기준 다시 잡기</button><span>오름 ▲ 빨강 · 내림 ▼ 파랑</span></div>
     <div class="stats" id="stats"></div>
     <div class="sec-h">🛡️ 실드 실효 탱킹 (지연 기반)</div>
     <div class="stats" id="shieldTank"></div>
@@ -174,31 +257,45 @@ main>*{min-width:0}.stat{min-width:0;overflow-wrap:anywhere}
     <div class="stats" id="sigPanel"></div>
     <div id="powerBar" style="margin-top:8px"></div>
   </div>
-  <div class="panel" style="margin-top:12px">
+</div>
+<div class="col-right">
+  <div class="panel" data-mtab="power">
     <h2>⚡ PWR 패널 — 전력 관리 <span style="font-size:11px;color:var(--acc);font-weight:400">비행 모드 기준</span></h2>
-    <div style="font-size:11px;color:var(--dim);margin-bottom:6px">계통 핍 블럭 — 칸 클릭=<b>그 칸까지 배분</b>(아래부터), 같은 칸 재클릭=1핍 감소, 아이콘=계통 전체 ON·OFF<br><span style="color:var(--acc)">핍 = 게임 실제값</span> — 비행 모드 기준(퀀텀 드라이브는 게임 데이터상 두 모드 모두 세그먼트 집계 없음 → 컬럼 제외, 양자항행 정보는 아래 스탯에 유지) · 추진·생명유지·유틸은 함선 고정 세그먼트값 · 실드는 함선 풀 상한까지 · 복수 파워플랜트는 게임 결합식 · 쿨러는 슬롯마다 개별 컬럼 · 미사일은 전력 계통 없음</div>
+    <div style="font-size:11px;color:var(--dim);margin-bottom:6px">계통 핍 블럭 — 칸 클릭=<b>그 칸까지 배분</b>(아래부터), 같은 칸 재클릭=1핍 감소, 아이콘=계통 전체 ON·OFF<br><span style="color:var(--acc)">핍 = 게임 실제값</span> — 비행 모드 기준(퀀텀 드라이브는 게임 데이터상 두 모드 모두 세그먼트 집계 없음 → 컬럼 제외, 양자항행 정보는 요약 스탯에 유지) · 추진·생명유지·유틸은 함선 고정 세그먼트값 · 실드는 함선 풀 상한까지 · 복수 파워플랜트는 게임 결합식 · 쿨러는 슬롯마다 개별 컬럼 · 미사일은 전력 계통 없음</div>
     <div id="pwrBlocks"></div>
+    <div id="pwrTotalBar" style="margin-top:8px"></div>
   </div>
-  <div class="panel" style="margin-top:12px">
+  <div class="panel" data-mtab="weapons">
     <h2>무장 슬롯</h2>
     <div id="weaponSlots"><p style="color:var(--dim)">함선을 선택하세요.</p></div>
   </div>
-  <div class="panel" style="margin-top:12px">
+  <div class="panel" data-mtab="systems">
     <h2>시스템 컴포넌트</h2>
     <div id="sysSlots"></div>
   </div>
-  <div class="panel" style="margin-top:12px">
+  <div class="panel" data-mtab="shop">
     <h2>🛒 구매 목록 — 스톡에서 바꾼 부품을 파는 곳</h2>
     <div id="shopPanel"><div class="fit-dim">함선을 선택하세요.</div></div>
   </div>
 </div>
 </main>
+<main id="codexView" hidden>
+  <div class="cx-head">
+    <div class="cx-tabs" id="cxTabs"></div>
+    <div class="cx-filters" id="cxFilters"></div>
+  </div>
+  <div id="cxBody">
+    <div id="cxGrid"></div>
+    <div id="cxDetail" class="panel"></div>
+  </div>
+</main>
 <div id="modalRoot"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="config.js?v=1"></script>
 <script src="auth.js?v=1"></script>
-<script src="app.js?v=147"></script>
+<script src="app.js?v=148"></script>
 <script src="fit.js?v=11"></script>
-<script src="cloud.js?v=4"></script>
+<script src="cloud.js?v=5"></script>
+<script src="codex.js?v=1"></script>
 </body>
 </html>

@@ -60,6 +60,31 @@ async function init() {
   $('shipBtn').addEventListener('click', openShipModal);
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
   $('saveBtn').onclick = saveBuild; $('loadBtn').onclick = loadBuild; $('resetBtn').onclick = resetBuild;
+  // 변화량 기준 다시 잡기 (기획안 1)
+  const dr = $('deltaReset'); if (dr) dr.onclick = () => deltaSetBaseline('현재 화면');
+  // 상단 대메뉴 함선피팅/스타도감 (기획안 2) + 모바일 섹션 탭 (기획안 6-1)
+  document.querySelectorAll('#mainNav button').forEach(b => b.onclick = () => switchView(b.dataset.view));
+  document.querySelectorAll('#mtabbar button').forEach(b => b.onclick = () => setMtab(b.dataset.mtab));
+  window.addEventListener('hashchange', () => switchView(location.hash === '#codex' ? 'codex' : 'fitting', true));
+  setMtab('summary');
+  const hasFitLink = !!new URLSearchParams(location.search).get('fit');
+  switchView(hasFitLink ? 'fitting' : (location.hash === '#codex' ? 'codex' : 'fitting'), true);
+}
+
+// 대메뉴 전환: 같은 페이지 안에서 #fitting / #codex 해시 유지. ?fit= 링크는 함선피팅으로 연다.
+function switchView(view, fromHash) {
+  const v = view === 'codex' ? 'codex' : 'fitting';
+  $('fittingView').hidden = v !== 'fitting';
+  $('codexView').hidden = v !== 'codex';
+  const mt = $('mtabbar'); if (mt) mt.style.display = v === 'fitting' ? '' : 'none';
+  document.querySelectorAll('#mainNav button').forEach(b => b.classList.toggle('active', b.dataset.view === v));
+  if (!fromHash && (('#' + v) !== location.hash)) history.pushState(null, '', '#' + v);
+  if (v === 'codex' && window.codexShow) window.codexShow();
+}
+window.switchView = switchView;
+function setMtab(tab) {
+  document.querySelectorAll('#mtabbar button').forEach(b => b.classList.toggle('active', b.dataset.mtab === tab));
+  document.querySelectorAll('#fittingView [data-mtab]').forEach(p => p.classList.toggle('mtab-on', p.dataset.mtab === tab));
 }
 
 async function loadPatchStatus() {
@@ -258,6 +283,7 @@ function renderShipList(ships) {
 async function selectShip(slug) {
   curShip = slug;
   build = {};
+  deltaBase = null; // 함선 전환 중에는 이전 함선 기준 변화량이 섞이지 않게 지운다
   pwr.segOff = {}; pwr.grpOff = {}; pwr.coolerSegs = {}; pwr.coolerOff = {}; // 함선 변경 시 핍 배분 리셋
   
   // Load ship slots from local snapshot
@@ -281,6 +307,7 @@ async function selectShip(slug) {
   if (_s) $('shipCur').innerHTML = shipCurHTML(_s);
   renderSlots();
   updateStats();
+  deltaSetBaseline('스톡'); // 불러온 피팅이 없으면 스톡이 비교 기준
 }
 
 function slotKind(h) {
@@ -994,7 +1021,7 @@ function renderPwrBlocks() {
       capTxt = `<div class="pwr-w capline" data-cap="1" style="color:var(--acc);cursor:pointer" title="무기 캐패시터: 에너지 무기 출력 비율 ${pct}% (선택 ${pu}/${pool.size}핍). 줄 클릭=그 위치까지 풀 배분">🔋 ${pu}/${pool.size} · ${pct}%</div>`;
     }
     const useTxt = noData ? '<div class="pwr-w">—</div>'
-      : `<div class="pwr-w use-line">${off ? 'OFF' : units + '/' + maxU + '핍'}</div>`;
+      : `<div class="pwr-w use-line">${off ? 'OFF' : units + '/' + maxU + '핍'}<span class="dlt" data-delta="grp_${g.id}"></span></div>`;
     const sub = `<div class="pwr-w">${off ? '' : fmt(pg.power) + 'p'}</div>` + spvTxt + stockTxt + capTxt;
     const tip = noData
       ? `${g.label}: 이 함선에 해당 슬롯이 없거나 전력 데이터가 게임 덤프에 없음`
@@ -1012,7 +1039,7 @@ function renderPwrBlocks() {
     const maxU = cc.maxUnits;
     // OFF 쿨러도 핍 칸 유지: 전체 칸을 회색(grp-off)으로 채운다.
     const blocks = pipCells(maxU, off ? maxU : units, off ? ' grp-off' : '');
-    const useTxt = `<div class="pwr-w use-line">${off ? 'OFF' : units + '/' + maxU + '핍'}</div>`;
+    const useTxt = `<div class="pwr-w use-line">${off ? 'OFF' : units + '/' + maxU + '핍'}<span class="dlt" data-delta="cool_${cc.slotId}"></span></div>`;
     const draw = maxU > 0 ? cc.pwRaw * units / maxU : 0;
     const cqn = qnSpv(off ? 0 : units, cc.pranges);
     const cspv = units * cqn;
@@ -1028,6 +1055,14 @@ function renderPwrBlocks() {
   }).join('');
 
   $('pwrBlocks').innerHTML = famCols + coolerCols;
+  // 하단 사용/가용 핍 합계 막대 (기획안 6-1) — 왼쪽 요약 열의 전력 막대와 별개로 PWR 패널에도 표시
+  const tb = $('pwrTotalBar');
+  if (tb) {
+    const tpct = f.avail > 0 ? Math.min(100, f.power / f.avail * 100) : 0;
+    tb.innerHTML = f.avail > 0
+      ? `<div style="font-size:11px" class="${f.short > 0 ? 'bad' : tpct > 85 ? 'warn' : 'ok'}">사용 ${fmt(f.power)} / 가용 ${fmt(f.avail)}핍 (${tpct.toFixed(0)}%)${f.short > 0 ? ` — ⚠️ ${fmt(f.short)}핍 부족` : ''}</div><div class="bar"><i style="width:${tpct}%;background:${f.short > 0 ? 'var(--bad)' : tpct > 85 ? 'var(--warn)' : 'var(--ok)'}"></i></div>`
+      : '';
+  }
   document.querySelectorAll('.pwr-col').forEach(el => {
     el.addEventListener('click', e => {
       const grp = el.dataset.grp;
@@ -1124,9 +1159,9 @@ function renderShieldTank(f) {
     const sustain = avg > 0 ? f.regen / avg : f.regen;
     const bypass = (1 - avg) * 100;
     const rng = a.min !== a.max ? ` <span style="color:var(--dim)">(${(a.min*100).toFixed(0)}~${(a.max*100).toFixed(0)}%)</span>` : '';
-    rows.push(`<div class="stat"><div class="v">${fmt(effHP)}</div>`
-      + `<div class="k">${t} 실효HP · 흡수 ${(avg*100).toFixed(0)}%${rng} · 관통 ${bypass.toFixed(0)}%</div>`
-      + `<div class="k" style="margin-top:2px">지속 흡수 ${fmt(sustain)} DPS</div></div>`);
+    rows.push(`<div class="stat"><div class="v">${fmt(effHP)}<span class="dlt" data-delta="shp_${t}"></span></div>`
+      + `<div class="k">${t} 실효HP · 흡수 ${(avg*100).toFixed(0)}%<span class="dlt" data-delta="sha_${t}"></span>${rng} · 관통 ${bypass.toFixed(0)}%</div>`
+      + `<div class="k" style="margin-top:2px">지속 흡수 ${fmt(sustain)} DPS<span class="dlt" data-delta="shs_${t}"></span></div></div>`);
   }
   el.innerHTML = rows.join('')
     + `<div style="font-size:11px;color:var(--dim);margin-top:6px;grid-column:1/-1">`
@@ -1163,7 +1198,7 @@ function renderMissiles(f) {
   if (!f.mslCount) { el.innerHTML = '<div style="font-size:12px;color:var(--dim)">미사일 랙 없음</div>'; return; }
   const r = f.mslRep || {};
   const by = Object.entries(f.mslBy || {}).map(([k, v]) => `${k} ${fmt(v)}`).join(' · ');
-  el.innerHTML = `<div class="stat"><div class="v">${fmt(f.mslDmg)}</div>`
+  el.innerHTML = `<div class="stat"><div class="v">${fmt(f.mslDmg)}<span class="dlt" data-delta="mslDmg"></span></div>`
     + `<div class="k">미사일 총 피해 (추정 · ${f.mslCount}발)</div>`
     + `<div class="k" style="margin-top:2px">${by || '—'}</div></div>`
     + (r && r.name ? `<div style="font-size:11px;color:var(--dim);margin-top:6px;grid-column:1/-1">`
@@ -1171,6 +1206,68 @@ function renderMissiles(f) {
       + ` · 속도 ${r.speed ? fmt(r.speed) + 'm/s' : '—'}`
       + ` · 사거리 ${r.rangeMax ? fmt(r.rangeMax) + 'm' : '—'}</div>` : '');
 }
+
+// ---- 변화량 표시 (2026-11-27 기획안 1) ----
+// 기준: 피팅을 불러온 순간의 요약값. 불러온 피팅 없이 함선만 고르면 스톡값.
+// 오름 ▲ 빨강 / 내림 ▼ 파랑 (좋고 나쁨과 무관하게 방향 고정, 변화 없으면 표시 안 함).
+// 양(DPS·핍·HP)은 절대값 차이, %인 값(흡수율·양자 속도 %c)은 %p 차이만 표시.
+let deltaBase = null; // {label, m:{key:{v,pct}}}
+function metricSnapshot(f) {
+  const m = {};
+  const put = (k, v, pct) => { if (v != null && isFinite(v)) m[k] = { v, pct: !!pct }; };
+  put('dps', f.dps); put('dpsBurst', f.dpsBurst || 0); put('alpha', f.alpha);
+  put('power', f.power); put('avail', f.avail); put('cooling', f.cooling);
+  put('hp', f.hp); put('regen', f.regen);
+  put('qdspeedPct', f.qdspeed ? f.qdspeed / 299792458 * 100 : null, true);
+  const qdc = f.qd || null;
+  const qspd = qdc ? (qdc.driveSpeed || qdc.speed || 0) : 0;
+  put('qdT10', qdc ? (qdc.t10gm != null ? qdc.t10gm : (qspd > 0 ? 1e10 / qspd : null)) : null);
+  for (const t of ['Physical', 'Energy', 'Distortion']) {
+    const a = f.shieldAbs && f.shieldAbs[t];
+    if (a && a.n) {
+      const avg = a.sum / a.n;
+      put('shp_' + t, avg > 0 ? f.hp / avg : f.hp);
+      put('shs_' + t, avg > 0 ? f.regen / avg : f.regen);
+      put('sha_' + t, avg * 100, true);
+    }
+  }
+  put('mslDmg', f.mslDmg || 0);
+  for (const gid of Object.keys(f.perGroup || {})) put('grp_' + gid, f.perGroup[gid].units);
+  for (const cc of (f.perCooler || [])) put('cool_' + cc.slotId, cc.units);
+  const ship = (DB.ships || []).find(x => (x.slug === curShip || x.class === curShip)) || {};
+  put('emTotal', ship.emTotal); put('irTotal', ship.irTotal);
+  return m;
+}
+function renderDeltas(f) {
+  const cur = metricSnapshot(f);
+  document.querySelectorAll('#fittingView [data-delta]').forEach(el => {
+    const c = cur[el.dataset.delta];
+    const b = deltaBase && deltaBase.m[el.dataset.delta];
+    let html = '', dir = '';
+    if (c && b) {
+      const diff = c.v - b.v;
+      if (Math.abs(diff) >= 0.05) {
+        const up = diff > 0; dir = up ? 'up' : 'down';
+        const num = c.pct ? Math.abs(diff).toFixed(1) + '%p' : fmt(Math.abs(diff));
+        html = ` ${up ? '▲' : '▼'} ${up ? '+' : '−'}${num}`;
+      }
+    }
+    el.textContent = html;
+    el.classList.remove('up', 'down');
+    if (dir) el.classList.add(dir);
+    const card = el.closest('.stat');
+    if (card) { card.classList.remove('d-up', 'd-down'); if (dir) card.classList.add(dir === 'up' ? 'd-up' : 'd-down'); }
+  });
+  const lbl = $('deltaBaseName');
+  if (lbl) lbl.textContent = deltaBase ? deltaBase.label : '—';
+}
+function deltaSetBaseline(label) {
+  if (!DB || !curShip) { deltaBase = null; return; }
+  const f = fitStats();
+  deltaBase = { label, m: metricSnapshot(f) };
+  renderDeltas(f);
+}
+window.deltaSetBaseline = deltaSetBaseline;
 
 function updateStats() {
   const f = fitStats();
@@ -1186,17 +1283,18 @@ function updateStats() {
   const pcls = f.short > 0 ? 'bad' : pct > 85 ? 'warn' : 'ok';
   // Legacy thermal-energy draw and current coolant units are not comparable.
   $('stats').innerHTML = `
-    <div class="stat"><div class="v">${fmt(f.dps)}</div><div class="k">${f.hasSustain ? '지속 DPS (주기 모델) · 버스트 ' + fmt(f.dpsBurst || 0) : '총 DPS'} · α ${fmt(f.alpha)} (${f.guns.length}문)</div><div class="k" style="margin-top:2px">${typeLine}</div>${FY.some(h => h.category === 'special_weapon') ? '<div class="k" style="color:var(--warn)">특수 빔 제외 · 무장 슬롯의 안내 확인</div>' : ''}</div>
-    <div class="stat"><div class="v">${fmt(f.power)} / ${fmt(f.avail)}</div><div class="k">전력 소모 / 가용 핍 (발전 ${fmt(f.output)}핍)</div></div>
-    <div class="stat"><div class="v">${fmt(f.cooling)}</div><div class="k">냉각 자원 출력 (과열 판정 아님)</div></div>
-    <div class="stat"><div class="v">${fmt(f.hp)}</div><div class="k">실드 HP 합계</div></div>
-    <div class="stat"><div class="v">${fmt(f.regen)}/s</div><div class="k">실드 재생/s</div></div>
-    <div class="stat"><div class="v">${f.qdspeed ? (f.qdspeed / 299792458 * 100).toFixed(1) + '% c' : '—'}</div><div class="k">양자항행 속도</div></div>
-    <div class="stat"><div class="v">${qdLine(f).v}</div><div class="k">${qdLine(f).k}</div></div>`;
+    <div class="stat"><div class="v">${fmt(f.dps)}<span class="dlt" data-delta="dps"></span></div><div class="k">${f.hasSustain ? '지속 DPS (주기 모델) · 버스트 ' + fmt(f.dpsBurst || 0) : '총 DPS'}<span class="dlt" data-delta="dpsBurst"></span> · α ${fmt(f.alpha)}<span class="dlt" data-delta="alpha"></span> (${f.guns.length}문)</div><div class="k" style="margin-top:2px">${typeLine}</div>${FY.some(h => h.category === 'special_weapon') ? '<div class="k" style="color:var(--warn)">특수 빔 제외 · 무장 슬롯의 안내 확인</div>' : ''}</div>
+    <div class="stat"><div class="v">${fmt(f.power)}<span class="dlt" data-delta="power"></span> / ${fmt(f.avail)}<span class="dlt" data-delta="avail"></span></div><div class="k">전력 소모 / 가용 핍 (발전 ${fmt(f.output)}핍)</div></div>
+    <div class="stat"><div class="v">${fmt(f.cooling)}<span class="dlt" data-delta="cooling"></span></div><div class="k">냉각 자원 출력 (과열 판정 아님)</div></div>
+    <div class="stat"><div class="v">${fmt(f.hp)}<span class="dlt" data-delta="hp"></span></div><div class="k">실드 HP 합계</div></div>
+    <div class="stat"><div class="v">${fmt(f.regen)}/s<span class="dlt" data-delta="regen"></span></div><div class="k">실드 재생/s</div></div>
+    <div class="stat"><div class="v">${f.qdspeed ? (f.qdspeed / 299792458 * 100).toFixed(1) + '% c' : '—'}<span class="dlt" data-delta="qdspeedPct"></span></div><div class="k">양자항행 속도</div></div>
+    <div class="stat"><div class="v">${qdLine(f).v}<span class="dlt" data-delta="qdT10"></span></div><div class="k">${qdLine(f).k}</div></div>`;
   $('powerBar').innerHTML = (f.avail > 0
     ? `<div style="font-size:12px" class="${pcls}">전력 사용률 ${pct.toFixed(0)}%${f.short > 0 ? ` ⚠️ ${fmt(f.short)}핍 부족 — 핍 블럭을 끄세요` : ''}</div><div class="bar"><i style="width:${Math.min(100, pct)}%;background:${f.short > 0 ? 'var(--bad)' : pct > 85 ? 'var(--warn)' : 'var(--ok)'}"></i></div>`
     : '<div style="font-size:12px;color:var(--dim)">파워플랜트를 장착하세요</div>')
     + '<div style="font-size:12px;color:var(--dim);margin-top:6px">열 부하율 미검증: 구 열 데이터와 현 냉각 자원은 단위가 달라 비교하지 않습니다.</div>';
+  renderDeltas(f);
 
 }
 
@@ -1208,9 +1306,9 @@ function renderSig() {
   if (!ship.class) { el.innerHTML = '<div style="font-size:12px;color:var(--dim)">함선을 선택하세요</div>'; return; }
   const rows = [];
   if (ship.emTotal != null)
-    rows.push(`<div class="stat"><div class="v">${fmt(ship.emTotal)}</div><div class="k">EM 총합 (스톡 · QD시 ${fmt(ship.emQuantum)})</div></div>`);
+    rows.push(`<div class="stat"><div class="v">${fmt(ship.emTotal)}<span class="dlt" data-delta="emTotal"></span></div><div class="k">EM 총합 (스톡 · QD시 ${fmt(ship.emQuantum)})</div></div>`);
   if (ship.irTotal != null)
-    rows.push(`<div class="stat"><div class="v">${fmt(ship.irTotal)}</div><div class="k">IR 총합 (스톡)</div></div>`);
+    rows.push(`<div class="stat"><div class="v">${fmt(ship.irTotal)}<span class="dlt" data-delta="irTotal"></span></div><div class="k">IR 총합 (스톡)</div></div>`);
   if (ship.emGroups) {
     const top = Object.entries(ship.emGroups).sort((a, b) => b[1] - a[1]).slice(0, 3)
       .map(([k, v]) => `${k} ${fmt(v)}`).join(' · ');
@@ -1302,6 +1400,7 @@ function loadBuild() {
   }
   renderSlots();
   updateStats();
+  deltaSetBaseline('불러온 피팅');
   $('saveStatus').textContent = '불러옴 — ' + ship;
 }
 function resetBuild() {
