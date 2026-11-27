@@ -65,6 +65,14 @@ async function init() {
   // 상단 대메뉴 함선피팅/스타도감 (기획안 2) + 모바일 섹션 탭 (기획안 6-1)
   document.querySelectorAll('#mainNav button').forEach(b => b.onclick = () => switchView(b.dataset.view));
   document.querySelectorAll('#mtabbar button').forEach(b => b.onclick = () => setMtab(b.dataset.mtab));
+  // 모바일 하단 탭바 (기획안 6): 피팅/도감 전환 + 저장/최적 바로가기
+  document.querySelectorAll('#mbbar button').forEach(b => b.onclick = () => {
+    const k = b.dataset.mb;
+    if (k === 'fitting' || k === 'codex') { switchView(k); return; }
+    switchView('fitting');
+    if (k === 'save') $('saveBtn').click();
+    else if (k === 'opt') $('fitBtn').click();
+  });
   window.addEventListener('hashchange', () => switchView(location.hash === '#codex' ? 'codex' : 'fitting', true));
   setMtab('summary');
   const hasFitLink = !!new URLSearchParams(location.search).get('fit');
@@ -77,7 +85,9 @@ function switchView(view, fromHash) {
   $('fittingView').hidden = v !== 'fitting';
   $('codexView').hidden = v !== 'codex';
   const mt = $('mtabbar'); if (mt) mt.style.display = v === 'fitting' ? '' : 'none';
+  const mst = $('mstats'); if (mst) mst.style.display = v === 'fitting' ? '' : 'none';
   document.querySelectorAll('#mainNav button').forEach(b => b.classList.toggle('active', b.dataset.view === v));
+  document.querySelectorAll('#mbbar button').forEach(b => b.classList.toggle('active', b.dataset.mb === v));
   if (!fromHash && (('#' + v) !== location.hash)) history.pushState(null, '', '#' + v);
   if (v === 'codex' && window.codexShow) window.codexShow();
 }
@@ -1240,7 +1250,7 @@ function metricSnapshot(f) {
 }
 function renderDeltas(f) {
   const cur = metricSnapshot(f);
-  document.querySelectorAll('#fittingView [data-delta]').forEach(el => {
+  document.querySelectorAll('[data-delta]').forEach(el => {
     const c = cur[el.dataset.delta];
     const b = deltaBase && deltaBase.m[el.dataset.delta];
     let html = '', dir = '';
@@ -1294,6 +1304,12 @@ function updateStats() {
     ? `<div style="font-size:12px" class="${pcls}">전력 사용률 ${pct.toFixed(0)}%${f.short > 0 ? ` ⚠️ ${fmt(f.short)}핍 부족 — 핍 블럭을 끄세요` : ''}</div><div class="bar"><i style="width:${Math.min(100, pct)}%;background:${f.short > 0 ? 'var(--bad)' : pct > 85 ? 'var(--warn)' : 'var(--ok)'}"></i></div>`
     : '<div style="font-size:12px;color:var(--dim)">파워플랜트를 장착하세요</div>')
     + '<div style="font-size:12px;color:var(--dim);margin-top:6px">열 부하율 미검증: 구 열 데이터와 현 냉각 자원은 단위가 달라 비교하지 않습니다.</div>';
+  // 모바일 고정 요약 3종 (기획안 6): 지속 DPS·실드 HP 크게 + 전력 핍 막대. 전력 탭 변경을 바로 반영(6-1).
+  const mst = $('mstats');
+  if (mst) mst.innerHTML = `
+    <div class="ms"><div class="k">지속 DPS</div><div class="v">${fmt(f.dps)}<span class="dlt" data-delta="dps"></span></div></div>
+    <div class="ms"><div class="k">실드 HP</div><div class="v">${fmt(f.hp)}<span class="dlt" data-delta="hp"></span></div></div>
+    <div class="ms"><div class="k">전력 핍</div><div class="v">${fmt(f.power)}<span class="dlt" data-delta="power"></span> / ${fmt(f.avail)}</div><div class="bar" style="margin-top:3px"><i style="width:${Math.min(100, pct)}%;background:${f.short > 0 ? 'var(--bad)' : pct > 85 ? 'var(--warn)' : 'var(--ok)'}"></i></div></div>`;
   renderDeltas(f);
 
 }

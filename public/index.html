@@ -135,17 +135,29 @@ main>*{min-width:0}.stat{min-width:0;overflow-wrap:anywhere}
 .stat.d-up{border-color:rgba(255,107,107,.6);box-shadow:0 0 0 1px rgba(255,107,107,.22)}
 .stat.d-down{border-color:rgba(90,169,255,.6);box-shadow:0 0 0 1px rgba(90,169,255,.22)}
 
-/* 모바일 섹션 탭 (기획안 6-1): 요약·전력·무장·시스템·구매 */
-#mtabbar{display:none;gap:4px;padding:8px 12px;background:var(--bg);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;overflow-x:auto}
+/* 모바일: 고정 요약 3종(기획안 6) + 섹션 탭(6-1) + 하단 탭바(피팅/도감/저장/최적) */
+#msticky{display:contents}
+#mstats{display:none}
+#mtabbar{display:none;gap:4px;padding:8px 12px;background:var(--bg);border-bottom:1px solid var(--line);overflow-x:auto}
 #mtabbar button{flex:1 0 auto;font-size:12px;padding:7px 8px;white-space:nowrap}
 #mtabbar button.active{background:#12314a;color:var(--acc);border-color:var(--acc);font-weight:700}
+#mbbar{display:none}
 @media(max-width:860px){
   main{grid-template-columns:minmax(0,1fr)}
   #fittingView{align-items:stretch}
   .col-left{position:static;max-height:none;overflow:visible}
+  #msticky{display:block;position:sticky;top:0;z-index:21;background:var(--bg)}
+  #mstats{display:grid;grid-template-columns:1fr 1fr 1.3fr;gap:6px;padding:6px 12px;border-bottom:1px solid var(--line)}
+  #mstats .ms{background:#0e141c;border:1px solid var(--line);border-radius:8px;padding:4px 8px;min-width:0}
+  #mstats .ms .k{font-size:10px;color:var(--dim)}
+  #mstats .ms .v{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   #mtabbar{display:flex}
   #fittingView [data-mtab]{display:none}
   #fittingView [data-mtab].mtab-on{display:block}
+  #mbbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--bg);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom));gap:6px}
+  #mbbar button{flex:1;font-size:12px;padding:9px 4px;white-space:nowrap}
+  #mbbar button.active{background:#12314a;color:var(--acc);border-color:var(--acc);font-weight:700}
+  body{padding-bottom:58px}
   .modal{max-height:90vh}
 }
 
@@ -158,7 +170,7 @@ main>*{min-width:0}.stat{min-width:0;overflow-wrap:anywhere}
 .cx-filters input{flex:1 1 180px;min-width:0}
 .cx-filters select{flex:0 1 auto;width:auto;min-width:110px}
 #cxBody{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:12px;padding:12px;align-items:start}
-#cxGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;min-width:0}
+#cxGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;min-width:0}
 .cx-card{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;color:var(--txt);text-align:left;display:flex;flex-direction:column;gap:6px;transition:border-color .12s}
 .cx-card:hover{border-color:var(--acc)}
 .cx-card.sel{border-color:var(--acc);background:#101b28}
@@ -203,12 +215,19 @@ main>*{min-width:0}.stat{min-width:0;overflow-wrap:anywhere}
 </nav>
 <div id="authArea" class="auth-area"></div>
 </header>
+<div id="msticky">
+<div id="mstats">
+  <div class="ms"><div class="k">지속 DPS</div><div class="v">—</div></div>
+  <div class="ms"><div class="k">실드 HP</div><div class="v">—</div></div>
+  <div class="ms"><div class="k">전력 핍</div><div class="v">—</div></div>
+</div>
 <div id="mtabbar">
   <button data-mtab="summary" class="active">요약</button>
   <button data-mtab="power">전력</button>
   <button data-mtab="weapons">무장</button>
   <button data-mtab="systems">시스템</button>
   <button data-mtab="shop">구매</button>
+</div>
 </div>
 <main id="fittingView">
 <div class="col-left">
@@ -219,6 +238,18 @@ main>*{min-width:0}.stat{min-width:0;overflow-wrap:anywhere}
     <select id="shipSel" style="display:none"></select>
     <div id="status">DB 로딩 중…</div>
     <details id="patchPanel" class="patch-panel"><summary id="patchSummary">패치 정보 확인 중…</summary><div id="patchInfo"></div></details>
+  </div>
+  <div class="panel" data-mtab="summary">
+    <h2>요약</h2>
+    <div class="delta-bar" id="deltaBar">비교 기준: <b id="deltaBaseName">스톡</b><button id="deltaReset" class="delta-reset" title="지금 화면의 수치를 새 비교 기준으로 저장">기준 다시 잡기</button><span>오름 ▲ 빨강 · 내림 ▼ 파랑</span></div>
+    <div class="stats" id="stats"></div>
+    <div class="sec-h">🛡️ 실드 실효 탱킹 (지연 기반)</div>
+    <div class="stats" id="shieldTank"></div>
+    <div class="sec-h">🚀 미사일 합산 (Erkul fn — 랙 capacity × 대표 미사일 추정)</div>
+    <div class="stats" id="mslPanel"></div>
+    <div class="sec-h">📡 시그니처 · 기동 (게임 덤프 스톡값)</div>
+    <div class="stats" id="sigPanel"></div>
+    <div id="powerBar" style="margin-top:8px"></div>
   </div>
   <div class="panel" data-mtab="summary">
     <h2>최적 피팅 템플릿</h2>
@@ -244,18 +275,6 @@ main>*{min-width:0}.stat{min-width:0;overflow-wrap:anywhere}
     <div class="sec-h" style="margin-top:14px">피팅 둘러보기</div>
     <input id="browseSearch" placeholder="이름·함선 검색" style="width:100%;font-size:12px;margin-bottom:4px">
     <div id="browseList"></div>
-  </div>
-  <div class="panel" data-mtab="summary">
-    <h2>요약</h2>
-    <div class="delta-bar" id="deltaBar">비교 기준: <b id="deltaBaseName">스톡</b><button id="deltaReset" class="delta-reset" title="지금 화면의 수치를 새 비교 기준으로 저장">기준 다시 잡기</button><span>오름 ▲ 빨강 · 내림 ▼ 파랑</span></div>
-    <div class="stats" id="stats"></div>
-    <div class="sec-h">🛡️ 실드 실효 탱킹 (지연 기반)</div>
-    <div class="stats" id="shieldTank"></div>
-    <div class="sec-h">🚀 미사일 합산 (Erkul fn — 랙 capacity × 대표 미사일 추정)</div>
-    <div class="stats" id="mslPanel"></div>
-    <div class="sec-h">📡 시그니처 · 기동 (게임 덤프 스톡값)</div>
-    <div class="stats" id="sigPanel"></div>
-    <div id="powerBar" style="margin-top:8px"></div>
   </div>
 </div>
 <div class="col-right">
@@ -289,13 +308,19 @@ main>*{min-width:0}.stat{min-width:0;overflow-wrap:anywhere}
     <div id="cxDetail" class="panel"></div>
   </div>
 </main>
+<div id="mbbar">
+  <button data-mb="fitting" class="active">⚙️ 피팅</button>
+  <button data-mb="codex">📖 도감</button>
+  <button data-mb="save">💾 저장</button>
+  <button data-mb="opt">🎯 최적</button>
+</div>
 <div id="modalRoot"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="config.js?v=1"></script>
 <script src="auth.js?v=1"></script>
-<script src="app.js?v=148"></script>
+<script src="app.js?v=149"></script>
 <script src="fit.js?v=11"></script>
 <script src="cloud.js?v=5"></script>
-<script src="codex.js?v=1"></script>
+<script src="codex.js?v=2"></script>
 </body>
 </html>

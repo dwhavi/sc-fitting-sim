@@ -26,6 +26,10 @@
 
   const isPlaceholder = it => !it || !it.name || /PLACEHOLDER/i.test(it.name);
 
+  // 제조사별 포인트 색 (기획안 4): 이름 해시로 팔레트에서 결정적으로 배정
+  const MFR_PALETTE = ['#4cc2ff', '#51d88a', '#ffb454', '#ff8ab3', '#b592ff', '#ffd166', '#6ee7de', '#f08018', '#9dff57', '#ff6b6b', '#5aa9ff', '#e0aaff'];
+  function mfrColor(m) { let h = 0; for (const ch of String(m)) h = (h * 31 + ch.codePointAt(0)) >>> 0; return MFR_PALETTE[h % MFR_PALETTE.length]; }
+
   // ---- 카테고리별 정규화: {key, name, size, grade, mfr, sub, bars:[{k,v,txt}], raw, kind} ----
   function itemsOf(cid) {
     if (!dbOk()) return [];
@@ -162,7 +166,7 @@
     return `<button class="cx-card${selKey === it.key ? ' sel' : ''}" data-key="${esc(it.key)}">
       <span class="cx-top">${sz}<span class="cx-gr ${grCls}">${esc(it.grade || '—')}</span></span>
       <span class="cx-name">${esc(it.name)}</span>
-      <span class="cx-mfr">${esc(it.mfr || '')}</span>
+      <span class="cx-mfr"${it.mfr ? ` style="color:${mfrColor(it.mfr)};font-weight:700"` : ''}>${esc(it.mfr || '')}</span>
       ${it.sub ? `<span class="cx-sub">${esc(it.sub)}</span>` : ''}
       <span class="cx-bars">${bars}</span>
     </button>`;
@@ -288,7 +292,7 @@
       ? ' <span class="badge" style="color:var(--warn)">⚠ 특수</span>' : '';
     el.innerHTML =
       `<h3>${esc(it.name)}${badge}<button class="modal-x cx-close" id="cxClose">✕</button></h3>`
-      + `<div class="cx-d-sub">${esc(it.sub || '')}${it.mfr ? ' · ' + esc(it.mfr) : ''}</div>`
+      + `<div class="cx-d-sub">${esc(it.sub || '')}${it.mfr ? ` · <b style="color:${mfrColor(it.mfr)}">${esc(it.mfr)}</b>` : ''}</div>`
       + `<table class="cx-d-table">${detailRows(it)}</table>`
       + (it.kind === 'ship' ? `<button class="cx-fit-btn" id="cxFit">🛠️ 이 함선으로 피팅하기</button>` : shopHTML(it.raw.class));
     el.classList.add('open');
