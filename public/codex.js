@@ -100,13 +100,23 @@
     }
     p.querySelector('[data-est]').innerHTML = h || '<span class="cx-sub">이 무기는 절대값 추정이 가능한 단일 슬롯 스탯이 없습니다.</span>';
   }
+  function closeCraft() { const o = document.getElementById('cq-ov'); if (o) o.remove(); document.body.style.overflow = ''; }
+  function openCraft(cn) {
+    closeCraft();
+    const it = PERS.items.find(x => x.cn === cn);
+    const ov = document.createElement('div');
+    ov.className = 'modal-ov'; ov.id = 'cq-ov';
+    ov.innerHTML = `<div class="modal cq-modal" role="dialog" aria-modal="true"><div class="modal-h"><b>🛠 제작 품질 · ${esc(it ? it.n : cn)}</b><button class="modal-x" data-cqx aria-label="닫기">✕</button></div><div class="modal-list cq-body">${craftPanel(cn)}</div></div>`;
+    document.body.appendChild(ov);
+    document.body.style.overflow = 'hidden';
+    ov.querySelector('[data-cqx]').onclick = closeCraft;
+    const p = ov.querySelector('[data-cqp]');
+    craftFill(p);
+    p.querySelectorAll('input[type=range]').forEach(r => r.oninput = () => { pfQ[r.dataset.cn][+r.dataset.cqi] = +r.value; craftFill(p); });
+    p.querySelectorAll('[data-cqset]').forEach(b => b.onclick = () => { pfQ[cn] = pfQ[cn].map(() => +b.dataset.cqset); p.querySelectorAll('input[type=range]').forEach((r, i) => r.value = pfQ[cn][i]); craftFill(p); });
+  }
   function bindCraft(g) {
-    g.querySelectorAll('[data-cqtoggle]').forEach(b => b.onclick = () => { const cn = b.dataset.cqtoggle; pfOpen.has(cn) ? pfOpen.delete(cn) : pfOpen.add(cn); renderPersonal(); });
-    g.querySelectorAll('[data-cqp]').forEach(p => {
-      craftFill(p);
-      p.querySelectorAll('input[type=range]').forEach(r => r.oninput = () => { pfQ[r.dataset.cn][+r.dataset.cqi] = +r.value; craftFill(p); });
-      p.querySelectorAll('[data-cqset]').forEach(b => b.onclick = () => { const cn = p.dataset.cqp; pfQ[cn] = pfQ[cn].map(() => +b.dataset.cqset); p.querySelectorAll('input[type=range]').forEach((r, i) => r.value = pfQ[cn][i]); craftFill(p); });
-    });
+    g.querySelectorAll('[data-cqtoggle]').forEach(b => b.onclick = () => openCraft(b.dataset.cqtoggle));
   }
   function pfCard(it, k) {
     const ico = k ? `<svg class="pf-ico sm" viewBox="0 0 160 72" aria-hidden="true">${PF_SVG[k]}</svg>` : '';
@@ -116,9 +126,9 @@
       st = `<div class="pf-stats"><div><span>발당 피해</span><b>${pfNum(it.d)}</b></div><div><span>탄창당 피해</span><b>${pfNum(it.mag)}</b></div><div><span>분당 피해</span><b>${it.dpm != null ? pfNum(it.dpm) : '–'}</b></div></div><div class="cx-sub">${it.r ? pfNum(it.r) + ' rpm' : 'rpm 없음'} · 탄창 ${it.c != null ? it.c : '없음'}${it.c === 1 ? ' (1발 장전식, 분당 생략)' : ''}${it.t ? ' · 소진 ' + pfNum(it.t) + '초' : ''}</div>`;
     } else if (it.k !== 'knife') st = '<div class="cx-sub">피해 수치 소스에 없음</div>';
     const vr = it.vn && it.vn.length ? `<details class="pf-var"><summary>닉네임·스킨 변형 ${it.vn.length}종 포함 (성능 동일)</summary><div class="cx-sub">${it.vn.map(esc).join('<br>')}</div></details>` : '';
-    const has = CRAFT && it.cn && CRAFT.items[it.cn], open = has && pfOpen.has(it.cn);
-    const cb = has ? `<button class="chip pf-craft${open ? ' on' : ''}" data-cqtoggle="${esc(it.cn)}">🛠 제작 품질 ${open ? '닫기' : '보기'}</button>` : '';
-    return `<div class="cx-card pf-card" style="cursor:default${open ? ';grid-column:1/-1' : ''}">${ico}<div class="cx-name">${esc(it.n)}</div><div class="cx-sub">${sub}</div>${st}${cb}${vr}${open ? craftPanel(it.cn) : ''}</div>`;
+    const has = CRAFT && it.cn && CRAFT.items[it.cn];
+    const cb = has ? `<button class="chip pf-craft" data-cqtoggle="${esc(it.cn)}">🛠 제작 품질 보기</button>` : '';
+    return `<div class="cx-card pf-card" style="cursor:default">${ico}<div class="cx-name">${esc(it.n)}</div><div class="cx-sub">${sub}</div>${st}${cb}${vr}</div>`;
   }
   const SORTS = { name: '이름순', size: '사이즈순', perf: '주요 수치순' };
   const CAREER_ICON = { 'Combat': '⚔️', 'Ground': '🛞', 'Industrial': '⛏️', 'Competition': '🏁', 'Transporter': '🚚', 'Exploration': '🔭', 'Support': '🛟', 'Multi-Role': '🔀', 'Personal Transport': '🚐', 'Starter': '🌱' };
