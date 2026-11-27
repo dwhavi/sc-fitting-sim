@@ -68,6 +68,8 @@
   let SMETA = null, MMETA = null;
   // 함선 이미지는 RSI 공식 스토어 공개 URL(ship_meta.json의 img)을 원본 그대로 연결. 매칭 없는 함선은 자리표시자.
   const SHOW_SHIP_IMAGES = true;
+  // 이미지 URL이 깨지면 깨진 아이콘 대신 자리표시자로 교체
+  window.cxImgFail = function (img, cls) { const s = document.createElement('div'); s.className = cls; s.textContent = '이미지 준비 중'; const cred = img.nextElementSibling; if (cred && cred.classList.contains('cx-m-cred')) cred.remove(); img.replaceWith(s); };
   let built = false, selKey = null;
 
   const isPlaceholder = it => !it || !it.name || /PLACEHOLDER/i.test(it.name);
@@ -243,7 +245,7 @@
     }).join('');
     const sz = it.kind === 'ship' || it.size != null ? `<span class="cx-sz">S${it.size}</span>` : '<span></span>';
     const grCls = /^[ABCD]$/.test(it.grade) ? it.grade : '';
-    const thumb = it.kind === 'ship' ? (it.img ? `<img class="cx-thumb" loading="lazy" src="${esc(it.img)}" alt="${esc(it.name)}">` : '<span class="cx-thumb none">이미지 준비 중</span>') : '';
+    const thumb = it.kind === 'ship' ? (it.img ? `<img class="cx-thumb" loading="lazy" src="${esc(it.img)}" alt="${esc(it.name)}" onerror="cxImgFail(this,'cx-thumb none')">` : '<span class="cx-thumb none">이미지 준비 중</span>') : '';
     return `<button class="cx-card${selKey === it.key ? ' sel' : ''}" data-key="${esc(it.key)}">
       ${thumb}<span class="cx-top">${sz}<span class="cx-gr ${grCls}">${esc(it.grade || '—')}</span></span>
       <span class="cx-name">${esc(it.name)}</span>${it.kind === 'ship' ? `<span class="cx-cat">${esc(it.cat)}${it.large ? ' · 대형' : ''}</span>` : ''}
@@ -413,7 +415,7 @@
     if (!it) { document.body.classList.remove('cx-modal-open'); return; }
     const ssm = shipStatusMap(); const badge = it.kind === 'ship' && ssm && ssm.ships && ssm.ships[it.raw.class] && ssm.ships[it.raw.class].st === 'special'
       ? ' <span class="badge" style="color:var(--warn)">⚠ 특수</span>' : '';
-    const img = it.kind === 'ship' ? (it.img ? `<img class="cx-m-img" src="${esc(it.img)}" alt="${esc(it.name)}"><div class="cx-m-cred">이미지: RSI 공식 스토어</div>` : '<div class="cx-m-img none">이미지 준비 중</div>') : '';
+    const img = it.kind === 'ship' ? (it.img ? `<img class="cx-m-img" src="${esc(it.img)}" alt="${esc(it.name)}" onerror="cxImgFail(this,'cx-m-img none')"><div class="cx-m-cred">이미지: RSI 공식 스토어</div>` : '<div class="cx-m-img none">이미지 준비 중</div>') : '';
     const extra = it.kind === 'missile' ? missileInfographic(it) : '';
     const head = it.kind === 'ship' ? `<div class="cx-d-sub"><b>${esc(it.cat)}</b>${it.large ? ' · 대형함(S5+ 임시 기준)' : ''} · ${esc(it.sub || '')}${it.mfr ? ` · <b style="color:${mfrColor(it.mfr)}">${esc(it.mfr)}</b>` : ''}</div>`
       : `<div class="cx-d-sub">${esc(it.sub || '')}${it.mfr ? ` · <b style="color:${mfrColor(it.mfr)}">${esc(it.mfr)}</b>` : ''}</div>`;
@@ -434,7 +436,7 @@
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
   async function ensureMeta() {
-    try { const r = await fetch('ship_meta.json?v=8'); if (r.ok) SMETA = await r.json(); } catch (e) { /* 이미지·제조사 없음 */ }
+    try { const r = await fetch('ship_meta.json?v=9'); if (r.ok) SMETA = await r.json(); } catch (e) { /* 이미지·제조사 없음 */ }
     try { const r = await fetch('missile_meta.json?v=1'); if (r.ok) MMETA = await r.json(); } catch (e) { /* */ }
   }
   async function build() {

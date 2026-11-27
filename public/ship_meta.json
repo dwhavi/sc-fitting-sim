@@ -197,9 +197,11 @@
   },
   "ANVL_C8R_Pisces": {
    "mfr": "Anvil Aerospace",
-   "src": null,
-   "img": null,
-   "fy": "anvl-c8r-pisces"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/aa505234bd826704c08acd2c8125da5dcafeda06/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjYUpdwY9hHjEgqpaExZb84z9p1hR5FWNa)/source.webp",
+   "fy": "anvl-c8r-pisces",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/anvil-pisces/C8R-Pisces",
+   "alias": true
   },
   "ANVL_C8X_Pisces_Expedition": {
    "mfr": "Anvil Aerospace",
@@ -258,9 +260,11 @@
   },
   "ANVL_Hornet_F7CM_Heartseeker": {
    "mfr": "Anvil Aerospace",
-   "src": null,
-   "img": null,
-   "fy": "anvl-f7c-m-super-hornet-heartseeker-mk-i"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/13cfa076155f5ad6b53b6b0678f5b2e3a0feeb77/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResejFhFPaJXW9eWYg4EZ3DiiLfiG1H94aZC)/source.webp",
+   "fy": "anvl-f7c-m-super-hornet-heartseeker-mk-i",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/anvil-hornet/F7C-M-Super-Hornet-Heartseeker-Mk-I",
+   "alias": true
   },
   "ANVL_Hornet_F7CM_Mk2_Heartseeker": {
    "mfr": "Anvil Aerospace",
@@ -539,21 +543,27 @@
   },
   "CRUS_Starlifter_A2": {
    "mfr": "Crusader Industries",
-   "src": null,
-   "img": null,
-   "fy": "crus-a2-hercules"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/4ac9559797e117521cbe1a1625089ea884b5ce1e/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResidY9GU2m2dhad9nWNxb18qK9ZrBf6PhFU)/source.webp",
+   "fy": "crus-a2-hercules",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/crusader-starlifter/A2-Hercules",
+   "alias": true
   },
   "CRUS_Starfighter_Inferno": {
    "mfr": "Crusader Industries",
-   "src": null,
-   "img": null,
-   "fy": "crus-ares-inferno"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/dd38f92cb7acfda081052d5ffdd70d1483415b90/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskPUMphCZRXRAQLjVqV1sqM6EBTAiv9qKc)/source.webp",
+   "fy": "crus-ares-inferno",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/crusader-ares/Ares-Inferno",
+   "alias": true
   },
   "CRUS_Starfighter_Ion": {
    "mfr": "Crusader Industries",
-   "src": null,
-   "img": null,
-   "fy": "crus-ares-ion"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/c463c215566aba8eaeaaa2c9d4f51eacf50ee4d7/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResidZaY5SRiicBUSgjL8oiDCWFUNRcX7Mnv)/source.webp",
+   "fy": "crus-ares-ion",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/crusader-ares/Ares-Ion",
+   "alias": true
   },
   "CRUS_Spirit_C1": {
    "mfr": "Crusader Industries",
@@ -564,9 +574,11 @@
   },
   "CRUS_Starlifter_C2": {
    "mfr": "Crusader Industries",
-   "src": null,
-   "img": null,
-   "fy": "crus-c2-hercules"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/26981dc4b62862ededfb92d3012452ea175e5e7a/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskpcDUyTPuKfT2cePUz4jof5hYcpd6LjZx)/source.webp",
+   "fy": "crus-c2-hercules",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/crusader-starlifter/C2-Hercules",
+   "alias": true
   },
   "CRUS_Intrepid": {
    "mfr": "Crusader Industries",
@@ -577,15 +589,19 @@
   },
   "CRUS_Starlifter_M2": {
    "mfr": "Crusader Industries",
-   "src": null,
-   "img": null,
-   "fy": "crus-m2-hercules"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/388a8a9be8acba17dfcf09da2d9273582b7709be/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReseTg8yHWoyFU5ctCYvWz382EoBq77xDmMY)/source.webp",
+   "fy": "crus-m2-hercules",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/crusader-starlifter/M2-Hercules",
+   "alias": true
   },
   "CRUS_Star_Runner": {
    "mfr": "Crusader Industries",
-   "src": null,
-   "img": null,
-   "fy": "crus-mercury-star-runner"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/1a9f484e3bf8f3f97445ca66e80e8a48ddc12a0e/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReseM2Qd3hg33nVNrZr93SXcfBLpXPPoyseW)/source.webp",
+   "fy": "crus-mercury-star-runner",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/crusader-mercury-star-runner/Mercury",
+   "alias": true
   },
   "DRAK_Buccaneer": {
    "mfr": "Drake Interplanetary",
@@ -1163,9 +1179,11 @@
   },
   "ORIG_m50": {
    "mfr": "Origin Jumpworks",
-   "src": null,
-   "img": null,
-   "fy": "orig-m50"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/62dd3ba116100e855ad898b878c48bfb0552fb8a/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjdq3VgKwWzxooVmKzNtgdz9hjcfMTo7hp)/source.webp",
+   "fy": "orig-m50",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/origin-m50/M50",
+   "alias": true
   },
   "ORIG_m80": {
    "mfr": "Origin Jumpworks",
