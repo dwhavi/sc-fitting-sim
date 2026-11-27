@@ -206,7 +206,7 @@
     if (cat === 'ships') {
       const cnt = {}; arr.forEach(it => { cnt[it.cat] = (cnt[it.cat] || 0) + 1; });
       h += `<select id="cxCat">${opts(SHIP_CATS.filter(c => cnt[c]).map(c => [c, `${c} (${cnt[c]})`]), fCat, '카테고리 전체')}</select>`;
-      h += `<select id="cxSize"><option value="">사이즈 전체</option><option value="large"${fSize === 'large' ? ' selected' : ''}>대형함 (S5 이상)</option>${sizes.map(s => `<option value="${esc(s)}"${s === fSize ? ' selected' : ''}>S${esc(s)}</option>`).join('')}</select>`;
+      h += `<select id="cxSize"><option value="">사이즈 전체</option><option value="large"${fSize === 'large' ? ' selected' : ''}>대형함 (S5 이상 · 임시 기준)</option>${sizes.map(s => `<option value="${esc(s)}"${s === fSize ? ' selected' : ''}>S${esc(s)}</option>`).join('')}</select>`;
       h += `<select id="cxGroup"><option value="auto"${group === 'auto' ? ' selected' : ''}>묶기: 자동(전체=카테고리별)</option><option value="cat"${group === 'cat' ? ' selected' : ''}>묶기: 카테고리별</option><option value="mfr"${group === 'mfr' ? ' selected' : ''}>묶기: 제조사별</option><option value="none"${group === 'none' ? ' selected' : ''}>묶지 않음</option></select>`;
     } else {
       h += `<select id="cxSize"><option value="">사이즈 전체</option>${sizes.map(s => `<option value="${esc(s)}"${s === fSize ? ' selected' : ''}>S${esc(s)}</option>`).join('')}</select>`;
@@ -380,7 +380,7 @@
     const mm = mmeta(it.raw.class);
     if (!mm) return '<div class="cx-shop fit-dim">이 항목은 미사일 상세 원본 데이터가 없어 도식을 만들지 않았습니다.</div>';
     const dm = mm.dmg || {}, tot = Object.values(dm).reduce((a, b) => a + b, 0) || 1;
-    const DM_KO = { Physical: '물리(폭발·파편)', Energy: '에너지', Distortion: '디스토션' };
+    const DM_KO = { Physical: '물리(Physical) 피해', Energy: '에너지', Distortion: '디스토션' };
     const bar = Object.entries(dm).map(([k, v]) => `<div class="mi-dm"><span>${esc(DM_KO[k] || k)}</span><span class="mi-bar"><i class="${k}" style="width:${Math.max(3, v / tot * 100)}%"></i></span><b>${fmt0(v)}</b></div>`).join('');
     const bl = mm.blast || [], pr = mm.prox;
     const bMax = bl[1] || 0, bMin = bl[0] || 0, scale = 70 / Math.max(bMax, 1);
@@ -413,7 +413,7 @@
       ? ' <span class="badge" style="color:var(--warn)">⚠ 특수</span>' : '';
     const img = it.kind === 'ship' ? (it.img ? `<img class="cx-m-img" src="${esc(it.img)}" alt="${esc(it.name)}"><div class="cx-m-cred">이미지: FleetYards</div>` : '<div class="cx-m-img none">이미지를 찾지 못했습니다 (FleetYards에 같은 함선 항목 없음)</div>') : '';
     const extra = it.kind === 'missile' ? missileInfographic(it) : '';
-    const head = it.kind === 'ship' ? `<div class="cx-d-sub"><b>${esc(it.cat)}</b>${it.large ? ' · 대형함(S5+)' : ''} · ${esc(it.sub || '')}${it.mfr ? ` · <b style="color:${mfrColor(it.mfr)}">${esc(it.mfr)}</b>` : ''}</div>`
+    const head = it.kind === 'ship' ? `<div class="cx-d-sub"><b>${esc(it.cat)}</b>${it.large ? ' · 대형함(S5+ 임시 기준)' : ''} · ${esc(it.sub || '')}${it.mfr ? ` · <b style="color:${mfrColor(it.mfr)}">${esc(it.mfr)}</b>` : ''}</div>`
       : `<div class="cx-d-sub">${esc(it.sub || '')}${it.mfr ? ` · <b style="color:${mfrColor(it.mfr)}">${esc(it.mfr)}</b>` : ''}</div>`;
     const m = document.createElement('div');
     m.id = 'cxModal'; m.className = 'cx-modal-back';
