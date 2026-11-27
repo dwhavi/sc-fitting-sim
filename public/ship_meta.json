@@ -62,21 +62,24 @@
   },
   "AEGS_Idris": {
    "mfr": "Aegis Dynamics",
-   "src": null,
-   "img": null,
-   "fy": "aegs-idris-m"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/32a91e040f4c344b89052a7c9a254bde5c4ec1e1/resize(910,512,cover,hgjbks2vRxvijgZCkcudyey3yf2YnBqfanX6U636vzzNeeFdx43A2FpAZ49bpw6FiNoWgDAsBUvHcwx6yVRbszrCgE)/source.webp",
+   "fy": "aegs-idris-m",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/aegis-idris/Idris-M"
   },
   "AEGS_Idris_P": {
    "mfr": "Aegis Dynamics",
-   "src": null,
-   "img": null,
-   "fy": "aegs-idris-p"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/58c8947636fc307db2f8e5e20f0be7d76ff589d0/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskqY6z7TSDPHadnqPCeZCNtvaR4zHv7pkE)/source.webp",
+   "fy": "aegs-idris-p",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/aegis-idris/Idris-P"
   },
   "AEGS_Javelin": {
    "mfr": "Aegis Dynamics",
-   "src": null,
-   "img": null,
-   "fy": "aegs-javelin"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/352f133a5c72cd3df8e2a2ffa18b20a058c272de/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjvbX42c3rKWbDaqUyqNmKE6rWyf9aufLJ)/source.webp",
+   "fy": "aegs-javelin",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/aegis-javelin/Javelin"
   },
   "AEGS_Reclaimer": {
    "mfr": "Aegis Dynamics",
@@ -187,9 +190,10 @@
   },
   "ANVL_C8_Pisces": {
    "mfr": "Anvil Aerospace",
-   "src": null,
-   "img": null,
-   "fy": "anvl-c8-pisces"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/6019891a7e79b9fd141b7d0c3ad925438b3da46f/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResf1XNoTVqU1sjNSW7iPXBbXMdQEtc1QnwY)/source.webp",
+   "fy": "anvl-c8-pisces",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/anvil-pisces/C8-Pisces"
   },
   "ANVL_C8R_Pisces": {
    "mfr": "Anvil Aerospace",
@@ -213,26 +217,30 @@
   },
   "ANVL_Carrack_Expedition": {
    "mfr": "Anvil Aerospace",
-   "src": null,
-   "img": null
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/efe5692dea07982d626734baef98d1080b644f95/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjCZuJSam4DYUukYVVwnHutdWNoyhkiTan)/source.webp",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/carrack/Carrack-Expedition"
   },
   "ANVL_Hornet_F7A": {
    "mfr": "Anvil Aerospace",
-   "src": null,
-   "img": null,
-   "fy": "anvl-f7a-hornet-mk-i"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/83b0bb2b9f1e7285b373d845a6086961626a8c12/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskkAdsM4dYUGutPpApkPRWMrv52kvU1drn)/source.webp",
+   "fy": "anvl-f7a-hornet-mk-i",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/anvil-hornet/F7A-Hornet-Mk-I"
   },
   "ANVL_Hornet_F7A_Mk2": {
    "mfr": "Anvil Aerospace",
-   "src": null,
-   "img": null,
-   "fy": "anvl-f7a-hornet-mk-ii"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/88127dbeeb5c6aec2d2ee2608447fb8d51567f2a/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResj6zVVifHuf91B5XFQeSL3dKEdS5ru95An)/source.webp",
+   "fy": "anvl-f7a-hornet-mk-ii",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/anvil-hornet-mkii/F7A-Hornet-Mk-II"
   },
   "ANVL_Hornet_F7C": {
    "mfr": "Anvil Aerospace",
-   "src": null,
-   "img": null,
-   "fy": "anvl-f7c-hornet-mk-i"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/c20958ef8bf65768957aa58eed42b85fc4b4336e/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskP3AFfH3teR68rmh57wSBzmTxzMu3g72W)/source.webp",
+   "fy": "anvl-f7c-hornet-mk-i",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/anvil-hornet/F7C-Hornet-Mk-I"
   },
   "ANVL_Hornet_F7C_Mk2": {
    "mfr": "Anvil Aerospace",
@@ -243,9 +251,10 @@
   },
   "ANVL_Hornet_F7C_Wildfire": {
    "mfr": "Anvil Aerospace",
-   "src": null,
-   "img": null,
-   "fy": "anvl-f7c-hornet-wildfire-mk-i"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/6c8d863b71e99c89ae901cbb79917efa0ea243f4/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReseBrnAkkqry6NTco89YXxm7fiVePXmeG14)/source.webp",
+   "fy": "anvl-f7c-hornet-wildfire-mk-i",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/anvil-hornet/F7C-Hornet-Wildfire-Mk-I"
   },
   "ANVL_Hornet_F7CM_Heartseeker": {
    "mfr": "Anvil Aerospace",
@@ -260,9 +269,10 @@
   },
   "ANVL_Hornet_F7CM": {
    "mfr": "Anvil Aerospace",
-   "src": null,
-   "img": null,
-   "fy": "anvl-f7c-m-super-hornet-mk-i"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/d3ef7abf66d6e9e00106f3580748b17ef77a11aa/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResk22sDRRcjwtCehpyXnJhVE7ySLtuC3NMk)/source.webp",
+   "fy": "anvl-f7c-m-super-hornet-mk-i",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/anvil-hornet/F7C-M-Super-Hornet-Mk-I"
   },
   "ANVL_Hornet_F7CM_Mk2": {
    "mfr": "Anvil Aerospace",
@@ -273,9 +283,10 @@
   },
   "ANVL_Hornet_F7CR": {
    "mfr": "Anvil Aerospace",
-   "src": null,
-   "img": null,
-   "fy": "anvl-f7c-r-hornet-tracker-mk-i"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/37b450a7d8ccdee898b461d2bf148ad5da4b2c60/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResijzE5e7KeCMw6zgFK6GYuS3kkyJqzYiNz)/source.webp",
+   "fy": "anvl-f7c-r-hornet-tracker-mk-i",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/anvil-hornet/F7C-R-Hornet-Tracker-Mk-I"
   },
   "ANVL_Hornet_F7CR_Mk2": {
    "mfr": "Anvil Aerospace",
@@ -286,9 +297,10 @@
   },
   "ANVL_Hornet_F7CS": {
    "mfr": "Anvil Aerospace",
-   "src": null,
-   "img": null,
-   "fy": "anvl-f7c-s-hornet-ghost-mk-i"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/3f33466efa24d55448ea576310770d8e2bc5be0c/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjqHwXyzcPtQGAhaia7uvJdKpyzo2kq9x2)/source.webp",
+   "fy": "anvl-f7c-s-hornet-ghost-mk-i",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/anvil-hornet/F7C-S-Hornet-Ghost-Mk-I"
   },
   "ANVL_Hornet_F7CS_Mk2": {
    "mfr": "Anvil Aerospace",
@@ -401,9 +413,10 @@
   },
   "XIAN_Nox_Kue": {
    "mfr": null,
-   "src": null,
-   "img": null,
-   "fy": "xnaa-nox-kue"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/3b85fab403c6aa7e037363f1e24d79f3ab0e1587/resize(910,512,cover,hgjbks2vRxvijgZCkcudyey3yf2YnBqfanX6U636vzzNeeFdx43A2FpB1h72y9eres7Js1etFpA6vxqALTAbHwWijx)/source.webp",
+   "fy": "xnaa-nox-kue",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/nox/Nox-Kue"
   },
   "XNAA_SanTokYai": {
    "mfr": "Aopoa",
@@ -505,9 +518,10 @@
   },
   "CNOU_Mustang_Omega": {
    "mfr": "Consolidated Outland",
-   "src": null,
-   "img": null,
-   "fy": "cnou-mustang-omega"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/3c0568a8d45f4a012b168fe69f1733a45c54a98b/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskUM4JKzJ9dsqVZzEweh1C1unScWqpchtJ)/source.webp",
+   "fy": "cnou-mustang-omega",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/mustang/Mustang-Omega"
   },
   "CNOU_Nomad": {
    "mfr": "Consolidated Outland",
@@ -732,9 +746,10 @@
   },
   "VNCL_Glaive": {
    "mfr": "Vanduul",
-   "src": null,
-   "img": null,
-   "fy": "espr-glaive"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/e5393989b1c5029eb9d3792910571b4ede0e3c8a/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjkMe11deKVPSCGJVKnteWRPFAx1t7qwaN)/source.webp",
+   "fy": "espr-glaive",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/esperia-glaive/Glaive"
   },
   "ESPR_Prowler": {
    "mfr": "Esperia",
@@ -1141,9 +1156,10 @@
   },
   "ORIG_890Jump": {
    "mfr": "Origin Jumpworks",
-   "src": null,
-   "img": null,
-   "fy": "orig-890-jump"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/a4f4f97db4797576891c657705a5c99624f7438c/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskN2PtGhQ7i1JD7RWFivT3dm996DXRrinA)/source.webp",
+   "fy": "orig-890-jump",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/890-jump/890-Jump"
   },
   "ORIG_m50": {
    "mfr": "Origin Jumpworks",
@@ -1180,39 +1196,45 @@
   },
   "RSI_Aurora_LX": {
    "mfr": "Roberts Space Industries",
-   "src": null,
-   "img": null,
-   "fy": "rsi-aurora-mk-i-lx"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/eff39676d2ba25b9ffd1ce285628a47e80b2b09e/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReseMB2HqJCrzVi7n4jWa6RKuX86vHhuoXYz)/source.webp",
+   "fy": "rsi-aurora-mk-i-lx",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/rsi-aurora/Aurora-Mk-I-LX"
   },
   "RSI_Aurora_CL": {
    "mfr": "Roberts Space Industries",
-   "src": null,
-   "img": null,
-   "fy": "rsi-aurora-mk-i-cl"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/0114f0fb9054675e89892c020aa657a4f3a4a641/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskqUURXDz5coswxJaMxGf2h8orXrGu2nPG)/source.webp",
+   "fy": "rsi-aurora-mk-i-cl",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/rsi-aurora/Aurora-Mk-I-CL"
   },
   "RSI_Aurora_ES": {
    "mfr": "Roberts Space Industries",
-   "src": null,
-   "img": null,
-   "fy": "rsi-aurora-mk-i-es"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/e58de32282770d79c8b1fb29c7b552a199cc18a0/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResizh6NGvSRpmsGJPtnccvGjhWyiFtTQvuL)/source.webp",
+   "fy": "rsi-aurora-mk-i-es",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/rsi-aurora/Aurora-Mk-I-ES"
   },
   "RSI_Aurora_LN": {
    "mfr": "Roberts Space Industries",
-   "src": null,
-   "img": null,
-   "fy": "rsi-aurora-mk-i-ln"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/814e36cadcd3e7e033883e05dcdadc79d48193fe/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResivY4o9xKVqqAGGCE6ubE9VzqjrDgYVkEz)/source.webp",
+   "fy": "rsi-aurora-mk-i-ln",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/rsi-aurora/Aurora-Mk-I-LN"
   },
   "RSI_Aurora_MR": {
    "mfr": "Roberts Space Industries",
-   "src": null,
-   "img": null,
-   "fy": "rsi-aurora-mk-i-mr"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/c7133ae8a8e3da0f6a81840978d7d55cac5429a2/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjResjZaFtjXh6njsETbS8KcP6T4B6ah7yTRUS)/source.webp",
+   "fy": "rsi-aurora-mk-i-mr",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/rsi-aurora/Aurora-Mk-I-MR"
   },
   "RSI_Aurora_GS_SE": {
    "mfr": "Roberts Space Industries",
-   "src": null,
-   "img": null,
-   "fy": "rsi-aurora-mk-i-se"
+   "src": "rsi-shop",
+   "img": "https://robertsspaceindustries.com/i/4b30007163864ff5080290d4d21520631a0890ad/resize(910,512,cover,ADdPNihJzmPbNuTnFsH1DqUeqBRpXdSXVVtgJTyDDgscGKrzJuoFjReskUYyKYXsaX9q5qr2tar2eJR6uDsauezUW)/source.webp",
+   "fy": "rsi-aurora-mk-i-se",
+   "shop": "https://robertsspaceindustries.com/pledge/ships/rsi-aurora/Aurora-Mk-I-SE"
   },
   "RSI_Aurora_Mk2": {
    "mfr": "Roberts Space Industries",

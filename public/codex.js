@@ -434,7 +434,7 @@
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
   async function ensureMeta() {
-    try { const r = await fetch('ship_meta.json?v=7'); if (r.ok) SMETA = await r.json(); } catch (e) { /* 이미지·제조사 없음 */ }
+    try { const r = await fetch('ship_meta.json?v=8'); if (r.ok) SMETA = await r.json(); } catch (e) { /* 이미지·제조사 없음 */ }
     try { const r = await fetch('missile_meta.json?v=1'); if (r.ok) MMETA = await r.json(); } catch (e) { /* */ }
   }
   async function build() {
