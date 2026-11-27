@@ -75,7 +75,7 @@
   function craftPanel(cn) {
     const c = CRAFT.items[cn];
     const q = pfQ[cn] || (pfQ[cn] = c.s.map(() => 500));
-    const rows = c.s.map((sl, i) => `<div class="cq-slot"><div class="cq-sh"><b>${esc(SLOT_KO[sl.n] || sl.n)}</b> <span class="cx-sub">${esc(sl.n)} · ${sl.m.map(m => esc(m[0]) + ' ' + m[1] + ' SCU').join(', ')}</span></div>
+    const rows = c.s.map((sl, i) => `<div class="cq-slot"><div class="cq-sh"><b>${esc(SLOT_KO[sl.n] || sl.n)}</b> <span class="cx-sub">${esc(sl.n)} · ${sl.m.map(m => esc(m[0]) + (m[1] == null ? ' · 수량 미상' : ' ' + m[1] + ' SCU')).join(', ')}</span></div>
       <div class="cq-sl"><input type="range" min="0" max="1000" step="10" value="${q[i]}" data-cqi="${i}" data-cn="${esc(cn)}"><b data-qv="${i}">${q[i]}</b></div>
       ${sl.x.map((m, j) => `<div class="cq-m"><span>${esc(STAT_KO[m[0]] || m[0])}</span><span>${mx(m[1])} ~ ${mx(m[2])}${m[3] ? ' (구간식)' : ''}</span><b data-mv="${i}-${j}"></b></div>`).join('')}</div>`).join('');
     return `<div class="cq" data-cqp="${esc(cn)}"><div class="cq-top"><span class="cx-sub">슬롯별 재료 품질(Q0~Q1000)을 움직이면 그 슬롯의 보정 배율이 바뀝니다. 각 줄: 스탯 · Q0~Q1000 배율 · 현재 배율.</span><span class="cq-btns"><button class="chip" data-cqset="0">전부 0</button><button class="chip" data-cqset="500">전부 500</button><button class="chip" data-cqset="1000">전부 1000</button></span></div>${rows}<div class="cq-est" data-est></div>
