@@ -215,7 +215,7 @@
       });
     } else if (cid === 'weapons') {
       for (const w of DB.weapons || []) push('weapon', w, {
-        sub: `${w.family || ''}${(w.dmgtype || []).length ? ' [' + w.dmgtype.join('+') + ']' : ''}${w.rpm ? ' · ' + w.rpm + 'rpm' : ''}`,
+        sub: `${w.family || ''}${(w.dmgtype || []).length ? ' [' + w.dmgtype.join('+') + ']' : ''}${w.rpm ? ' · ' + w.rpm + 'rpm' : ''}${(w.vn || []).length ? ' · 변형 ' + w.vn.length + '종 통합' : ''}`,
         bars: [
           { k: 'DPS', v: w.dps || 0 },
           { k: '알파', v: w.alpha || 0 },
@@ -293,7 +293,7 @@
 
   function filtered() {
     let arr = itemsOf(cat);
-    if (q) arr = arr.filter(it => (it.name + ' ' + it.mfr + ' ' + (it.raw.family || '')).toLowerCase().includes(q));
+    if (q) arr = arr.filter(it => (it.name + ' ' + it.mfr + ' ' + (it.raw.family || '') + ' ' + (it.raw.vn || []).join(' ')).toLowerCase().includes(q));
     if (fSize !== '' && fSize !== 'large') arr = arr.filter(it => String(it.size) === fSize);
     if (fGrade !== '') arr = arr.filter(it => it.grade === fGrade);
     if (fMfr !== '') arr = arr.filter(it => it.mfr === fMfr);
@@ -450,6 +450,7 @@
         row('탄속', r.speed != null ? fmt0(r.speed) + 'm/s' : null),
         row('분당 발사', r.rpm != null ? r.rpm + 'rpm' : null),
         row('피해 유형', esc((r.dmgtype || []).join(' + '))),
+        (r.vn || []).length ? row('닉네임·스킨 변형', esc(r.vn.join(', ')) + ' — 성능 동일, 대표 모델로 통합') : '',
       ].join('');
     }
     if (it.kind === 'shield') {

@@ -586,6 +586,12 @@ def main():
         if restored:
             print('restored %d classes missing from new dump (old DB carried)' % restored)
 
+    # 함선 무기 변형 병합 (2026-11-28): 동결 복원이 별칭 클래스를 되살릴 수 있으므로
+    # 반드시 복원 뒤에 적용한다. 규칙은 weapon_variants.py 참고.
+    import weapon_variants
+    _m, _r = weapon_variants.apply(db['weapons'])
+    print('무기 변형 병합: %d 병합, %d 구분 표기' % (_m, _r))
+
     # Validate before replacing the output; a failed build must leave it untouched.
     if ship_missing:
         raise SystemExit('함선 원본 누락: ' + ', '.join(ship_missing))

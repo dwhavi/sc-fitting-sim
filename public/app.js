@@ -47,11 +47,33 @@ const NO_POWER_KINDS = new Set(['missile']);
 const $ = id => document.getElementById(id);
 const fmt = n => n == null ? '—' : (Math.round(n * 10) / 10).toLocaleString('en-US');
 
+// 병합된 무기 별칭 클래스 -> 대표 클래스 (2026-11-28 무기 중복 정리, weapon_variants.py)
+let WALIAS = {};
+function buildWeaponAliases() {
+  WALIAS = {};
+  for (const w of (DB.weapons || [])) for (const a of (w.ac || [])) {
+    WALIAS[a] = w.class;
+    WALIAS[String(a).toLowerCase()] = w.class;
+  }
+}
+// 별칭(구 스킨/장착 변형 클래스)까지 풀어서 무기를 찾는다 — 구 저장 빌드·순정 매칭 유지용
+function weaponByClass(cls) {
+  if (!cls) return null;
+  const pool = DB.weapons || [];
+  const hit = pool.find(w => w.class === cls);
+  if (hit) return hit;
+  if (!Object.keys(WALIAS).length) buildWeaponAliases(); // init() 미경유 컨텍스트 대비 지연 생성
+  return pool.find(w => w.class === WALIAS[cls])
+      || pool.find(w => w.class === WALIAS[String(cls).toLowerCase()])
+      || null;
+}
+
 async function init() {
   $('status').textContent = 'DB 로딩 중…';
-  const r = await fetch('db.json?v=147', {cache:'no-store'});
+  const r = await fetch('db.json?v=148', {cache:'no-store'});
   if (!r.ok) throw new Error('DB HTTP ' + r.status);
   DB = await r.json();
+  buildWeaponAliases();
   try { const rs = await fetch('ship_status.json?v=1', {cache:'no-store'}); if (rs.ok) SHIP_STATUS = await rs.json(); } catch (e) { /* 감사 파일 없으면 뱃지만 생략 */ }
   loadPatchStatus();
   const ships = DB.ships;
@@ -492,7 +514,7 @@ function renderSlots() {
     || '<p>무장 슬롯 없음</p>';
   const special = FY.filter(h => h.category === 'special_weapon');
   const specialNote = special.map(h => {
-    const c = (DB.weapons || []).find(w => w.class === h.specialClass) || {};
+    const c = weaponByClass(h.specialClass) || {};
     return `<div style="border:1px solid var(--warn);padding:12px;margin:8px 0;color:var(--warn)"><b>특수 고정 빔: ${c.name || h.specialClass}</b><br>부품 원본 DPS ${fmt(c.dps || 0)}. 발사·충전 주기와 실효 피해 미검증. 일반 DPS·지속 DPS·추천 점수에서 제외합니다. 피해가 0이라는 뜻이 아닙니다. 전용 무장이며 일반 무기로 교체하지 않습니다.</div>`;
   }).join('');
   $('weaponSlots').innerHTML = specialNote + $('weaponSlots').innerHTML;
@@ -613,13 +635,14 @@ function matchDefault(kind, comp) {
   const pool = { weapon: DB.weapons, shield: DB.shields, power: DB.powerplants, cooler: DB.coolers, qd: DB.qds, missile: DB.racks, radar: DB.radars || [] }[kind] || [];
   // 2026-11-13: missile 풀 추가(미사일 랙 기본 선택 복구) + scKey 대소문자 무시 (FY scKey 는 소문자)
   const sk = String(comp.scKey || '').toLowerCase();
-  const hit = (sk && pool.find(c => (c.class || '').toLowerCase() === sk))
-           || pool.find(c => c.class === comp.scKey || c.name === comp.name);
+  const hit = (sk && (pool.find(c => (c.class || '').toLowerCase() === sk) || (kind === 'weapon' && weaponByClass(comp.scKey))))
+           || pool.find(c => c.class === comp.scKey || c.name === comp.name || (c.vn || []).includes(comp.name));
   return hit ? hit.class : '';
 }
 
 function findComp(kind, cls) {
   const pool = { weapon: DB.weapons, turret: DB.turrets, turretbase: DB.turrets, mount: DB.turrets, shield: DB.shields, power: DB.powerplants, cooler: DB.coolers, qd: DB.qds, missile: DB.racks, radar: DB.radars || [] }[kind] || [];
+  if (kind === 'weapon') return weaponByClass(cls);
   return pool.find(c => c.class === cls);
 }
 // 동사이즈 대표 미사일 (2026-11-01): 최고 damage 1종. 랙 합산 추정치용.
