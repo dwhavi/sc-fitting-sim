@@ -30,26 +30,45 @@
   ];
   let PERS = null;
   const KO_SUB = { 'Pistol': '권총', 'SMG': '기관단총', 'Assault Rifle': '돌격소총', 'Rifle': '라이플', 'Sniper Rifle': '저격소총', 'LMG': 'LMG', 'Shotgun': '샷건', 'HMG': 'HMG', 'Railgun': '레일건', 'Grenade Launcher': '유탄발사기', 'Missile Launcher': '미사일 발사기', 'Launcher': '발사기', 'Crossbow': '석궁', 'Frag Pistol': '파편 권총' };
+  const PF_TABS = [['all', '전체'], ['pistol', '권총'], ['smg', '기관단총'], ['rifle', '라이플'], ['sniper', '저격소총'], ['lmg', 'LMG'], ['knife', '나이프'], ['other', '기타']];
+  let pfTab = 'all', pfSort = 'name';
+  const PF_ICON = { pistol: 'pistol', smg: 'smg', rifle: 'rifle', sniper: 'rifle', lmg: 'lmg' };
+  const PF_KO = { pistol: '권총', smg: '기관단총', rifle: '라이플', sniper: '저격소총', lmg: 'LMG', knife: '나이프', other: '기타 (샷건·HMG·발사기 등)' };
+  const pfNum = n => n == null ? '–' : (Math.round(n * 10) / 10).toLocaleString('en-US');
+  function pfBar() {
+    return `<div class="pf-tabs" id="pfTabs">${PF_TABS.map(([k, n]) => `<button class="chip${k === pfTab ? ' on' : ''}" data-pf="${k}">${n}${PERS ? ' <span class="pf-n">' + PERS.items.filter(it => k === 'all' || it.k === k).length + '</span>' : ''}</button>`).join('')}</div>`;
+  }
   function renderPersonal() {
     const g = $('cxGrid');
     if (!PERS) { g.innerHTML = '<div class="cx-empty">불러오는 중…</div>'; return; }
-    const items = PERS.items.filter(it => !q || (it.n + ' ' + it.m).toLowerCase().includes(q));
-    const iconOf = it => it.k === 'knife' ? 'knife' : (it.k !== 'other' && it.a ? it.k + '-' + it.a : null);
+    const tb = $('pfTabsHost'); if (tb) { tb.innerHTML = pfBar(); tb.querySelectorAll('[data-pf]').forEach(b => b.onclick = () => { pfTab = b.dataset.pf; renderPersonal(); }); }
+    const items = PERS.items.filter(it => (pfTab === 'all' || it.k === pfTab) && (!q || (it.n + ' ' + it.m).toLowerCase().includes(q)));
+    const cmp = pfSort === 'name' ? (a, b) => a.n.localeCompare(b.n) : (a, b) => (b[pfSort] || 0) - (a[pfSort] || 0) || a.n.localeCompare(b.n);
+    const groups = pfTab === 'all' ? ['pistol', 'smg', 'rifle', 'sniper', 'lmg', 'knife', 'other'] : [pfTab];
     let h = '';
-    for (const [k, n, t] of PF_CLASSES) {
-      const list = items.filter(it => iconOf(it) === k).sort((a, b) => a.n.localeCompare(b.n));
-      h += `<div class="cx-group-h" style="grid-column:1/-1">${esc(n)} · <span class="pf-tag ${k.endsWith('-e') ? 'e' : k.endsWith('-b') ? 'b' : ''}">${esc(t)}</span> <span>${list.length}</span></div>`;
-      h += list.length ? list.map(it => pfCard(it, k)).join('') : '<div class="cx-sub" style="grid-column:1/-1">해당 없음</div>';
+    for (const k of groups) {
+      const ks = items.filter(it => it.k === k);
+      if (!ks.length) continue;
+      const parts = (k === 'knife' || k === 'other') ? [[null, ks]] : [['b', ks.filter(it => it.a === 'b')], ['e', ks.filter(it => it.a === 'e')], ['', ks.filter(it => it.a !== 'b' && it.a !== 'e')]];
+      for (const [a, list] of parts) {
+        if (!list.length) continue;
+        const tag = a === 'b' ? '실탄' : a === 'e' ? '에너지' : a === '' ? '탄종 미상' : '';
+        h += `<div class="cx-group-h" style="grid-column:1/-1">${esc(PF_KO[k])}${tag ? ' · <span class="pf-tag ' + (a || '') + '">' + tag + '</span>' : ''} <span>${list.length}</span></div>`;
+        h += list.sort(cmp).map(it => pfCard(it, PF_ICON[k] && a ? PF_ICON[k] + '-' + a : (k === 'knife' ? 'knife' : null))).join('');
+      }
     }
-    const oth = items.filter(it => it.k === 'other').sort((a, b) => (a.sub + a.n).localeCompare(b.sub + b.n));
-    if (oth.length) h += `<div class="cx-group-h" style="grid-column:1/-1">기타 (샷건·HMG·발사기 등, 대표 도식 없음) <span>${oth.length}</span></div>` + oth.map(it => pfCard(it, null)).join('');
-    h += `<div class="cx-sub" style="grid-column:1/-1;margin-top:4px">아이콘은 분류별 대표 도식이며 실제 모델의 외형이 아닙니다. 목록·수치 출처: star-citizen.wiki API (${esc(PERS.meta.version)}). 수치는 소스 값 그대로이며 게임 내 측정값이 아닙니다.</div>`;
+    if (!h) h = '<div class="cx-empty">조건에 맞는 무기가 없습니다.</div>';
+    h += `<div class="cx-sub pf-note" style="grid-column:1/-1;margin-top:4px">아이콘은 분류별 대표 도식이며 실제 모델의 외형이 아닙니다(저격소총은 라이플 도식 사용). 출처: star-citizen.wiki API (${esc(PERS.meta.version)}). 발당=소스 damage_per_shot(샷건은 펠릿 합산값), 탄창당=발당×탄창 수, 분당=발당×rpm. 분당 피해는 <b>재장전·반동·명중률을 뺀 이론값</b>이며(재장전 시간은 소스에 없음), rpm은 소스 최상위 값(점사·연사 모드가 있으면 빠른 쪽일 수 있음)입니다. 게임 내 측정값이 아닙니다.</div>`;
     g.innerHTML = h;
   }
   function pfCard(it, k) {
-    const st = [it.d != null ? '피해 ' + it.d : '', it.r ? it.r + ' rpm' : '', it.c ? '탄창 ' + it.c : ''].filter(Boolean).join(' · ');
     const ico = k ? `<svg class="pf-ico sm" viewBox="0 0 160 72" aria-hidden="true">${PF_SVG[k]}</svg>` : '';
-    return `<div class="cx-card pf-card" style="cursor:default">${ico}<div class="cx-name">${esc(it.n)}</div><div class="cx-sub">${esc(it.m)}${it.sub ? ' · ' + esc(KO_SUB[it.sub] || it.sub) : ''}</div>${st ? `<div class="cx-sub">${esc(st)}</div>` : ''}</div>`;
+    const sub = (it.m && it.m !== 'Unknown' ? esc(it.m) : '제조사 미상') + (it.sub ? ' · ' + esc(KO_SUB[it.sub] || it.sub) : '');
+    let st = '';
+    if (it.d != null) {
+      st = `<div class="pf-stats"><div><span>발당</span><b>${pfNum(it.d)}</b></div><div><span>탄창당</span><b>${pfNum(it.mag)}</b></div><div><span>분당</span><b>${it.dpm != null ? pfNum(it.dpm) : '–'}</b></div></div><div class="cx-sub">${it.r ? pfNum(it.r) + ' rpm' : 'rpm 없음'} · 탄창 ${it.c != null ? it.c : '없음'}${it.c === 1 ? ' (1발 장전식, 분당 생략)' : ''}${it.t ? ' · 소진 ' + pfNum(it.t) + '초' : ''}</div>`;
+    } else if (it.k !== 'knife') st = '<div class="cx-sub">피해 수치 소스에 없음</div>';
+    return `<div class="cx-card pf-card" style="cursor:default">${ico}<div class="cx-name">${esc(it.n)}</div><div class="cx-sub">${sub}</div>${st}</div>`;
   }
   const SORTS = { name: '이름순', size: '사이즈순', perf: '주요 수치순' };
   const CAREER_ICON = { 'Combat': '⚔️', 'Ground': '🛞', 'Industrial': '⛏️', 'Competition': '🏁', 'Transporter': '🚚', 'Exploration': '🔭', 'Support': '🛟', 'Multi-Role': '🔀', 'Personal Transport': '🚐', 'Starter': '🌱' };
@@ -236,7 +255,7 @@
   function buildHead() {
     $('cxTabs').innerHTML = CATS.map(c => `<button class="chip${c.id === cat ? ' on' : ''}" data-cat="${c.id}">${c.label}</button>`).join('');
     $('cxTabs').querySelectorAll('[data-cat]').forEach(b => b.onclick = () => { cat = b.dataset.cat; selKey = null; fSize = ''; fGrade = ''; fMfr = ''; fCat = ''; fType = ''; fCls = ''; group = 'auto'; buildHead(); renderGrid(); closeModal(); });
-    if (cat === 'personal') { $('cxFilters').innerHTML = `<input id="cxQ" placeholder="검색 (이름·제조사)" value="${esc(q)}">`; $('cxQ').addEventListener('input', e => { q = e.target.value.toLowerCase().trim(); renderGrid(); }); if (!PERS) fetch('personal.json?v=1').then(r => r.json()).then(d => { PERS = d; if (cat === 'personal') renderGrid(); }).catch(() => { $('cxGrid').innerHTML = '<div class="cx-empty">목록을 불러오지 못했습니다.</div>'; }); return; }
+    if (cat === 'personal') { $('cxFilters').innerHTML = `<div id="pfTabsHost" style="flex:1 1 100%"></div><input id="cxQ" placeholder="검색 (이름·제조사)" value="${esc(q)}"><select id="pfSort"><option value="name">이름순</option><option value="dpm">분당 피해순</option><option value="mag">탄창당 피해순</option><option value="d">발당 피해순</option></select>`; $('pfSort').value = pfSort; $('pfSort').onchange = e => { pfSort = e.target.value; renderPersonal(); }; $('cxQ').addEventListener('input', e => { q = e.target.value.toLowerCase().trim(); renderGrid(); }); if (!PERS) fetch('personal.json?v=2').then(r => r.json()).then(d => { PERS = d; if (cat === 'personal') renderGrid(); }).catch(() => { $('cxGrid').innerHTML = '<div class="cx-empty">목록을 불러오지 못했습니다.</div>'; }); else renderPersonal(); return; }
     const arr = itemsOf(cat);
     const sizes = [...new Set(arr.map(it => String(it.size)))].sort((a, b) => Number(a) - Number(b));
     const grades = [...new Set(arr.map(it => it.grade).filter(g => g && g.length <= 2))].sort();
