@@ -9,6 +9,8 @@
 
   // ---------- 옵션 (지역 · 예산 · 구매 가능만) ----------
   const SYS_KO = { Stanton: '스탠턴', Pyro: '파이로', Nyx: '닉스' };
+  const ALL = 'ALL';
+  const sysLabel = s => s === ALL ? '전체' : (SYS_KO[s] || s);
   const OPT_KEY = 'scfit:opts';
   const opt = (() => {
     const d = { sys: ['Stanton'], onlyBuy: true, budget: 0, preset: 'combat', range: 'mid', lock: [] };
@@ -21,11 +23,11 @@
   let SHOPS = null; // null=로딩전, false=실패
   async function loadShops() {
     if (SHOPS !== null) return SHOPS;
-    try { const r = await fetch('shops.json?v=2', { cache: 'no-store' }); SHOPS = await r.json(); }
+    try { const r = await fetch('shops.json?v=3', { cache: 'no-store' }); SHOPS = await r.json(); }
     catch (e) { SHOPS = false; }
     return SHOPS;
   }
-  const sysOK = t => opt.sys.includes(SHOPS.terms[t].sys);
+  const sysOK = t => opt.sys.includes(ALL) || opt.sys.includes(SHOPS.terms[t].sys);
   // 허용 지역 내 판매처 [[termIdx, price]] (가격 오름차순)
   function offers(cls) {
     if (!SHOPS || !SHOPS.items[cls]) return [];
@@ -330,7 +332,7 @@
   const lineSort = (a, b) => (((a.size || 0) - (b.size || 0)) || String(a.name || '').localeCompare(b.name || '', 'ko'));
   function planHTML(plan, opts) {
     opts = opts || {};
-    const stopName = t => { const T = SHOPS.terms[t]; return `<b>${esc(T.n)}</b><span class="fit-dim"> · ${esc(SYS_KO[T.sys] || T.sys)} · ${esc(T.loc)}</span>`; };
+    const stopName = t => { const T = SHOPS.terms[t]; const src = T.src === 'C' ? 'UIF' : T.src === 'U' ? 'UEX' : ''; return `<b>${esc(T.n)}</b><span class="fit-dim"> · ${esc(SYS_KO[T.sys] || T.sys)} · ${esc(T.loc)}${src ? ` · ${src} 제보` : ''}</span>`; };
     let h = '';
     plan.stops.forEach((st, i) => {
       h += `<div class="fit-stop"><div class="fit-stop-h">${i + 1}. ${stopName(st.t)}<span class="fit-sub">${nf(st.sub)} aUEC</span></div>`
@@ -338,22 +340,25 @@
         + '</div>';
     });
     if (plan.missing.length) {
-      h += `<div class="fit-stop fit-miss"><div class="fit-stop-h">⚠️ 구매처 미확인 (선택 지역 ${opt.sys.map(s => SYS_KO[s] || s).join('/')} 기준)</div>`
-        + plan.missing.slice().sort(lineSort).map(m => { const p = anyPrice(m.cls); return `<div class="fit-line"><span>${esc(m.name)}${m.qty > 1 ? ' ×' + m.qty : ''}</span><span class="fit-dim">${p != null ? '다른 지역에는 있음 (지역 칩 확인)' : '데이터 없음 · 인게임 확인 필요'}</span></div>`; }).join('') + '</div>';
+      h += `<div class="fit-stop fit-miss"><div class="fit-stop-h">⚠️ 구매처 미확인 (선택 지역 ${opt.sys.map(sysLabel).join('/')} 기준)</div>`
+        + plan.missing.slice().sort(lineSort).map(m => { const p = anyPrice(m.cls); const ns = SHOPS.notSold && SHOPS.notSold.includes(m.cls); return `<div class="fit-line"><span>${esc(m.name)}${m.qty > 1 ? ' ×' + m.qty : ''}</span><span class="fit-dim">${p != null ? '다른 지역에는 있음 (지역 칩 확인)' : (ns ? '양쪽 제보 데이터 모두 판매처 없음 — 상점 미판매 가능성' : '데이터 없음 · 인게임 확인 필요')}</span></div>`; }).join('') + '</div>';
     }
     if (plan.stops.length) h += `<div class="fit-total">합계 ${nf(plan.total)} aUEC <span class="fit-dim">(스테이션 묶음 기준${plan.minTotal < plan.total ? ' · 품목별 최저가 합 ' + nf(plan.minTotal) : ''})</span></div>`;
     return h;
   }
-  const shopNote = () => SHOPS ? `가격·재고: ${esc(SHOPS.meta.source)} · 제보 기준 ${esc(SHOPS.meta.newestReport)} (게임 ${esc(Object.keys(SHOPS.meta.reportVersions).sort().join('/'))}). 커뮤니티 제보라 실제와 다를 수 있음 — 구매 전 인게임에서 확인.` : '구매처 데이터를 불러오지 못했습니다.';
+  const shopNote = () => SHOPS ? `가격·판매처: UEX Corp + Cornerstone UIF (둘 다 커뮤니티 제보 기반) · 최신 제보 ${esc(SHOPS.meta.newestReport)} (게임 ${esc(Object.keys(SHOPS.meta.reportVersions).sort().join('/'))}). 3.20 이후 게임 파일에 상점 재고가 없어 모든 사이트가 제보 기반이라 실제와 다를 수 있음 — 구매 전 인게임에서 확인.` : '구매처 데이터를 불러오지 못했습니다.';
 
   // ---------- 지역 칩 ----------
   function sysChipsHTML(idAttr) {
-    return `<span class="grp-lbl">지역</span>` + Object.keys(SYS_KO).map(k => `<button class="chip${opt.sys.includes(k) ? ' on' : ''}" ${idAttr}="${k}">${SYS_KO[k]}</button>`).join('');
+    return `<span class="grp-lbl">지역</span>` + `<button class="chip${opt.sys.includes(ALL) ? ' on' : ''}" ${idAttr}="${ALL}">전체</button>`
+      + Object.keys(SYS_KO).map(k => `<button class="chip${opt.sys.includes(k) ? ' on' : ''}" ${idAttr}="${k}">${SYS_KO[k]}</button>`).join('');
   }
   function bindSysChips(sel, after) {
     document.querySelectorAll(sel).forEach(b => b.onclick = () => {
-      const k = b.dataset.fitsys, i = opt.sys.indexOf(k);
-      if (i >= 0) { if (opt.sys.length > 1) opt.sys.splice(i, 1); } else opt.sys.push(k);
+      const k = b.dataset.fitsys;
+      if (k === ALL) opt.sys = [ALL];
+      else if (opt.sys.includes(ALL)) opt.sys = [k];
+      else { const i = opt.sys.indexOf(k); if (i >= 0) { if (opt.sys.length > 1) opt.sys.splice(i, 1); } else opt.sys.push(k); }
       saveOpt(); after();
     });
   }
