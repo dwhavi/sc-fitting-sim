@@ -14,7 +14,8 @@
     { id: 'powerplants', label: '⚡ 파워플랜트' },
     { id: 'coolers', label: '❄️ 쿨러' },
     { id: 'qds', label: '🌀 양자드라이브' },
-    { id: 'missiles', label: '💥 미사일·랙' },
+    { id: 'missiles', label: '💥 미사일' },
+    { id: 'racks', label: '🗄️ 미사일 랙' },
     { id: 'radars', label: '📡 레이더' },
     { id: 'personal', label: '🪖 개인 화기' },
   ];
@@ -172,6 +173,12 @@
   const CLS_KO = { Civilian: '민수', Military: '군용', Competition: '경쟁(레이싱)', Stealth: '스텔스', Industrial: '산업', '': '미분류' };
   const CLS_ORDER = ['Civilian', 'Military', 'Competition', 'Stealth', 'Industrial', ''];
   const COMP_CATS = ['shields', 'powerplants', 'coolers', 'qds', 'radars'];
+  // 사이즈를 라디오 버튼으로 보여주는 카테고리 (무기·부품·미사일·랙)
+  const SIZE_RADIO_CATS = ['weapons', 'missiles', 'racks', ...COMP_CATS];
+  const SIZE_RADIO_LBL = { weapons: '무기', missiles: '미사일', racks: '미사일 랙' };
+  // 부품 카테고리는 등급순 정렬을 기본으로 (A→D, 숫자 등급은 오름차순, 등급 없음은 뒤로)
+  const sortsFor = cid => COMP_CATS.includes(cid) ? Object.assign({ grade: '등급순' }, SORTS) : SORTS;
+  const gradeRank = g => g === '' ? 99 : ({ A: 0, B: 1, C: 2, D: 3 }[g] !== undefined ? { A: 0, B: 1, C: 2, D: 3 }[g] : (isNaN(+g) ? 50 : 10 + (+g)));
   const SUB_KO = { Missile: '미사일', Torpedo: '어뢰', GroundVehicleMissile: '지상차량용', Rocket: '로켓' };
   const TRACK_KO = { Infrared: '적외선(IR)', CrossSection: '단면적(CS)', Electromagnetic: '전자기(EM)' };
   const mmeta = cls => (MMETA && MMETA.missiles && MMETA.missiles[cls]) || null;
@@ -260,9 +267,9 @@
         bars: [{ k: '피해', v: m.damage || 0 }],
         perf: m.damage || 0,
       }); }
+    } else if (cid === 'racks') {
       for (const r of DB.racks || []) push('rack', r, {
-        mtype: '랙', mtrack: '—',
-        sub: `랙 · S${r.msize != null ? r.msize : '?'} 미사일`,
+        sub: `S${r.msize != null ? r.msize : '?'} 미사일 ${r.missiles != null ? r.missiles + '발' : ''}`,
         bars: [{ k: '장전 수', v: r.missiles || 0 }],
         perf: r.missiles || 0,
       });
@@ -308,6 +315,7 @@
       name: (a, b) => a.name.localeCompare(b.name),
       size: (a, b) => ((a.size ?? 99) - (b.size ?? 99)) || a.name.localeCompare(b.name),
       perf: (a, b) => (b.perf - a.perf) || a.name.localeCompare(b.name),
+      grade: (a, b) => (gradeRank(a.grade) - gradeRank(b.grade)) || ((a.size ?? 99) - (b.size ?? 99)) || a.name.localeCompare(b.name),
     }[sort] || ((a, b) => a.name.localeCompare(b.name));
     return arr.sort(by);
   }
@@ -315,7 +323,7 @@
   const opts = (arr, cur, allLabel) => `<option value="">${allLabel}</option>` + arr.map(([v, l]) => `<option value="${esc(v)}"${v === cur ? ' selected' : ''}>${esc(l)}</option>`).join('');
   function buildHead() {
     $('cxTabs').innerHTML = CATS.map(c => `<button class="chip${c.id === cat ? ' on' : ''}" data-cat="${c.id}">${c.label}</button>`).join('');
-    $('cxTabs').querySelectorAll('[data-cat]').forEach(b => b.onclick = () => { cat = b.dataset.cat; selKey = null; fSize = cat === 'weapons' ? '3' : ''; fGrade = ''; fMfr = ''; fCat = ''; fType = ''; fCls = ''; group = 'auto'; buildHead(); renderGrid(); closeModal(); });
+    $('cxTabs').querySelectorAll('[data-cat]').forEach(b => b.onclick = () => { cat = b.dataset.cat; selKey = null; fSize = cat === 'weapons' ? '3' : ''; fGrade = ''; fMfr = ''; fCat = ''; fType = ''; fCls = ''; group = COMP_CATS.includes(cat) ? 'cls' : 'auto'; sort = COMP_CATS.includes(cat) ? 'grade' : 'name'; buildHead(); renderGrid(); closeModal(); });
     if (cat === 'personal') { $('cxFilters').innerHTML = `<div id="pfTabsHost" style="flex:1 1 100%"></div><input id="cxQ" placeholder="검색 (이름·제조사)" value="${esc(q)}"><select id="pfSort"><option value="name">이름순</option><option value="dpm">분당 피해순</option><option value="mag">탄창당 피해순</option><option value="d">발당 피해순</option></select>`; $('pfSort').value = pfSort; $('pfSort').onchange = e => { pfSort = e.target.value; renderPersonal(); }; $('cxQ').addEventListener('input', e => { q = e.target.value.toLowerCase().trim(); renderGrid(); }); if (!PERS) fetch('personal.json?v=4').then(r => r.json()).then(d => { PERS = d; if (cat === 'personal') renderGrid(); }).catch(() => { $('cxGrid').innerHTML = '<div class="cx-empty">목록을 불러오지 못했습니다.</div>'; }); else renderPersonal(); return; }
     const arr = itemsOf(cat);
     const sizes = [...new Set(arr.map(it => String(it.size)))].sort((a, b) => Number(a) - Number(b));
@@ -327,25 +335,25 @@
       h += `<select id="cxCat">${opts(SHIP_CATS.filter(c => cnt[c]).map(c => [c, `${c} (${cnt[c]})`]), fCat, '카테고리 전체')}</select>`;
       h += `<select id="cxSize"><option value="">사이즈 전체</option><option value="large"${fSize === 'large' ? ' selected' : ''}>대형함 (S5 이상 · 임시 기준)</option>${sizes.map(s => `<option value="${esc(s)}"${s === fSize ? ' selected' : ''}>S${esc(s)}</option>`).join('')}</select>`;
       h += `<select id="cxGroup"><option value="auto"${group === 'auto' ? ' selected' : ''}>묶기: 자동(전체=카테고리별)</option><option value="cat"${group === 'cat' ? ' selected' : ''}>묶기: 카테고리별</option><option value="mfr"${group === 'mfr' ? ' selected' : ''}>묶기: 제조사별</option><option value="none"${group === 'none' ? ' selected' : ''}>묶지 않음</option></select>`;
-    } else if (cat !== 'weapons') {
-      h += `<select id="cxSize"><option value="">사이즈 전체</option>${sizes.map(s => `<option value="${esc(s)}"${s === fSize ? ' selected' : ''}>S${esc(s)}</option>`).join('')}</select>`;
     }
+    // 무기·부품·미사일·랙은 사이즈를 라디오 버튼으로 (아래 cx-size-row)
     if (cat === 'weapons') h += `<select id="cxType">${opts(WTYPES.map(t => [t, t === '실탄' ? '실탄(Ballistic)' : t === '에너지' ? '에너지(Energy)' : t]), fType, '무기 종류 전체')}</select>`
       + `<select id="cxGroup"><option value="auto"${group !== 'none' ? ' selected' : ''}>묶기: 종류별 (기본)</option><option value="none"${group === 'none' ? ' selected' : ''}>묶지 않음</option></select>`;
     if (COMP_CATS.includes(cat)) {
       const have = new Set(arr.map(it => it.ccls));
       h += `<select id="cxCls">${opts(CLS_ORDER.filter(c => have.has(c)).map(c => [c === '' ? '_none' : c, CLS_KO[c]]), fCls, '용도 전체(민수·군용·경쟁·스텔스)')}</select>`
-        + `<select id="cxGroup"><option value="none"${group !== 'cls' ? ' selected' : ''}>묶지 않음</option><option value="cls"${group === 'cls' ? ' selected' : ''}>용도별로 묶기</option></select>`;
+        + `<select id="cxGroup"><option value="cls"${group !== 'none' ? ' selected' : ''}>묶기: 용도별 (기본)</option><option value="none"${group === 'none' ? ' selected' : ''}>묶지 않음</option></select>`;
     }
     if (cat === 'missiles') {
-      const ts = [...new Set(arr.map(it => it.mtype))].filter(t => t && t !== '랙'), ks = [...new Set(arr.map(it => it.mtrack))].filter(t => t && t !== '—');
+      const ts = [...new Set(arr.map(it => it.mtype))].filter(Boolean), ks = [...new Set(arr.map(it => it.mtrack))].filter(t => t && t !== '—');
       h += `<select id="cxType">${opts([...ts, ...ks].map(t => [t, t]), fType, '종류·추적방식 전체')}</select>`;
     }
     if (grades.length && cat !== 'ships') h += `<select id="cxGrade"><option value="">등급 전체</option>${grades.map(g => `<option value="${esc(g)}"${g === fGrade ? ' selected' : ''}>${esc(g)}</option>`).join('')}</select>`;
     if (mfrs.length) h += `<select id="cxMfr"><option value="">제조사 전체</option>${mfrs.map(m => `<option value="${esc(m)}"${m === fMfr ? ' selected' : ''}>${esc(m)}</option>`).join('')}</select>`;
-    h += `<select id="cxSort">${Object.entries(SORTS).map(([k, v]) => `<option value="${k}"${k === sort ? ' selected' : ''}>${v}</option>`).join('')}</select>`;
-    if (cat === 'weapons') {
-      h += `<div class="cx-size-row" role="radiogroup" aria-label="무기 사이즈"><span class="grp-lbl">사이즈</span>`
+    h += `<select id="cxSort">${Object.entries(sortsFor(cat)).map(([k, v]) => `<option value="${k}"${k === sort ? ' selected' : ''}>${v}</option>`).join('')}</select>`;
+    if (SIZE_RADIO_CATS.includes(cat)) {
+      const szLbl = SIZE_RADIO_LBL[cat] || '부품';
+      h += `<div class="cx-size-row" role="radiogroup" aria-label="${szLbl} 사이즈"><span class="grp-lbl">사이즈</span>`
         + `<label class="chip cx-size-opt"><input type="radio" name="cxSizeR" value=""${fSize === '' ? ' checked' : ''}>전체</label>`
         + sizes.map(s => `<label class="chip cx-size-opt"><input type="radio" name="cxSizeR" value="${esc(s)}"${s === fSize ? ' checked' : ''}>S${esc(s)}</label>`).join('') + `</div>`;
     }
