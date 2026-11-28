@@ -341,12 +341,12 @@
     });
     if (plan.missing.length) {
       h += `<div class="fit-stop fit-miss"><div class="fit-stop-h">⚠️ 구매처 미확인 (선택 지역 ${opt.sys.map(sysLabel).join('/')} 기준)</div>`
-        + plan.missing.slice().sort(lineSort).map(m => { const p = anyPrice(m.cls); const ns = SHOPS.notSold && SHOPS.notSold.includes(m.cls); return `<div class="fit-line"><span>${esc(m.name)}${m.qty > 1 ? ' ×' + m.qty : ''}</span><span class="fit-dim">${p != null ? '다른 지역에는 있음 (지역 칩 확인)' : (ns ? '양쪽 제보 데이터 모두 판매처 없음 — 상점 미판매 가능성' : '데이터 없음 · 인게임 확인 필요')}</span></div>`; }).join('') + '</div>';
+        + plan.missing.slice().sort(lineSort).map(m => { const p = anyPrice(m.cls); const ns = SHOPS.notSold && SHOPS.notSold.includes(m.cls); return `<div class="fit-line"><span>${esc(m.name)}${m.qty > 1 ? ' ×' + m.qty : ''}</span><span class="fit-dim">${p != null ? '다른 지역에는 있음 (지역 칩 확인)' : (ns ? 'UEX·UIF 모두 등록된 판매처 없음 · 판매 여부 미확인' : '데이터 없음 · 인게임 확인 필요')}</span></div>`; }).join('') + '</div>';
     }
     if (plan.stops.length) h += `<div class="fit-total">합계 ${nf(plan.total)} aUEC <span class="fit-dim">(스테이션 묶음 기준${plan.minTotal < plan.total ? ' · 품목별 최저가 합 ' + nf(plan.minTotal) : ''})</span></div>`;
     return h;
   }
-  const shopNote = () => SHOPS ? `가격·판매처: UEX Corp + Cornerstone UIF (둘 다 커뮤니티 제보 기반) · 최신 제보 ${esc(SHOPS.meta.newestReport)} (게임 ${esc(Object.keys(SHOPS.meta.reportVersions).sort().join('/'))}). 3.20 이후 게임 파일에 상점 재고가 없어 모든 사이트가 제보 기반이라 실제와 다를 수 있음 — 구매 전 인게임에서 확인.` : '구매처 데이터를 불러오지 못했습니다.';
+  const shopNote = () => SHOPS ? `가격·판매처: UEX Corp + Cornerstone UIF (둘 다 커뮤니티 제보 기반) · 최신 제보 ${esc(SHOPS.meta.newestReport)} · 제보 게임 버전 ${esc(Object.keys(SHOPS.meta.reportVersions).sort().join('/'))} 혼합 (UEX는 과거 버전 제보도 유지). 3.20 이후 게임 파일에 상점 재고가 없어 모든 사이트가 제보 기반이라 실제와 다를 수 있음 — 구매 전 인게임에서 확인.` : '구매처 데이터를 불러오지 못했습니다.';
 
   // ---------- 지역 칩 ----------
   function sysChipsHTML(idAttr) {
