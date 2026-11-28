@@ -175,6 +175,11 @@ main>*{min-width:0}.stat{min-width:0;overflow-wrap:anywhere}
 .cx-filters{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
 .cx-filters input{flex:1 1 180px;min-width:0}
 .cx-filters select{flex:0 1 auto;width:auto;min-width:110px}
+.cx-size-row{display:flex;gap:6px;flex-wrap:wrap;flex:1 1 100%;align-items:center}
+.cx-size-row .grp-lbl{font-size:11px;color:var(--dim);margin-right:2px}
+.cx-size-opt{position:relative}
+.cx-size-opt input{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.cx-size-opt:has(input:checked){background:#12314a;color:var(--acc);border-color:#1e4a6e}
 #cxBody{display:block;gap:12px;padding:12px;align-items:start}
 #cxGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;min-width:0}
 .cx-card{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;color:var(--txt);text-align:left;display:flex;flex-direction:column;gap:6px;transition:border-color .12s}
@@ -345,6 +350,6 @@ body.cx-modal-open{overflow:hidden}
 <script src="app.js?v=150"></script>
 <script src="fit.js?v=11"></script>
 <script src="cloud.js?v=5"></script>
-<script src="codex.js?v=16"></script>
+<script src="codex.js?v=17"></script>
 </body>
 </html>

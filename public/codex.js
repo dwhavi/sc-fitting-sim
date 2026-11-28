@@ -315,7 +315,7 @@
   const opts = (arr, cur, allLabel) => `<option value="">${allLabel}</option>` + arr.map(([v, l]) => `<option value="${esc(v)}"${v === cur ? ' selected' : ''}>${esc(l)}</option>`).join('');
   function buildHead() {
     $('cxTabs').innerHTML = CATS.map(c => `<button class="chip${c.id === cat ? ' on' : ''}" data-cat="${c.id}">${c.label}</button>`).join('');
-    $('cxTabs').querySelectorAll('[data-cat]').forEach(b => b.onclick = () => { cat = b.dataset.cat; selKey = null; fSize = ''; fGrade = ''; fMfr = ''; fCat = ''; fType = ''; fCls = ''; group = 'auto'; buildHead(); renderGrid(); closeModal(); });
+    $('cxTabs').querySelectorAll('[data-cat]').forEach(b => b.onclick = () => { cat = b.dataset.cat; selKey = null; fSize = cat === 'weapons' ? '3' : ''; fGrade = ''; fMfr = ''; fCat = ''; fType = ''; fCls = ''; group = 'auto'; buildHead(); renderGrid(); closeModal(); });
     if (cat === 'personal') { $('cxFilters').innerHTML = `<div id="pfTabsHost" style="flex:1 1 100%"></div><input id="cxQ" placeholder="검색 (이름·제조사)" value="${esc(q)}"><select id="pfSort"><option value="name">이름순</option><option value="dpm">분당 피해순</option><option value="mag">탄창당 피해순</option><option value="d">발당 피해순</option></select>`; $('pfSort').value = pfSort; $('pfSort').onchange = e => { pfSort = e.target.value; renderPersonal(); }; $('cxQ').addEventListener('input', e => { q = e.target.value.toLowerCase().trim(); renderGrid(); }); if (!PERS) fetch('personal.json?v=4').then(r => r.json()).then(d => { PERS = d; if (cat === 'personal') renderGrid(); }).catch(() => { $('cxGrid').innerHTML = '<div class="cx-empty">목록을 불러오지 못했습니다.</div>'; }); else renderPersonal(); return; }
     const arr = itemsOf(cat);
     const sizes = [...new Set(arr.map(it => String(it.size)))].sort((a, b) => Number(a) - Number(b));
@@ -327,11 +327,11 @@
       h += `<select id="cxCat">${opts(SHIP_CATS.filter(c => cnt[c]).map(c => [c, `${c} (${cnt[c]})`]), fCat, '카테고리 전체')}</select>`;
       h += `<select id="cxSize"><option value="">사이즈 전체</option><option value="large"${fSize === 'large' ? ' selected' : ''}>대형함 (S5 이상 · 임시 기준)</option>${sizes.map(s => `<option value="${esc(s)}"${s === fSize ? ' selected' : ''}>S${esc(s)}</option>`).join('')}</select>`;
       h += `<select id="cxGroup"><option value="auto"${group === 'auto' ? ' selected' : ''}>묶기: 자동(전체=카테고리별)</option><option value="cat"${group === 'cat' ? ' selected' : ''}>묶기: 카테고리별</option><option value="mfr"${group === 'mfr' ? ' selected' : ''}>묶기: 제조사별</option><option value="none"${group === 'none' ? ' selected' : ''}>묶지 않음</option></select>`;
-    } else {
+    } else if (cat !== 'weapons') {
       h += `<select id="cxSize"><option value="">사이즈 전체</option>${sizes.map(s => `<option value="${esc(s)}"${s === fSize ? ' selected' : ''}>S${esc(s)}</option>`).join('')}</select>`;
     }
     if (cat === 'weapons') h += `<select id="cxType">${opts(WTYPES.map(t => [t, t === '실탄' ? '실탄(Ballistic)' : t === '에너지' ? '에너지(Energy)' : t]), fType, '무기 종류 전체')}</select>`
-      + `<select id="cxGroup"><option value="none"${group !== 'type' ? ' selected' : ''}>묶지 않음</option><option value="type"${group === 'type' ? ' selected' : ''}>종류별로 묶기</option></select>`;
+      + `<select id="cxGroup"><option value="auto"${group !== 'none' ? ' selected' : ''}>묶기: 종류별 (기본)</option><option value="none"${group === 'none' ? ' selected' : ''}>묶지 않음</option></select>`;
     if (COMP_CATS.includes(cat)) {
       const have = new Set(arr.map(it => it.ccls));
       h += `<select id="cxCls">${opts(CLS_ORDER.filter(c => have.has(c)).map(c => [c === '' ? '_none' : c, CLS_KO[c]]), fCls, '용도 전체(민수·군용·경쟁·스텔스)')}</select>`
@@ -344,7 +344,13 @@
     if (grades.length && cat !== 'ships') h += `<select id="cxGrade"><option value="">등급 전체</option>${grades.map(g => `<option value="${esc(g)}"${g === fGrade ? ' selected' : ''}>${esc(g)}</option>`).join('')}</select>`;
     if (mfrs.length) h += `<select id="cxMfr"><option value="">제조사 전체</option>${mfrs.map(m => `<option value="${esc(m)}"${m === fMfr ? ' selected' : ''}>${esc(m)}</option>`).join('')}</select>`;
     h += `<select id="cxSort">${Object.entries(SORTS).map(([k, v]) => `<option value="${k}"${k === sort ? ' selected' : ''}>${v}</option>`).join('')}</select>`;
+    if (cat === 'weapons') {
+      h += `<div class="cx-size-row" role="radiogroup" aria-label="무기 사이즈"><span class="grp-lbl">사이즈</span>`
+        + `<label class="chip cx-size-opt"><input type="radio" name="cxSizeR" value=""${fSize === '' ? ' checked' : ''}>전체</label>`
+        + sizes.map(s => `<label class="chip cx-size-opt"><input type="radio" name="cxSizeR" value="${esc(s)}"${s === fSize ? ' checked' : ''}>S${esc(s)}</label>`).join('') + `</div>`;
+    }
     $('cxFilters').innerHTML = h;
+    $('cxFilters').querySelectorAll('input[name="cxSizeR"]').forEach(r => r.onchange = e => { fSize = e.target.value; renderGrid(); });
     $('cxQ').addEventListener('input', e => { q = e.target.value.toLowerCase().trim(); renderGrid(); });
     const on = (id, fn) => { const el = $(id); if (el) el.onchange = e => { fn(e.target.value); renderGrid(); }; };
     on('cxSize', v => fSize = v); on('cxGrade', v => fGrade = v); on('cxMfr', v => fMfr = v); on('cxSort', v => sort = v);
@@ -372,7 +378,7 @@
 
   function groupKeyOf(it) {
     if (cat === 'ships') { const g = group === 'auto' ? (fCat === '' ? 'cat' : 'none') : group; return g === 'cat' ? it.cat : g === 'mfr' ? (it.mfr || '제조사 미확인') : null; }
-    if (cat === 'weapons' && group === 'type') return it.wtype;
+    if (cat === 'weapons') return group === 'none' ? null : it.wtype;
     if (COMP_CATS.includes(cat) && group === 'cls') return CLS_KO[it.ccls];
     return null;
   }
